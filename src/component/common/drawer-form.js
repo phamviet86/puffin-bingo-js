@@ -1,7 +1,7 @@
 // path: @/component/common/drawer-form.js
 
 import { useCallback } from "react";
-import { message } from "antd";
+import { message, Popconfirm } from "antd";
 import { DrawerForm as AntDrawerForm } from "@ant-design/pro-components";
 import { Button } from "@/component/common";
 import { FORM_CONFIG, DRAWER_CONFIG } from "@/component/config";
@@ -100,6 +100,28 @@ export function DrawerForm({
         open={visible}
         onOpenChange={setVisible}
         drawerProps={DRAWER_CONFIG}
+        submitter={{
+          render: (_, defaultDoms) => {
+            return [
+              formDelete ? (
+                <Popconfirm
+                  title="Xác nhận xóa?"
+                  description="Bạn có chắc chắn muốn xóa?"
+                  onConfirm={handleDataDelete}
+                  okText="Xóa"
+                  cancelText="Hủy"
+                >
+                  <Button key="delete-button" color="danger" variant="solid">
+                    Xoá
+                  </Button>
+                </Popconfirm>
+              ) : (
+                []
+              ),
+              ...defaultDoms,
+            ];
+          },
+        }}
       >
         {fields}
       </AntDrawerForm>
