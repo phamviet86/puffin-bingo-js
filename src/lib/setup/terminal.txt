@@ -1,3 +1,0 @@
-# Git config
-git config user.email "phamquangviet@bingoenglish.edu.vn"
-git config user.name "phamviet86"
