@@ -1,6 +1,6 @@
 ---
 mode: "edit"
-description: "Tạo file route API hoàn chỉnh cho service với các thao tác CRUD dựa trên định nghĩa bảng SQL và module service."
+description: "Tạo file route API hoàn chỉnh cho service với các thao tác CRUD dựa trên định nghĩa bảng SQL."
 ---
 
 ## Yêu cầu
@@ -23,12 +23,17 @@ description: "Tạo file route API hoàn chỉnh cho service với các thao tá
   - 400: Thiếu tham số bắt buộc
   - 404: Không tìm thấy hoặc đã bị xóa
   - 500: Lỗi server hoặc thao tác thất bại
-- Đặt tên hàm service theo pattern:
-  - Lấy danh sách: `get{TableName}s` (vd: getOptions)
-  - Lấy theo id: `get{TableName}` (vd: getOption)
-  - Tạo mới: `create{TableName}`
-  - Cập nhật: `update{TableName}`
-  - Xóa: `delete{TableName}`
+- Quy tắc về file service và hàm CRUD:
+  - Tên bảng là số nhiều của đối tượng (ví dụ: options)
+  - Mỗi bảng có một file service đặt tại `/src/service/{table-name}-service.js` (kebab-case, ví dụ: `options-service.js`).
+  - File service export đúng 5 hàm:
+    - getoptions: lấy tất cả bản ghi (danh sách, số nhiều)
+    - getOption: lấy một bản ghi (số ít)
+    - createOption: tạo mới (số ít)
+    - updateOption: cập nhật (số ít)
+    - deleteOption: xoá mềm (số ít)
+  - Khi sử dụng trong route, luôn import như sau (ví dụ với bảng options):
+    - `import { getoptions, getOption, createOption, updateOption, deleteOption } from "@/service/options-service"`
 - Đặt tên biến, hàm, key theo quy ước:
   - camelCase cho biến, tên hàm (vd: userId, getUser)
   - snake_case cho key dữ liệu map với cột DB (vd: { section_id, lesson_id })
@@ -52,7 +57,29 @@ description: "Tạo file route API hoàn chỉnh cho service với các thao tá
 
 ## Ví dụ code mẫu
 
-### route.js
+### Input (SQL Definition)
+
+```sql
+-- table: tuỳ chọn
+
+DROP TABLE IF EXISTS options CASCADE;
+CREATE TABLE options (
+  id SERIAL PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  deleted_at TIMESTAMPTZ DEFAULT NULL,
+  option_table VARCHAR(255) NOT NULL,
+  option_column VARCHAR(255) NOT NULL,
+  option_label VARCHAR(255) NOT NULL,
+  option_color VARCHAR(255) DEFAULT NULL,
+  option_group VARCHAR(255) DEFAULT NULL
+);
+CREATE TRIGGER update_record BEFORE
+UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+```
+
+### Output (`route.js`)
 
 ```javascript
 import {
@@ -127,7 +154,7 @@ export async function POST(request) {
 }
 ```
 
-### [id]/route.js
+### Output (`[id]/route.js`)
 
 ```javascript
 import {

@@ -64,6 +64,8 @@ description: "Tạo file service JavaScript hoàn chỉnh với các thao tác C
 ### Input (Định nghĩa SQL)
 
 ```sql
+-- table: tuỳ chọn
+
 DROP TABLE IF EXISTS options CASCADE;
 CREATE TABLE options (
   id SERIAL PRIMARY KEY,
@@ -80,7 +82,7 @@ CREATE TRIGGER update_record BEFORE
 UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
-### Output (options-service.js)
+### Output (`options-service.js`)
 
 ```javascript
 // path: @/service/options-service.js
