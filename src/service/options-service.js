@@ -1,6 +1,6 @@
 // path: @/service/options-service.js
 
-import { neonDB } from "@/lib/db/neon";
+import { neonDB } from "@/lib/db/neon-db";
 import { parseSearchParams } from "@/lib/util/query-util";
 
 const sql = neonDB();
