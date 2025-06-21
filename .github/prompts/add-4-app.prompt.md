@@ -192,12 +192,7 @@ export function OptionsFields() {
 ```javascript
 // path: @/component/custom/options/options-component.js
 
-import {
-  ProTable,
-  DrawerForm,
-  DrawerInfo,
-  ProDescriptions,
-} from "@/component/common";
+import { ProTable, DrawerForm, DrawerInfo } from "@/component/common";
 import { fetchList, fetchPost } from "@/lib/util/fetch-util";
 
 export function OptionsTable(props) {
