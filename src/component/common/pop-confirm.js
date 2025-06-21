@@ -1,4 +1,4 @@
-// path: @/components/common/pop-confirm.js
+// path: @/component/common/pop-confirm.js
 
 import { useCallback } from "react";
 import { Popconfirm as AntPopconfirm, message } from "antd";

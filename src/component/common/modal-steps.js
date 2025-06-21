@@ -1,4 +1,4 @@
-// path: @/components/common/modal-steps.js
+// path: @/component/common/modal-steps.js
 
 import React, { useState, useCallback, cloneElement } from "react";
 import { Modal as AntModal, message, Steps, Button, Space } from "antd";

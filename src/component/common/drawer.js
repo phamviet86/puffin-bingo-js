@@ -2,7 +2,7 @@
 
 import { useCallback, useState, cloneElement } from "react";
 import { Drawer as AntDrawer, message, Space } from "antd";
-import { Button } from "@/components/common";
+import { Button } from "@/component/common";
 import { DRAWER_CONFIG } from "@/component/config";
 
 export function Drawer({

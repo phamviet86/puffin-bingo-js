@@ -1,4 +1,4 @@
-// path: @/components/common/full-calendar.js
+// path: @/component/common/full-calendar.js
 
 import { useEffect, useCallback } from "react";
 import { message, Grid } from "antd";
