@@ -11,13 +11,13 @@ import { neon } from "@neondatabase/serverless";
  *
  * @example
  * // Cách 1: Sử dụng template literals (được khuyến nghị vì an toàn hơn)
- * const sql = getConnBingo();
+ * const sql = neonDB();
  * const comment = "Đây là bình luận mẫu";
  * await sql`INSERT INTO comments (comment) VALUES (${comment})`;
  *
  * @example
  * // Cách 2: Sử dụng parameterized query
- * const sql = getConnBingo();
+ * const sql = neonDB();
  * const comment = "Đây là bình luận mẫu";
  * await sql.query("INSERT INTO comments (comment) VALUES ($1)", [comment]);
  */
