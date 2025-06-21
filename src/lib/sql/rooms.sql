@@ -7,8 +7,8 @@ CREATE TABLE rooms (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   room_name VARCHAR(255) NOT NULL,
-  room_desc TEXT DEFAULT NULL,
-  room_status_id INTEGER NOT NULL
+  room_status_id INTEGER NOT NULL,
+  room_desc TEXT DEFAULT NULL
 );
 CREATE TRIGGER update_record BEFORE
 UPDATE ON rooms FOR EACH ROW EXECUTE FUNCTION set_updated_at();
