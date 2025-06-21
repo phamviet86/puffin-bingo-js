@@ -4,12 +4,12 @@ import { useCallback } from "react";
 import { Popconfirm as AntPopconfirm, message } from "antd";
 
 export function Popconfirm({
-  onPopConfirm = undefined,
-  onPopConfirmError = undefined,
-  onPopConfirmSuccess = undefined,
-  onPopCancel = undefined,
-  onPopCancelError = undefined,
-  onPopCancelSuccess = undefined,
+  popConfirm = undefined,
+  popConfirmError = undefined,
+  popConfirmSuccess = undefined,
+  popCancel = undefined,
+  popCancelError = undefined,
+  popCancelSuccess = undefined,
   showConfirmMessage = false,
   showCancelMessage = false,
   ...props
@@ -18,53 +18,53 @@ export function Popconfirm({
 
   // Handlers
   const handleConfirm = useCallback(async () => {
-    if (!onPopConfirm) {
+    if (!popConfirm) {
       messageApi.error("Data confirm handler not provided");
       return false;
     }
 
     try {
-      const result = await onPopConfirm();
+      const result = await popConfirm();
       if (showConfirmMessage && result?.message) {
         messageApi.success(result.message);
       }
-      onPopConfirmSuccess?.(result);
+      popConfirmSuccess?.(result);
       return result || true;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      onPopConfirmError?.(error);
+      popConfirmError?.(error);
       return false;
     }
   }, [
-    onPopConfirm,
-    onPopConfirmSuccess,
-    onPopConfirmError,
+    popConfirm,
+    popConfirmSuccess,
+    popConfirmError,
     showConfirmMessage,
     messageApi,
   ]);
 
   const handleCancel = useCallback(async () => {
-    if (!onPopCancel) {
+    if (!popCancel) {
       messageApi.error("Data cancel handler not provided");
       return false;
     }
 
     try {
-      const result = await onPopCancel();
+      const result = await popCancel();
       if (showCancelMessage && result?.message) {
         messageApi.warning(result.message);
       }
-      onPopCancelSuccess?.(result);
+      popCancelSuccess?.(result);
       return result || false;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      onPopCancelError?.(error);
+      popCancelError?.(error);
       return false;
     }
   }, [
-    onPopCancel,
-    onPopCancelSuccess,
-    onPopCancelError,
+    popCancel,
+    popCancelSuccess,
+    popCancelError,
     showCancelMessage,
     messageApi,
   ]);
@@ -75,8 +75,8 @@ export function Popconfirm({
       {contextHolder}
       <AntPopconfirm
         {...props}
-        onConfirm={onPopConfirm ? handleConfirm : undefined}
-        onCancel={onPopCancel ? handleCancel : undefined}
+        onConfirm={popConfirm ? handleConfirm : undefined}
+        onCancel={popCancel ? handleCancel : undefined}
       />
     </>
   );

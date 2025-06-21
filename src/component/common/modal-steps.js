@@ -5,12 +5,12 @@ import { Modal as AntModal, message, Steps, Button, Space } from "antd";
 import { MODAL_CONFIG } from "@/component/config";
 
 export function ModalSteps({
-  onModalOk = undefined,
-  onModalOkError = undefined,
-  onModalOkSuccess = undefined,
-  onModalCancel = undefined,
-  onModalCancelError = undefined,
-  onModalCancelSuccess = undefined,
+  modalOk = undefined,
+  modalOkError = undefined,
+  modalOkSuccess = undefined,
+  modalCancel = undefined,
+  modalCancelError = undefined,
+  modalCancelSuccess = undefined,
   showOkMessage = false,
   showCancelMessage = false,
   trigger = undefined,
@@ -33,56 +33,56 @@ export function ModalSteps({
   }, []);
 
   const handleOk = useCallback(async () => {
-    if (!onModalOk) {
+    if (!modalOk) {
       messageApi.error("OK handler not provided");
       return false;
     }
 
     try {
-      const result = await onModalOk();
+      const result = await modalOk();
       closeModal();
       if (showOkMessage && result?.message) {
         messageApi.success(result.message);
       }
-      onModalOkSuccess?.(result);
+      modalOkSuccess?.(result);
       return result || true;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      onModalOkError?.(error);
+      modalOkError?.(error);
       return false;
     }
   }, [
-    onModalOk,
-    onModalOkSuccess,
-    onModalOkError,
+    modalOk,
+    modalOkSuccess,
+    modalOkError,
     showOkMessage,
     messageApi,
     closeModal,
   ]);
 
   const handleCancel = useCallback(async () => {
-    if (!onModalCancel) {
+    if (!modalCancel) {
       closeModal();
       return false;
     }
 
     try {
-      const result = await onModalCancel();
+      const result = await modalCancel();
       closeModal();
       if (showCancelMessage && result?.message) {
         messageApi.warning(result.message);
       }
-      onModalCancelSuccess?.(result);
+      modalCancelSuccess?.(result);
       return result || false;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      onModalCancelError?.(error);
+      modalCancelError?.(error);
       return false;
     }
   }, [
-    onModalCancel,
-    onModalCancelSuccess,
-    onModalCancelError,
+    modalCancel,
+    modalCancelSuccess,
+    modalCancelError,
     showCancelMessage,
     messageApi,
     closeModal,

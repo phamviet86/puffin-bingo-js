@@ -18,10 +18,10 @@ function getBreakpoint(screens) {
 }
 
 export function FullCalendar({
-  onDataRequest = undefined,
-  onDataRequestError = undefined,
-  onDataRequestSuccess = undefined,
-  onDataItem = undefined,
+  calendarRequest = undefined,
+  calendarRequestError = undefined,
+  calendarRequestSuccess = undefined,
+  calendarItem = undefined,
   plugins = [],
   height = "auto",
   responsive = RESPONSIVE_CONFIG,
@@ -52,7 +52,7 @@ export function FullCalendar({
   // Handlers
   const handleDataRequest = useCallback(
     async (requestParams = {}) => {
-      if (!onDataRequest) {
+      if (!calendarRequest) {
         messageApi.error("Data request handler not provided");
         return;
       }
@@ -63,30 +63,30 @@ export function FullCalendar({
       }
 
       try {
-        const result = await onDataRequest(requestParams);
+        const result = await calendarRequest(requestParams);
         let finalEvents = [];
 
-        if (onDataItem) {
-          finalEvents = convertEventItems(result.data || [], onDataItem);
+        if (calendarItem) {
+          finalEvents = convertEventItems(result.data || [], calendarItem);
         } else {
           finalEvents = result.data || result || [];
         }
 
         setCalendarEvents(finalEvents);
-        onDataRequestSuccess?.(result);
+        calendarRequestSuccess?.(result);
       } catch (error) {
         messageApi.error(error?.message || "Đã xảy ra lỗi");
-        onDataRequestError?.(error);
+        calendarRequestError?.(error);
         setCalendarEvents([]);
       } finally {
         setLoading(false);
       }
     },
     [
-      onDataRequest,
-      onDataRequestSuccess,
-      onDataRequestError,
-      onDataItem,
+      calendarRequest,
+      calendarRequestSuccess,
+      calendarRequestError,
+      calendarItem,
       messageApi,
       setLoading,
       setCalendarEvents,
@@ -133,13 +133,13 @@ export function FullCalendar({
 
   // Handle data request on component mount and when dates or loading state change
   useEffect(() => {
-    if (onDataRequest && startDate && endDate && loading) {
+    if (calendarRequest && startDate && endDate && loading) {
       // Process params here, removing current and pageSize
       const { current, pageSize, ...processedParams } = params;
 
       handleDataRequest(processedParams);
     }
-  }, [handleDataRequest, onDataRequest, startDate, endDate, loading, params]);
+  }, [handleDataRequest, calendarRequest, startDate, endDate, loading, params]);
 
   // Return the component
   return (

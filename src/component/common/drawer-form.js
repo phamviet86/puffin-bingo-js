@@ -3,16 +3,20 @@
 import { useCallback } from "react";
 import { message } from "antd";
 import { DrawerForm as AntDrawerForm } from "@ant-design/pro-components";
+import { Button } from "@/component/common";
 import { FORM_CONFIG, DRAWER_CONFIG } from "@/component/config";
 
 export function DrawerForm({
   fields = null,
-  onDataRequest = undefined,
-  onDataRequestError = undefined,
-  onDataRequestSuccess = undefined,
-  onDataSubmit = undefined,
-  onDataSubmitError = undefined,
-  onDataSubmitSuccess = undefined,
+  formRequest = undefined,
+  formRequestError = undefined,
+  formRequestSuccess = undefined,
+  formSubmit = undefined,
+  formSubmitError = undefined,
+  formSubmitSuccess = undefined,
+  formDelete = undefined,
+  formDeleteError = undefined,
+  formDeleteSuccess = undefined,
   formHook = {},
   ...props
 }) {
@@ -22,47 +26,66 @@ export function DrawerForm({
   // Handlers
   const handleDataRequest = useCallback(
     async (params) => {
-      if (!onDataRequest) {
+      if (!formRequest) {
         messageApi.error("Data request handler not provided");
         return false;
       }
 
       try {
-        const result = await onDataRequest(params);
+        const result = await formRequest(params);
         // result: { success, message, data: array }
-        onDataRequestSuccess?.(result);
+        formRequestSuccess?.(result);
         return result.data[0] || {};
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
-        onDataRequestError?.(error);
+        formRequestError?.(error);
         return false;
       }
     },
-    [onDataRequest, onDataRequestSuccess, onDataRequestError, messageApi]
+    [formRequest, formRequestSuccess, formRequestError, messageApi]
   );
 
   const handleDataSubmit = useCallback(
     async (values) => {
-      if (!onDataSubmit) {
+      if (!formSubmit) {
         messageApi.error("Data submit handler not provided");
         return false;
       }
       if (!values) return false;
 
       try {
-        const result = await onDataSubmit(values);
+        const result = await formSubmit(values);
         // result: { success, message, data: array }
         messageApi.success(result.message);
-        onDataSubmitSuccess?.(result);
+        formSubmitSuccess?.(result);
         return true;
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
-        onDataSubmitError?.(error);
+        formSubmitError?.(error);
         return false;
       }
     },
-    [onDataSubmit, onDataSubmitSuccess, onDataSubmitError, messageApi]
+    [formSubmit, formSubmitSuccess, formSubmitError, messageApi]
   );
+
+  const handleDataDelete = useCallback(async () => {
+    if (!formDelete) {
+      messageApi.error("Data delete handler not provided");
+      return false;
+    }
+
+    try {
+      const result = await formDelete();
+      // result: { success, message, data: array }
+      messageApi.success(result.message);
+      formDeleteSuccess?.(result);
+      return true;
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi");
+      formDeleteError?.(error);
+      return false;
+    }
+  }, [formDelete, formDeleteSuccess, formDeleteError, messageApi]);
 
   // Render component
   return (
@@ -72,8 +95,8 @@ export function DrawerForm({
         {...props}
         {...FORM_CONFIG}
         formRef={formRef}
-        request={onDataRequest ? handleDataRequest : undefined}
-        onFinish={onDataSubmit ? handleDataSubmit : undefined}
+        request={formRequest ? handleDataRequest : undefined}
+        onFinish={formSubmit ? handleDataSubmit : undefined}
         open={visible}
         onOpenChange={setVisible}
         drawerProps={DRAWER_CONFIG}
