@@ -44,12 +44,7 @@ description: "Tạo schema và component files hoàn chỉnh cho hệ thống CR
 - Import statements cố định
 
 ```javascript
-import {
-  ProTable,
-  DrawerForm,
-  DrawerInfo,
-  ProDescriptions,
-} from "@/component/common";
+import { ProTable, DrawerForm, DrawerInfo } from "@/component/common";
 import { fetchList, fetchPost } from "@/lib/util/fetch-util";
 ```
 
