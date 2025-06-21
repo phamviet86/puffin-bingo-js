@@ -1,0 +1,56 @@
+/* xs: <576px, sm: 576px-768px */
+@media (max-width: 767px) {
+  .remoteTransfer :global(.ant-transfer) {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-list) {
+    width: 100% !important;
+    margin-bottom: 0;
+    min-height: 200px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-operation) {
+    flex-direction: row;
+    align-self: center;
+    margin: 16px 0;
+    border-radius: 6px;
+    gap: 8px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-operation .ant-btn) {
+    margin: 0;
+    min-width: 60px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-list-header) {
+    padding: 8px 16px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-list-body) {
+    height: auto;
+    max-height: 300px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 575px) {
+  .remoteTransfer :global(.ant-transfer-operation) {
+    margin: 12px 0;
+  }
+
+  .remoteTransfer :global(.ant-transfer-operation .ant-btn) {
+    min-width: 50px;
+    font-size: 12px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-list) {
+    min-height: 180px;
+  }
+
+  .remoteTransfer :global(.ant-transfer-list-body) {
+    max-height: 250px;
+  }
+}
