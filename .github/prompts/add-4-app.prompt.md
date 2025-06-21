@@ -1,35 +1,91 @@
 ---
 mode: "edit"
-description: "Tạo schema files hoàn chỉnh cho hệ thống component Ant Design Pro từ định nghĩa SQL table"
+description: "Tạo schema và component files hoàn chỉnh cho hệ thống CRUD Ant Design Pro từ định nghĩa SQL table"
 ---
 
 ## Yêu cầu
 
-- Tạo file schema
-  - Đường dẫn: `/src/component/custom/{tableName}/{tableName}-schema.js`
+- Tạo 2 files cho mỗi table:
+  - Schema file: Định nghĩa columns và form fields
+  - Component file: Các components CRUD (Table, Form, Info)
+
+## 1. Schema File Requirements
+
+- Đường dẫn và cấu trúc
+
+  - File: `/src/component/custom/{tableName}/{tableName}-schema.js`
   - Export 2 functions: `{TableName}Columns` và `{TableName}Fields`
-- Quy tắc mapping SQL data types
+
+- Mapping SQL data types
+
   - VARCHAR → `ProFormText` với `valueType: "text"`
   - TEXT → `ProFormTextArea` với `valueType: "textarea"` và `fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}`
   - INT/SERIAL → `ProFormText` (không dùng ProFormDigit)
   - TIMESTAMPTZ → `ProFormDatePicker`
   - TIME → `ProFormTimePicker`
-- Quy tắc validation
+
+- Validation và cấu hình
+
   - NOT NULL → `rules={[{ required: true }]}`
-- Cấu hình table columns
   - Tất cả columns (trừ ID): `sorter: { multiple: 1 }`
   - Ẩn system fields: `id`, `created_at`, `updated_at`, `deleted_at`
-- Quy ước đặt tên
-
-  - Functions: PascalCase + suffix (VD: `OptionsColumns`, `OptionsFields`)
-  - Labels: chuyển snake_case thành Title Case tiếng Việt
-  - Placeholders: "Nhập..." cho input, "Chọn..." cho selection
 
 - Form structure
   - Wrap fields trong `<ProForm.Group>...</ProForm.Group>`
   - ID field: `hidden disabled`
 
-## Ví dụ code mẫu
+## 2. Component File Requirements
+
+- Đường dẫn và cấu trúc
+
+  - File: `/src/component/custom/{tableName}/{tableName}-component.js`
+  - Export 3 functions: `{TableName}Table`, `{TableName}Info`, `{TableName}Form`
+
+- Import statements cố định
+
+```javascript
+import {
+  ProTable,
+  DrawerForm,
+  DrawerInfo,
+  ProDescriptions,
+} from "@/component/common";
+import { fetchList, fetchPost } from "@/lib/util/fetch-util";
+```
+
+- Component patterns
+
+  - Table: Sử dụng `ProTable` với `onDataRequest` callback
+  - Form: Sử dụng `DrawerForm` với `onDataSubmit` callback
+  - Info: Sử dụng `DrawerInfo` làm wrapper
+  - Props spreading: Tất cả components phải spread `{...props}`
+
+- API endpoint format
+  - Pattern: `/api/{tableName}` với tableName camelCase
+  - Ví dụ: bảng "user_profiles" → endpoint "/api/userProfiles"
+
+## 3. Naming Conventions
+
+- Functions: PascalCase + suffix (VD: `OptionsColumns`, `OptionsFields`, `OptionsTable`)
+- File names: kebab-case (VD: `options-schema.js`, `options-component.js`)
+- Labels: chuyển snake_case thành Title Case tiếng Việt
+- Placeholders: "Nhập..." cho input, "Chọn..." cho selection
+
+## 4. Workflow Implementation
+
+- Bước 1: Tạo Schema File
+
+  - Parse SQL table definition
+  - Map SQL columns theo quy tắc data types
+  - Tạo `{TableName}Columns` function với sorter và valueType
+  - Tạo `{TableName}Fields` function với validation rules
+
+- Bước 2: Tạo Component File
+  - Tạo `{TableName}Table` với ProTable và API endpoint
+  - Tạo `{TableName}Form` với DrawerForm và submit handler
+  - Tạo `{TableName}Info` với DrawerInfo wrapper
+
+## 5. Ví dụ code mẫu
 
 ### Input (SQL Definition)
 
@@ -52,7 +108,7 @@ CREATE TRIGGER update_record BEFORE
 UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
-### Output (options-schema.js)
+### Output Schema File (options-schema.js)
 
 ```javascript
 // path: @/component/custom/options/options-schema.js
@@ -128,5 +184,43 @@ export function OptionsFields() {
       />
     </ProForm.Group>
   );
+}
+```
+
+### Output Component File (options-component.js)
+
+```javascript
+// path: @/component/custom/options/options-component.js
+
+import {
+  ProTable,
+  DrawerForm,
+  DrawerInfo,
+  ProDescriptions,
+} from "@/component/common";
+import { fetchList, fetchPost } from "@/lib/util/fetch-util";
+
+export function OptionsTable(props) {
+  return (
+    <ProTable
+      {...props}
+      onDataRequest={(params, sort, filter) =>
+        fetchList("/api/options", params, sort, filter)
+      }
+    />
+  );
+}
+
+export function OptionsForm(props) {
+  return (
+    <DrawerForm
+      {...props}
+      onDataSubmit={(values) => fetchPost("/api/options", values)}
+    />
+  );
+}
+
+export function OptionsInfo(props) {
+  return <DrawerInfo {...props} />;
 }
 ```
