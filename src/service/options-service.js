@@ -13,8 +13,7 @@ export async function getOptions(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT id, option_table, option_column, option_label, option_color, option_group,
-        COUNT(*) OVER() AS total
+      SELECT *, COUNT(*) OVER() AS total
       FROM options
       WHERE deleted_at IS NULL
       ${whereClause}
@@ -31,7 +30,7 @@ export async function getOptions(searchParams) {
 export async function getOption(id) {
   try {
     return await sql`
-      SELECT id, option_table, option_column, option_label, option_color, option_group
+      SELECT *
       FROM options
       WHERE deleted_at IS NULL AND id = ${id};
     `;
@@ -56,7 +55,7 @@ export async function createOption(data) {
       ) VALUES (
         ${option_table}, ${option_column}, ${option_label}, ${option_color}, ${option_group}
       )
-      RETURNING id, option_table, option_column, option_label, option_color, option_group;
+      RETURNING *;
     `;
   } catch (error) {
     throw new Error(error.message);
@@ -77,7 +76,7 @@ export async function updateOption(data, id) {
       UPDATE options
       SET option_table = ${option_table}, option_column = ${option_column}, option_label = ${option_label}, option_color = ${option_color}, option_group = ${option_group}
       WHERE deleted_at IS NULL AND id = ${id}
-      RETURNING id, option_table, option_column, option_label, option_color, option_group;
+      RETURNING *;
     `;
   } catch (error) {
     throw new Error(error.message);
@@ -90,7 +89,7 @@ export async function deleteOption(id) {
       UPDATE options
       SET deleted_at = NOW()
       WHERE deleted_at IS NULL AND id = ${id}
-      RETURNING id, option_table, option_column, option_label, option_color, option_group;
+      RETURNING *;
     `;
   } catch (error) {
     throw new Error(error.message);
