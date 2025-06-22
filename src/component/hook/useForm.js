@@ -4,11 +4,10 @@ import { useRef, useState } from "react";
 
 export function useForm() {
   const formRef = useRef();
-  const [visible, setVisible] = useState(false);
-  const [initialValues, setInitialValues] = useState({});
-  const [id, setId] = useState(null);
   const [params, setParams] = useState({});
+  const [initialValues, setInitialValues] = useState({});
   const [title, setTitle] = useState("");
+  const [visible, setVisible] = useState(false);
 
   const open = () => {
     setVisible(true);
@@ -19,7 +18,6 @@ export function useForm() {
     setInitialValues({});
     setParams({});
     setTitle("");
-    setId(null);
   };
 
   const reset = () => {
@@ -31,16 +29,14 @@ export function useForm() {
   return {
     formRef,
     reset,
-    visible,
-    setVisible,
-    initialValues,
-    setInitialValues,
-    id,
-    setId,
     params,
     setParams,
+    initialValues,
+    setInitialValues,
     title,
     setTitle,
+    visible,
+    setVisible,
     open,
     close,
   };

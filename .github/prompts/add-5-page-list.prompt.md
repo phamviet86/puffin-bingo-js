@@ -1,75 +1,133 @@
 ---
 mode: "edit"
-description: "Create complete page component for entity management with table display, create form, edit form and detail view functionality."
+description: "Tạo page component hoàn chỉnh cho quản lý entity với hiển thị bảng, form tạo/sửa và chức năng xem chi tiết"
 ---
 
-## Requirements
+## Yêu cầu
 
-- Create page component file:
-  - `page.js` in `/src/app/(front)/app/dev/{tableName}/` directory
-  - Use `"use client";` directive at the top of file
-  - Import components from `/src/component/custom/` directory; don't change import paths
-- Include state management using hooks:
-  - `useTable` - Manage table data, reload and reference
-  - `useForm` - Manage form state, title, record and visibility
-  - `useInfo` - Manage detail view state
-- Implement main components:
-  - Table component with entity name as prefix (e.g., `OptionsTable`)
-  - Single form component to handle both create and edit (e.g., `OptionsForm`)
-  - Detail info component (e.g., `OptionsInfo`) with drawer actions
-  - Columns configuration (e.g., `OptionsColumns`)
-  - Fields configuration (e.g., `OptionsFields`)
-- Follow established project patterns for:
-  - Layout using `PageContainer` and `ProCard` components
-  - Responsive design with proper shadows
-  - Action columns with Info and Edit buttons
-  - Form with dynamic title and initialValues
-- Include standard table operations:
-  - pageButton: Create button with `PlusOutlined` icon
-  - leftColumns: Info button with `InfoCircleOutlined` icon
-  - rightColumns: Edit button with `EditOutlined` icon (responsive md)
-- Use naming conventions:
-  - PascalCase for entity component names (e.g., `OptionsTable`, `OptionsForm`)
-  - Vietnamese labels for UI text
-  - Proper breadcrumb structure with title hierarchy
+- Tạo page component file:
+  - File: `/src/app/(front)/app/dev/{tableName}/page.js`
+  - Sử dụng `"use client";` directive đầu file
+  - Import components từ `/src/component/custom/` theo pattern PascalCase
+- State management sử dụng hooks:
 
-## Notes
+  - `useTable` - Quản lý dữ liệu bảng và reload
+  - `useInfo` - Quản lý detail view state
+  - `useNav` - Navigation utilities
 
-- Use SQL table definition to:
-  - Identify entity name and table name
-  - Create appropriate breadcrumb and title
-  - Import correct components from custom components
-- Page structure pattern:
-  - PageContainer with breadcrumb items, title and extra buttons
-  - ProCard wrapper with boxShadow
-  - Table component with leftColumns/rightColumns configuration
-  - Info drawer with drawerProps title and footer actions
-  - Single form with dynamic title, fields, initialValues and success callback
-- State management pattern:
-  - `optionForm.setTitle()` to set dynamic title for form
-  - `hook.open(record)` to open forms/drawers with data
-  - `hook.close()` to close forms/drawers
-  - `optionTable.reload()` after successful submit
-  - `optionForm.initialValues` and `optionInfo.dataSource` to access current data
-- Vietnamese localization patterns:
-  - Breadcrumb: "Hệ thống" for system level
-  - Page title: "Quản lý {Vietnamese entity name}"
-  - Create button: "Tạo mới"
-  - Form titles: "Tạo {entity}" and "Sửa {entity}"
-  - Info drawer title: "Thông tin {Vietnamese entity name}"
-  - Edit button: "Sửa"
-- Component import structure:
-  - Icons from `@ant-design/icons`
-  - ProCard from `@ant-design/pro-components`
-  - Common components from `@/component/common`
-  - Custom components from `@/component/custom` (Table, Info, Form, Columns, Fields)
-  - Hooks from `@/component/hook`
+- Component structure:
 
-## Example
+  - Table: `{TableName}Table` với columns configuration
+  - Form: `{TableName}FormCreate` xử lý create action
+  - Info: `{TableName}Info` với drawer actions
+  - Schema: Import `{TableName}Columns` và `{TableName}Fields`
+
+- Layout patterns:
+  - `PageContainer` với breadcrumb, title và extra buttons
+  - `ProCard` wrapper với boxShadow
+  - Action columns: Info (trái) và Detail (phải, responsive md)
+
+## Implementation Guidelines
+
+### 1. File Structure và Import
+
+- Comment đầu file để xác định table:
+
+```javascript
+// {TABLE_NAME} LIST PAGE
+```
+
+- Import statements cố định:
+
+```javascript
+import {
+  PlusOutlined,
+  InfoCircleOutlined,
+  EyeOutlined,
+  SyncOutlined,
+} from "@ant-design/icons";
+import { ProCard } from "@ant-design/pro-components";
+import { PageContainer, Button, DetailButton } from "@/component/common";
+import { useTable, useInfo, useNav } from "@/component/hook";
+```
+
+- Component imports theo pattern:
+
+```javascript
+import {
+  {TableName}Table,
+  {TableName}Info,
+  {TableName}FormCreate,
+  {TableName}Columns,
+  {TableName}Fields,
+} from "@/component/custom";
+```
+
+### 2. Hook Initialization
+
+```javascript
+const use{TableName}Table = useTable();
+const use{TableName}Info = useInfo();
+const { navDetail } = useNav();
+```
+
+### 3. Page Button Configuration
+
+- Refresh button với `SyncOutlined` icon
+- Create button với `PlusOutlined` icon
+- Form trigger với `{TableName}FormCreate` component
+- Success handler: Close info và navigate to detail
+
+### 4. Table Actions
+
+- **leftColumns**: Info button với `InfoCircleOutlined`
+  - Action: Set dataSource và open info drawer
+- **rightColumns**: Detail button với `EyeOutlined`
+  - Responsive: `["md"]`
+  - Action: Navigate to detail page
+
+### 5. Vietnamese Localization
+
+- Breadcrumb: `[{ title: "Hệ thống" }, { title: "{Entity Name}" }]`
+- Page title: "Quản lý {Vietnamese entity name}"
+- Info drawer title: "Thông tin {Vietnamese entity name}"
+- Form title: "Tạo {entity name}"
+- Buttons: "Tạo mới", "Xem chi tiết"
+
+### 6. Form Success Handler
+
+- Close info drawer: `use{TableName}Info.close()`
+- Navigate to detail: `navDetail(result?.data[0]?.id)`
+
+## Quy tắc naming và mapping
+
+- Table name → Component prefix: `options` → `Options`
+- Vietnamese entity names:
+  - `options` → "Tùy chọn"
+  - Breadcrumb: `[{ title: "Hệ thống" }, { title: "Tùy chọn" }]`
+  - Page title: "Quản lý tùy chọn"
+  - Form title: "Tạo tùy chọn"
+  - Info drawer title: "Thông tin tùy chọn"
+
+## Workflow Implementation
+
+- **Bước 1**: Parse SQL table definition để xác định table name và entity name
+- **Bước 2**: Tạo page component với cấu trúc cố định:
+  - Comment định danh table ở đầu file: `// {TABLE_NAME} LIST PAGE`
+  - Import statements theo pattern đã định
+  - Hook initialization cho state management
+  - Page button configuration với create action và refresh
+  - Table configuration với leftColumns và rightColumns
+  - Info drawer với title và extra actions
+  - Form với success handler và navigation
+
+## Ví dụ code mẫu
 
 ### Input (SQL Definition)
 
 ```sql
+-- table: tuỳ chọn
+
 DROP TABLE IF EXISTS options CASCADE;
 CREATE TABLE options (
   id SERIAL PRIMARY KEY,
@@ -86,49 +144,61 @@ CREATE TRIGGER update_record BEFORE
 UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
-### Output (page.js)
+### Output (options/page.js)
 
 ```javascript
+// OPTIONS LIST PAGE
+
 "use client";
 
 import {
   PlusOutlined,
-  EditOutlined,
   InfoCircleOutlined,
+  EyeOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
-import { PageContainer, Button } from "@/component/common";
+import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
   OptionsTable,
   OptionsInfo,
-  OptionsForm,
+  OptionsFormCreate,
   OptionsColumns,
   OptionsFields,
 } from "@/component/custom";
-import { useTable, useInfo, useForm } from "@/component/hook";
+import { useTable, useInfo, useNav } from "@/component/hook";
 
 export default function Page() {
-  const optionTable = useTable();
-  const optionInfo = useInfo();
-  const optionForm = useForm();
+  const useOptionsTable = useTable();
+  const useOptionsInfo = useInfo();
+  const { navDetail } = useNav();
 
   const pageButton = [
     <Button
-      key="create-button"
-      label="Tạo mới"
-      icon={<PlusOutlined />}
-      onClick={() => {
-        optionForm.setTitle("Tạo tùy chọn");
-        optionForm.setInitialValues({});
-        optionForm.open();
+      key="refresh-button"
+      icon={<SyncOutlined />}
+      label="Tải lại"
+      color="default"
+      variant="filled"
+      onClick={() => useOptionsTable.reload()}
+    />,
+    <OptionsFormCreate
+      key="create-form"
+      fields={OptionsFields()}
+      initialValues={{ option_color: "default" }}
+      onFormSubmitSuccess={(result) => {
+        useOptionsInfo.close();
+        navDetail(result?.data[0]?.id);
       }}
+      title="Tạo tùy chọn"
+      trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
     />,
   ];
 
   const pageContent = (
     <ProCard boxShadow>
       <OptionsTable
-        tableHook={optionTable}
+        tableHook={useOptionsTable}
         columns={OptionsColumns()}
         leftColumns={[
           {
@@ -140,8 +210,8 @@ export default function Page() {
                 icon={<InfoCircleOutlined />}
                 variant="link"
                 onClick={() => {
-                  optionInfo.setDataSource(record);
-                  optionInfo.open();
+                  useOptionsInfo.setDataSource(record);
+                  useOptionsInfo.open();
                 }}
               />
             ),
@@ -153,14 +223,10 @@ export default function Page() {
             align: "center",
             search: false,
             render: (_, record) => (
-              <Button
-                icon={<EditOutlined />}
+              <DetailButton
+                icon={<EyeOutlined />}
                 variant="link"
-                onClick={() => {
-                  optionForm.setTitle("Sửa tùy chọn");
-                  optionForm.setInitialValues(record);
-                  optionForm.open();
-                }}
+                id={record?.id}
               />
             ),
             responsive: ["md"],
@@ -168,31 +234,20 @@ export default function Page() {
         ]}
       />
       <OptionsInfo
-        infoHook={optionInfo}
+        infoHook={useOptionsInfo}
         columns={OptionsColumns()}
-        dataSource={optionInfo.dataSource}
+        dataSource={useOptionsInfo.dataSource}
         drawerProps={{
           title: "Thông tin tùy chọn",
-          footer: [
-            <Button
-              key="edit-button"
-              label="Sửa"
-              onClick={() => {
-                optionInfo.close();
-                optionForm.setTitle("Sửa tùy chọn");
-                optionForm.setInitialValues(optionInfo.dataSource);
-                optionForm.open();
-              }}
+          extra: [
+            <DetailButton
+              key="detail-button"
+              label="Xem chi tiết"
+              variant="filled"
+              id={useOptionsInfo?.dataSource?.id}
             />,
           ],
         }}
-      />
-      <OptionsForm
-        formHook={optionForm}
-        fields={OptionsFields()}
-        onDataSubmitSuccess={() => optionTable.reload()}
-        initialValues={optionForm.initialValues}
-        title={optionForm.title}
       />
     </ProCard>
   );

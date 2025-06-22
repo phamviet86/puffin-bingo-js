@@ -1,4 +1,11 @@
-import { ProTable, DrawerForm, DrawerInfo } from "@/component/common";
+// path: @/component/custom/options/options-component.js
+
+import {
+  ProTable,
+  DrawerForm,
+  DrawerInfo,
+  ProDescriptions,
+} from "@/component/common";
 import { fetchList, fetchPost } from "@/lib/util/fetch-util";
 
 export function OptionsTable(props) {
@@ -12,7 +19,15 @@ export function OptionsTable(props) {
   );
 }
 
-export function OptionsForm(props) {
+export function OptionsInfo(props) {
+  return <DrawerInfo {...props} />;
+}
+
+export function OptionsDesc(props) {
+  return <ProDescriptions {...props} />;
+}
+
+export function OptionsFormCreate(props) {
   return (
     <DrawerForm
       {...props}
@@ -21,6 +36,13 @@ export function OptionsForm(props) {
   );
 }
 
-export function OptionsInfo(props) {
-  return <DrawerInfo {...props} />;
+export function OptionsFormEdit({ id, ...props }) {
+  return (
+    <DrawerForm
+      {...props}
+      onFormRequest={() => fetchGet(`/api/options/${id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
+      onFormDelete={() => fetchDelete(`/api/options/${id}`)}
+    />
+  );
 }

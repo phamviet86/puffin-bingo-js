@@ -1,43 +1,55 @@
+// OPTIONS LIST PAGE
+
 "use client";
 
 import {
   PlusOutlined,
-  EditOutlined,
   InfoCircleOutlined,
+  EyeOutlined,
+  SyncOutlined,
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
-import { PageContainer, Button } from "@/component/common";
+import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
   OptionsTable,
   OptionsInfo,
-  OptionsForm,
+  OptionsFormCreate,
   OptionsColumns,
   OptionsFields,
 } from "@/component/custom";
-import { useTable, useInfo, useForm } from "@/component/hook";
+import { useTable, useInfo, useNav } from "@/component/hook";
 
 export default function Page() {
-  const optionTable = useTable();
-  const optionInfo = useInfo();
-  const optionForm = useForm();
+  const useOptionsTable = useTable();
+  const useOptionsInfo = useInfo();
+  const { navDetail } = useNav();
 
   const pageButton = [
     <Button
-      key="create-button"
-      label="Tạo mới"
-      icon={<PlusOutlined />}
-      onClick={() => {
-        optionForm.setTitle("Tạo tùy chọn");
-        optionForm.setInitialValues({});
-        optionForm.open();
+      key="refresh-button"
+      icon={<SyncOutlined />}
+      label="Tải lại"
+      color="default"
+      variant="filled"
+      onClick={() => useOptionsTable.reload()}
+    />,
+    <OptionsFormCreate
+      key="create-form"
+      fields={OptionsFields()}
+      initialValues={{ option_color: "default" }}
+      onFormSubmitSuccess={(result) => {
+        useOptionsInfo.close();
+        navDetail(result?.data[0]?.id);
       }}
+      title="Tạo tùy chọn"
+      trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
     />,
   ];
 
   const pageContent = (
     <ProCard boxShadow>
       <OptionsTable
-        tableHook={optionTable}
+        tableHook={useOptionsTable}
         columns={OptionsColumns()}
         leftColumns={[
           {
@@ -49,8 +61,8 @@ export default function Page() {
                 icon={<InfoCircleOutlined />}
                 variant="link"
                 onClick={() => {
-                  optionInfo.setDataSource(record);
-                  optionInfo.open();
+                  useOptionsInfo.setDataSource(record);
+                  useOptionsInfo.open();
                 }}
               />
             ),
@@ -62,14 +74,10 @@ export default function Page() {
             align: "center",
             search: false,
             render: (_, record) => (
-              <Button
-                icon={<EditOutlined />}
+              <DetailButton
+                icon={<EyeOutlined />}
                 variant="link"
-                onClick={() => {
-                  optionForm.setTitle("Sửa tùy chọn");
-                  optionForm.setInitialValues(record);
-                  optionForm.open();
-                }}
+                id={record?.id}
               />
             ),
             responsive: ["md"],
@@ -77,31 +85,20 @@ export default function Page() {
         ]}
       />
       <OptionsInfo
-        infoHook={optionInfo}
+        infoHook={useOptionsInfo}
         columns={OptionsColumns()}
-        dataSource={optionInfo.dataSource}
+        dataSource={useOptionsInfo.dataSource}
         drawerProps={{
           title: "Thông tin tùy chọn",
-          footer: [
-            <Button
-              key="edit-button"
-              label="Sửa"
-              onClick={() => {
-                optionInfo.close();
-                optionForm.setTitle("Sửa tùy chọn");
-                optionForm.setInitialValues(optionInfo.dataSource);
-                optionForm.open();
-              }}
+          extra: [
+            <DetailButton
+              key="detail-button"
+              label="Xem chi tiết"
+              variant="filled"
+              id={useOptionsInfo?.dataSource?.id}
             />,
           ],
         }}
-      />
-      <OptionsForm
-        formHook={optionForm}
-        fields={OptionsFields()}
-        onFormSubmitSuccess={() => optionTable.reload()}
-        initialValues={optionForm.initialValues}
-        title={optionForm.title}
       />
     </ProCard>
   );

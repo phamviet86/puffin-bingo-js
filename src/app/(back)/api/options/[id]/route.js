@@ -1,3 +1,5 @@
+// path: @/app/(back)/api/options/[id]/route.js
+
 import {
   getOption,
   updateOption,

@@ -14,6 +14,7 @@ description: "Tạo schema và component files hoàn chỉnh cho hệ thống CR
 - Đường dẫn và cấu trúc
 
   - File: `/src/component/custom/{tableName}/{tableName}-schema.js`
+  - **Bắt buộc**: Thêm comment đường dẫn ở đầu file: `// path: @/component/custom/{tableName}/{tableName}-schema.js`
   - Export 2 functions: `{TableName}Columns` và `{TableName}Fields`
 
 - Mapping SQL data types
@@ -39,20 +40,34 @@ description: "Tạo schema và component files hoàn chỉnh cho hệ thống CR
 - Đường dẫn và cấu trúc
 
   - File: `/src/component/custom/{tableName}/{tableName}-component.js`
-  - Export 3 functions: `{TableName}Table`, `{TableName}Info`, `{TableName}Form`
+  - **Bắt buộc**: Thêm comment đường dẫn ở đầu file: `// path: @/component/custom/{tableName}/{tableName}-component.js`
+  - Export 5 functions: `{TableName}Table`, `{TableName}Info`, `{TableName}Desc`, `{TableName}FormCreate`, `{TableName}FormEdit`
 
 - Import statements cố định
 
 ```javascript
-import { ProTable, DrawerForm, DrawerInfo } from "@/component/common";
-import { fetchList, fetchPost } from "@/lib/util/fetch-util";
+import {
+  ProTable,
+  DrawerForm,
+  DrawerInfo,
+  ProDescriptions,
+} from "@/component/common";
+import {
+  fetchList,
+  fetchPost,
+  fetchGet,
+  fetchPut,
+  fetchDelete,
+} from "@/lib/util/fetch-util";
 ```
 
 - Component patterns
 
-  - Table: Sử dụng `ProTable` với `onDataRequest` callback
-  - Form: Sử dụng `DrawerForm` với `onDataSubmit` callback
+  - Table: Sử dụng `ProTable` với `onTableRequest` callback
   - Info: Sử dụng `DrawerInfo` làm wrapper
+  - Desc: Sử dụng `ProDescriptions` cho hiển thị chi tiết
+  - FormCreate: Sử dụng `DrawerForm` với `onFormSubmit` callback
+  - FormEdit: Sử dụng `DrawerForm` với `onFormRequest`, `onFormSubmit`, và `onFormDelete` callbacks
   - Props spreading: Tất cả components phải spread `{...props}`
 
 - API endpoint format
@@ -77,8 +92,10 @@ import { fetchList, fetchPost } from "@/lib/util/fetch-util";
 
 - Bước 2: Tạo Component File
   - Tạo `{TableName}Table` với ProTable và API endpoint
-  - Tạo `{TableName}Form` với DrawerForm và submit handler
   - Tạo `{TableName}Info` với DrawerInfo wrapper
+  - Tạo `{TableName}Desc` với ProDescriptions cho hiển thị chi tiết
+  - Tạo `{TableName}FormCreate` với DrawerForm và submit handler
+  - Tạo `{TableName}FormEdit` với DrawerForm và handlers đầy đủ
 
 ## 5. Ví dụ code mẫu
 
@@ -187,7 +204,12 @@ export function OptionsFields() {
 ```javascript
 // path: @/component/custom/options/options-component.js
 
-import { ProTable, DrawerForm, DrawerInfo } from "@/component/common";
+import {
+  ProTable,
+  DrawerForm,
+  DrawerInfo,
+  ProDescriptions,
+} from "@/component/common";
 import { fetchList, fetchPost } from "@/lib/util/fetch-util";
 
 export function OptionsTable(props) {
@@ -201,7 +223,15 @@ export function OptionsTable(props) {
   );
 }
 
-export function OptionsForm(props) {
+export function OptionsInfo(props) {
+  return <DrawerInfo {...props} />;
+}
+
+export function OptionsDesc(props) {
+  return <ProDescriptions {...props} />;
+}
+
+export function OptionsFormCreate(props) {
   return (
     <DrawerForm
       {...props}
@@ -210,7 +240,14 @@ export function OptionsForm(props) {
   );
 }
 
-export function OptionsInfo(props) {
-  return <DrawerInfo {...props} />;
+export function OptionsFormEdit({ id, ...props }) {
+  return (
+    <DrawerForm
+      {...props}
+      onFormRequest={() => fetchGet(`/api/options/${id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
+      onFormDelete={() => fetchDelete(`/api/options/${id}`)}
+    />
+  );
 }
 ```

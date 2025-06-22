@@ -1,8 +1,6 @@
-import {
-  getOptions,
-  createOption,
-  updateOption,
-} from "@/service/options-service";
+// path: @/app/(back)/api/options/route.js
+
+import { getOptions, createOption } from "@/service/options-service";
 import { buildApiResponse, handleData } from "@/lib/util/response-util";
 
 export async function GET(request) {
@@ -22,7 +20,6 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const {
-      id = null,
       option_table,
       option_column,
       option_label,
@@ -42,26 +39,12 @@ export async function POST(request) {
       option_group,
     };
 
-    let result;
-    let message;
-    let statusCode;
-
-    if (id !== null) {
-      // Update existing option
-      result = await updateOption(data, id);
-      message = "Cập nhật tùy chọn thành công.";
-      statusCode = 200;
-    } else {
-      // Create new option
-      result = await createOption(data);
-      message = "Tạo tùy chọn thành công.";
-      statusCode = 201;
-    }
+    const result = await createOption(data);
 
     if (!result || !result.length)
       return buildApiResponse(500, false, "Không thể thực hiện thao tác.");
 
-    return buildApiResponse(statusCode, true, message, {
+    return buildApiResponse(201, true, "Tạo tùy chọn thành công.", {
       data: result,
     });
   } catch (error) {

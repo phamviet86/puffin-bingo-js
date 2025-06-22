@@ -6,58 +6,58 @@ description: "Tạo file service JavaScript hoàn chỉnh với các thao tác C
 ## Yêu cầu
 
 - Tạo file service từ định nghĩa bảng SQL:
-
-  - Tên file: `{table-name}-service.js` (kebab-case, vd: `options-service.js`) trong thư mục [service](../../src/service)
-  - Tên bảng là số nhiều của đối tượng (vd: options)
+  - File: `/src/service/{table-name}-service.js` (kebab-case, vd: `options-service.js`)
+  - **Bắt buộc**: Thêm comment đường dẫn ở đầu file: `// path: @/service/{table-name}-service.js`
   - Export đúng 5 hàm CRUD với quy tắc đặt tên:
-    - getOptions: lấy tất cả (số nhiều)
-    - getOption: lấy một bản ghi (số ít)
-    - createOption: tạo mới (số ít)
-    - updateOption: cập nhật (số ít)
-    - deleteOption: xoá mềm (số ít)
+    - `get{TableNames}`: lấy tất cả (số nhiều)
+    - `get{TableName}`: lấy một bản ghi (số ít)
+    - `create{TableName}`: tạo mới (số ít)
+    - `update{TableName}`: cập nhật (số ít)
+    - `delete{TableName}`: xoá mềm (số ít)
 
-- Mỗi hàm CRUD cần:
+## 1. Function Requirements
 
-  - GET All: Lấy tất cả bản ghi với phân trang, lọc, sắp xếp (getOptions)
-  - GET Single: Lấy một bản ghi theo ID (getOption)
-  - POST: Tạo bản ghi mới (createOption)
-  - PUT: Cập nhật bản ghi (updateOption)
-  - DELETE: Xoá mềm bản ghi (deleteOption)
+- **GET All**: Lấy tất cả bản ghi với phân trang, lọc, sắp xếp
+- **GET Single**: Lấy một bản ghi theo ID
+- **POST**: Tạo bản ghi mới
+- **PUT**: Cập nhật bản ghi
+- **DELETE**: Xoá mềm bản ghi
 
-- Quy tắc code:
+## 2. Code Standards
 
-  - Import từ kết nối database và tiện ích truy vấn
-  - Xử lý lỗi với try-catch, throw new Error(error.message)
-  - Xoá mềm với điều kiện `deleted_at IS NULL`
-  - Chống SQL injection bằng tagged template literals
-  - Phân trang, lọc, sắp xếp dùng parseSearchParams
-  - Truy vấn SELECT: loại bỏ `created_at`, `deleted_at`, thêm `COUNT(*) OVER() AS total` cho getAll
-  - Truy vấn INSERT/UPDATE: dùng RETURNING với các cột nghiệp vụ
-  - Truy vấn DELETE: cập nhật `deleted_at = NOW()`
+- **Imports**: `neonDB` từ database connection và `parseSearchParams` từ query utility
+- **Error Handling**: try-catch với `throw new Error(error.message)`
+- **Soft Delete**: điều kiện `deleted_at IS NULL`
+- **Security**: chống SQL injection bằng tagged template literals
+- **Query Structure**:
+  - SELECT: loại bỏ `created_at`, `deleted_at`, thêm `COUNT(*) OVER() AS total` cho getAll
+  - INSERT/UPDATE: dùng RETURNING với các cột nghiệp vụ
+  - DELETE: cập nhật `deleted_at = NOW()`
   - ORDER BY mặc định: `ORDER BY created_at` nếu không có orderByClause
 
-- Quy tắc đặt tên và kiểu dữ liệu:
+## 3. Database Connection Patterns
 
-  - Tên hàm: camelCase bắt đầu bằng động từ
-  - Tên bảng PascalCase trong tên hàm, số nhiều cho getAll, số ít cho các hàm khác
-  - Object key truyền vào: snake_case nếu map với cột DB
+- **Initialization**: `const sql = neonDB();`
+- **Get All**: `sql.query(sqlText, sqlValue)` với template string và mảng giá trị
+- **Other functions**: tagged template literals `sql\`query\`` với biến nội suy
 
-- Mẫu kết nối database:
+## 4. Search Parameters Pattern
 
-  - Khởi tạo: `const sql = neonDB();`
-  - Get All: `sql.query(sqlText, sqlValue)` với template string và mảng giá trị
-  - Các hàm khác: tagged template literals `sql\`query\`` với biến nội suy
+- Khai báo: `const ignoredSearchColumns = [];`
+- Destructure: `{ whereClause, orderByClause, limitClause, queryValues }`
+- Copy values: `const sqlValue = [...queryValues];`
 
-- Mẫu parseSearchParams:
+## 5. Naming Conventions
 
-  - Khai báo `const ignoredSearchColumns = [];`
-  - Destructure: `{ whereClause, orderByClause, limitClause, queryValues }`
-  - Sao chép queryValues: `const sqlValue = [...queryValues];`
+- **Function names**: camelCase bắt đầu bằng động từ
+- **Table names**: PascalCase trong tên hàm, số nhiều cho getAll, số ít cho các hàm khác
+- **Object keys**: snake_case nếu map với cột DB
 
-- Format SQL:
-  - Thứ tự tham số nhất quán
-  - Xuống dòng, thụt lề rõ ràng
-  - Luôn kết thúc câu lệnh SQL bằng dấu chấm phẩy
+## 6. SQL Formatting
+
+- Thứ tự tham số nhất quán
+- Xuống dòng, thụt lề rõ ràng
+- Luôn kết thúc câu lệnh SQL bằng dấu chấm phẩy
 
 ## Ví dụ
 

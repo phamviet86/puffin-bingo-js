@@ -8,52 +8,56 @@ description: "Tạo file route API hoàn chỉnh cho service với các thao tá
 - Tạo 2 file route API:
   - `route.js` trong thư mục `/src/app/(back)/api/{tableName}` cho các thao tác lấy danh sách/tạo mới (GET/POST)
   - `[id]/route.js` trong thư mục `/src/app/(back)/api/{tableName}/[id]` cho các thao tác chi tiết/cập nhật/xóa (GET/PUT/DELETE)
-- Các handler cần có:
+- **Bắt buộc**: Thêm comment đường dẫn ở đầu mỗi file:
+  - `// path: @/app/(back)/api/{tableName}/route.js`
+  - `// path: @/app/(back)/api/{tableName}/[id]/route.js`
+- Export các handler:
   - GET: Lấy tất cả bản ghi (route.js) hoặc 1 bản ghi theo id ([id]/route.js)
-  - POST: Tạo mới hoặc cập nhật nếu có id (upsert) - chỉ ở route.js
+  - POST: Tạo mới bản ghi - chỉ ở route.js
   - PUT: Cập nhật bản ghi theo id - chỉ ở [id]/route.js
   - DELETE: Xóa mềm bản ghi theo id - chỉ ở [id]/route.js
-- Tuân thủ các pattern dự án:
-  - Import các hàm từ file service tương ứng
-  - Xử lý lỗi với try/catch
-  - Validate input dựa trên các trường NOT NULL trong SQL
-  - Định dạng response bằng các hàm helper
-  - Lấy tham số từ body request hoặc URL (params/query)
+
+## 1. Import Requirements
+
+- Import các hàm từ file service tương ứng
+- Import `buildApiResponse`, `handleData` từ response utility
+- Pattern import service: `import { get{TableNames}, get{TableName}, create{TableName}, update{TableName}, delete{TableName} } from "@/service/{table-name}-service"`
+
+## 2. Response Standards
+
+- Validate input dựa trên các trường NOT NULL trong SQL
+- Xử lý lỗi với try/catch
 - Trả về mã lỗi phù hợp:
   - 400: Thiếu tham số bắt buộc
   - 404: Không tìm thấy hoặc đã bị xóa
   - 500: Lỗi server hoặc thao tác thất bại
-- Quy tắc về file service và hàm CRUD:
-  - Tên bảng là số nhiều của đối tượng (ví dụ: options)
-  - Mỗi bảng có một file service đặt tại `/src/service/{table-name}-service.js` (kebab-case, ví dụ: `options-service.js`).
-  - File service export đúng 5 hàm:
-    - getoptions: lấy tất cả bản ghi (danh sách, số nhiều)
-    - getOption: lấy một bản ghi (số ít)
-    - createOption: tạo mới (số ít)
-    - updateOption: cập nhật (số ít)
-    - deleteOption: xoá mềm (số ít)
-  - Khi sử dụng trong route, luôn import như sau (ví dụ với bảng options):
-    - `import { getoptions, getOption, createOption, updateOption, deleteOption } from "@/service/options-service"`
-- Đặt tên biến, hàm, key theo quy ước:
-  - camelCase cho biến, tên hàm (vd: userId, getUser)
-  - snake_case cho key dữ liệu map với cột DB (vd: { section_id, lesson_id })
-  - PascalCase cho class/component
-  - UPPER_CASE_SNAKE cho hằng số, biến môi trường
-  - kebab-case cho tên file
-- Lấy tham số:
-  - Query string cho GET danh sách
-  - Body cho POST/PUT (bao gồm id nếu upsert)
-  - context.params cho các route [id]
+- Thông báo lỗi bằng tiếng Việt
+
+## 3. Parameter Handling
+
+- **Query string**: cho GET danh sách
+- **Body**: cho POST/PUT (bao gồm id nếu upsert)
+- **context.params**: cho các route [id]
+
+## 4. Service Integration
+
 - Kiểm tra kết quả service:
-  - Dùng `if (!result || !result.length)` cho getById, create, update, delete
-  - Dùng `handleData(result)` và destructure `{ data, total }` cho getAll
+  - `if (!result || !result.length)` cho getById, create, update, delete
+  - `handleData(result)` và destructure `{ data, total }` cho getAll
   - Trả về 404 nếu không tìm thấy
   - Trả về 500 nếu thao tác thất bại
-- Logic POST:
-  - Nếu có id: gọi update, trả về 200
-  - Nếu không có id: gọi create, trả về 201
-  - Dùng message tiếng Việt phù hợp
-- Thông báo lỗi trả về bằng tiếng Việt trong response
+
+## 5. POST Logic (Create Only)
+
+- Chỉ cho phép tạo mới bản ghi (không có logic upsert)
+- Trả về 201 khi tạo thành công
+- Message tiếng Việt phù hợp
+
+## 6. Error Handling
+
+- Try-catch cho tất cả handlers
+- Thông báo lỗi trả về bằng tiếng Việt
+- Status codes theo chuẩn HTTP
 
 ## Ví dụ code mẫu
 
@@ -82,11 +86,9 @@ UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ### Output (`route.js`)
 
 ```javascript
-import {
-  getOptions,
-  createOption,
-  updateOption,
-} from "@/service/options-service";
+// path: @/app/(back)/api/options/route.js
+
+import { getOptions, createOption } from "@/service/options-service";
 import { buildApiResponse, handleData } from "@/lib/util/response-util";
 
 export async function GET(request) {
@@ -106,7 +108,6 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const {
-      id = null,
       option_table,
       option_column,
       option_label,
@@ -114,7 +115,7 @@ export async function POST(request) {
       option_group = null,
     } = await request.json();
 
-    // Validate required fields (dựa vào NOT NULL trong SQL)
+    // Validate required fields (based on NOT NULL constraints in SQL)
     if (!option_table || !option_column || !option_label)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
@@ -126,26 +127,12 @@ export async function POST(request) {
       option_group,
     };
 
-    let result;
-    let message;
-    let statusCode;
-
-    if (id !== null) {
-      // Update option
-      result = await updateOption(data, id);
-      message = "Cập nhật tùy chọn thành công.";
-      statusCode = 200;
-    } else {
-      // Create option
-      result = await createOption(data);
-      message = "Tạo tùy chọn thành công.";
-      statusCode = 201;
-    }
+    const result = await createOption(data);
 
     if (!result || !result.length)
       return buildApiResponse(500, false, "Không thể thực hiện thao tác.");
 
-    return buildApiResponse(statusCode, true, message, {
+    return buildApiResponse(201, true, "Tạo tùy chọn thành công.", {
       data: result,
     });
   } catch (error) {
@@ -157,6 +144,8 @@ export async function POST(request) {
 ### Output (`[id]/route.js`)
 
 ```javascript
+// path: @/app/(back)/api/options/[id]/route.js
+
 import {
   getOption,
   updateOption,
