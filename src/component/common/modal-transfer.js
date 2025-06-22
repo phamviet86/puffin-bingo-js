@@ -1,60 +1,196 @@
 // path: @/component/common/modal-transfer.js
 
-import { useCallback } from "react";
-import { message, Drawer } from "antd";
-import { ProDescriptions } from "@ant-design/pro-components";
-import { INFO_CONFIG, DRAWER_CONFIG } from "@/component/config";
+import { useState, useEffect, useCallback } from "react";
+import { message, Modal, Transfer as AntTransfer } from "antd";
+import { MODAL_CONFIG } from "@/component/config";
 
 export function ModalTransfer({
-  infoRequest = undefined,
-  infoRequestError = undefined,
-  infoRequestSuccess = undefined,
-  infoHook = {},
-  drawerProps = {},
+  onSourceRequest = undefined,
+  onSourceParams = undefined,
+  onSourceItem = undefined,
+  onTargetRequest = undefined,
+  onTargetParams = undefined,
+  onTargetItem = undefined,
+  onAddTarget = undefined,
+  onTransferClose = undefined,
+  onRemoveTarget = undefined,
+  listStyle = undefined,
+  rowKey = (item) => item.key,
+  render = (item) => item.title,
+  modalProps = {},
   ...props
 }) {
-  const { infoRef, visible, close } = infoHook;
+  const { visible, close } = transferHook;
+  const [dataSource, setDataSource] = useState([]);
+  const [targetKeys, setTargetKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
 
   // Handlers
-  const handleDataRequest = useCallback(
-    async (params) => {
-      if (!infoRequest) {
-        messageApi.error("Data request handler not provided");
-        return false;
-      }
+  const handleClose = useCallback(() => {
+    close();
+    onTransferClose?.();
+  }, [close, onTransferClose]);
 
+  const handleSourceRequest = useCallback(
+    async (onSourceParams) => {
+      if (!onSourceRequest) {
+        messageApi.error("Data request handler not provided");
+        return [];
+      }
       try {
-        const result = await infoRequest(params);
-        // result: { success, message, data: array }
-        infoRequestSuccess?.(result);
-        return { success: true, data: result?.data?.[0] || {} };
+        const result = await onSourceRequest(onSourceParams);
+        if (onSourceItem) {
+          return convertTransferItems(result.data || [], onSourceItem);
+        }
+        return result.data || [];
       } catch (error) {
-        messageApi.error(error?.message || "Đã xảy ra lỗi");
-        infoRequestError?.(error);
-        return false;
+        messageApi.error(error.message || "Đã xảy ra lỗi");
+        return [];
       }
     },
-    [infoRequest, infoRequestSuccess, infoRequestError, messageApi]
+    [onSourceRequest, onSourceItem, messageApi]
   );
+
+  const handleTargetRequest = useCallback(
+    async (onTargetParams) => {
+      if (!onTargetRequest) {
+        messageApi.error("Data request handler not provided");
+        return [];
+      }
+      try {
+        const result = await onTargetRequest(onTargetParams);
+        if (onTargetItem) {
+          return convertTransferItems(result.data || [], onTargetItem);
+        }
+        return result.data || [];
+      } catch (error) {
+        messageApi.error(error.message || "Đã xảy ra lỗi");
+        return [];
+      }
+    },
+    [onTargetRequest, onTargetItem, messageApi]
+  );
+
+  // Reload data function
+  const reloadData = useCallback(async () => {
+    try {
+      const [source, target] = await Promise.all([
+        handleSourceRequest(onSourceParams),
+        handleTargetRequest(onTargetParams),
+      ]);
+
+      // Merge source and target data to ensure all items are available
+      const allItems = [...source, ...target];
+      // Remove duplicates based on key
+      const uniqueItems = allItems.filter(
+        (item, index, self) =>
+          index === self.findIndex((t) => t.key === item.key)
+      );
+
+      setDataSource(uniqueItems);
+      setTargetKeys(target.map((item) => item.key));
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
+    }
+  }, [
+    onSourceParams,
+    onTargetParams,
+    messageApi,
+    handleSourceRequest,
+    handleTargetRequest,
+  ]);
+
+  const handleAddTarget = useCallback(
+    async (keys) => {
+      if (!onAddTarget) {
+        messageApi.error("Data add handler not provided");
+        return;
+      }
+      try {
+        const result = await onAddTarget(keys);
+        if (result?.success) {
+          messageApi.success(result?.message || "Thêm thành công");
+          await reloadData();
+        } else {
+          messageApi.error(result?.message || "Đã xảy ra lỗi");
+        }
+      } catch (error) {
+        messageApi.error(error.message || "Đã xảy ra lỗi");
+      }
+    },
+    [onAddTarget, messageApi, reloadData]
+  );
+
+  const handleRemoveTarget = useCallback(
+    async (keys) => {
+      if (!onRemoveTarget) {
+        messageApi.error("Data remove handler not provided");
+        return;
+      }
+      try {
+        const result = await onRemoveTarget(keys);
+        if (result?.success) {
+          messageApi.success(result?.message || "Xóa thành công");
+          await reloadData();
+        } else {
+          messageApi.error(result?.message || "Đã xảy ra lỗi");
+        }
+      } catch (error) {
+        messageApi.error(error.message || "Đã xảy ra lỗi");
+      }
+    },
+    [onRemoveTarget, messageApi, reloadData]
+  );
+
+  // Khi chuyển record (sang phải/trái)
+  const handleChange = useCallback(
+    async (_, direction, moveKeys) => {
+      if (direction === "right") {
+        await handleAddTarget(moveKeys);
+      } else {
+        await handleRemoveTarget(moveKeys);
+      }
+    },
+    [handleAddTarget, handleRemoveTarget]
+  );
+
+  const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+  };
+
+  // Fetch data khi mount
+  useEffect(() => {
+    reloadData();
+  }, [reloadData]);
 
   // Render the component
   return (
     <>
       {contextHolder}
-      <Drawer
-        {...drawerProps}
-        {...DRAWER_CONFIG}
+      <Modal
+        {...modalProps}
+        {...MODAL_CONFIG}
         open={visible}
-        onClose={close}
+        onOk={handleClose}
+        onCancel={handleClose}
+        footer={false}
       >
-        <ProDescriptions
-          {...props}
-          {...INFO_CONFIG}
-          actionRef={infoRef}
-          request={infoRequest ? handleDataRequest : undefined}
-        />
-      </Drawer>
+        <div className={styles.remoteTransfer}>
+          <AntTransfer
+            {...props}
+            direction="vertical"
+            dataSource={dataSource}
+            targetKeys={targetKeys}
+            selectedKeys={selectedKeys}
+            onChange={handleChange}
+            onSelectChange={handleSelectChange}
+            rowKey={rowKey}
+            render={render}
+            listStyle={listStyle}
+          />
+        </div>
+      </Modal>
     </>
   );
 }
