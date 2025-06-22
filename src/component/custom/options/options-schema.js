@@ -76,7 +76,7 @@ export function OptionsFields() {
         name="option_color"
         label="Màu Sắc"
         placeholder="Chọn màu sắc"
-        options={COLOR_ENUM}
+        valueEnum={COLOR_ENUM}
       />
       <ProFormText
         name="option_group"

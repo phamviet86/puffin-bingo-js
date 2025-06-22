@@ -3,12 +3,13 @@
 import { useCallback } from "react";
 import { message, Drawer } from "antd";
 import { ProDescriptions } from "@ant-design/pro-components";
-import { INFO_CONFIG, DRAWER_CONFIG } from "@/component/config";
+import { DRAWER_CONFIG } from "@/component/config";
 
 export function DrawerInfo({
   onInfoRequest = undefined,
   onInfoRequestError = undefined,
   onInfoRequestSuccess = undefined,
+  column = 1,
   infoHook = {},
   drawerProps = {},
   ...props
@@ -50,9 +51,9 @@ export function DrawerInfo({
       >
         <ProDescriptions
           {...props}
-          {...INFO_CONFIG}
           actionRef={infoRef}
           request={onInfoRequest ? handleDataRequest : undefined}
+          column={column}
         />
       </Drawer>
     </>

@@ -2,14 +2,15 @@
 
 ## Upcoming Tasks
 
-- [ ] add modal-transfer component
-- [ ] add detail page for every page
+## 2025-06-22
+
+- [x] add modal-transfer component
+- [ ] add options pages (list, detail)
+- [ ] add prompt page-list
 - [ ] add prompt page-detail
 - [ ] add info-sample (with remote data)
 - [ ] add desc-sample (with remote data)
 - [ ] add provider-sample for page
-- [ ] add options pages (list, detail)
-- [ ] should use card instead of procard ?
 
 ## 2025-06-21
 
