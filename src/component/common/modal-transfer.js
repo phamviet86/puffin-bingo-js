@@ -1,14 +1,14 @@
-// path: @/component/common/drawer-info.js
+// path: @/component/common/modal-transfer.js
 
 import { useCallback } from "react";
 import { message, Drawer } from "antd";
 import { ProDescriptions } from "@ant-design/pro-components";
 import { INFO_CONFIG, DRAWER_CONFIG } from "@/component/config";
 
-export function DrawerInfo({
-  onInfoRequest = undefined,
-  onInfoRequestError = undefined,
-  onInfoRequestSuccess = undefined,
+export function ModalTransfer({
+  infoRequest = undefined,
+  infoRequestError = undefined,
+  infoRequestSuccess = undefined,
   infoHook = {},
   drawerProps = {},
   ...props
@@ -19,23 +19,23 @@ export function DrawerInfo({
   // Handlers
   const handleDataRequest = useCallback(
     async (params) => {
-      if (!onInfoRequest) {
+      if (!infoRequest) {
         messageApi.error("Data request handler not provided");
         return false;
       }
 
       try {
-        const result = await onInfoRequest(params);
+        const result = await infoRequest(params);
         // result: { success, message, data: array }
-        onInfoRequestSuccess?.(result);
+        infoRequestSuccess?.(result);
         return { success: true, data: result?.data?.[0] || {} };
       } catch (error) {
         messageApi.error(error?.message || "Đã xảy ra lỗi");
-        onInfoRequestError?.(error);
+        infoRequestError?.(error);
         return false;
       }
     },
-    [onInfoRequest, onInfoRequestSuccess, onInfoRequestError, messageApi]
+    [infoRequest, infoRequestSuccess, infoRequestError, messageApi]
   );
 
   // Render the component
@@ -52,7 +52,7 @@ export function DrawerInfo({
           {...props}
           {...INFO_CONFIG}
           actionRef={infoRef}
-          request={onInfoRequest ? handleDataRequest : undefined}
+          request={infoRequest ? handleDataRequest : undefined}
         />
       </Drawer>
     </>

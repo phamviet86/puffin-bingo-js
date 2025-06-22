@@ -5,9 +5,9 @@ import { message } from "antd";
 import { ProDescriptions as AntProDescriptions } from "@ant-design/pro-components";
 
 export function ProDescriptions({
-  descRequest = undefined,
-  descRequestError = undefined,
-  descRequestSuccess = undefined,
+  onDescRequest = undefined,
+  onDescRequestError = undefined,
+  onDescRequestSuccess = undefined,
   column = { xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 },
   descHook = {},
   ...props
@@ -18,23 +18,23 @@ export function ProDescriptions({
   // Handlers
   const handleDataRequest = useCallback(
     async (params) => {
-      if (!descRequest) {
+      if (!onDescRequest) {
         messageApi.error("Data request handler not provided");
         return false;
       }
 
       try {
-        const result = await descRequest(params);
+        const result = await onDescRequest(params);
         // result: { success, message, data: array }
-        descRequestSuccess?.(result);
+        onDescRequestSuccess?.(result);
         return { success: true, data: result?.data?.[0] || {} };
       } catch (error) {
         messageApi.error(error?.message || "Đã xảy ra lỗi");
-        descRequestError?.(error);
+        onDescRequestError?.(error);
         return false;
       }
     },
-    [descRequest, descRequestSuccess, descRequestError, messageApi]
+    [onDescRequest, onDescRequestSuccess, onDescRequestError, messageApi]
   );
 
   // Render the component
@@ -44,7 +44,7 @@ export function ProDescriptions({
       <AntProDescriptions
         {...props}
         actionRef={descRef}
-        request={descRequest ? handleDataRequest : undefined}
+        request={onDescRequest ? handleDataRequest : undefined}
         column={column}
       />
     </>

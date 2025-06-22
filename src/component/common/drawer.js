@@ -6,12 +6,12 @@ import { Button } from "@/component/common";
 import { DRAWER_CONFIG } from "@/component/config";
 
 export function Drawer({
-  drawerOk = undefined,
-  drawerOkError = undefined,
-  drawerOkSuccess = undefined,
-  drawerCancel = undefined,
-  drawerCancelError = undefined,
-  drawerCancelSuccess = undefined,
+  onDrawerOk = undefined,
+  onDrawerOkError = undefined,
+  onDrawerOkSuccess = undefined,
+  onDrawerCancel = undefined,
+  onDrawerCancelError = undefined,
+  onDrawerCancelSuccess = undefined,
   showOkMessage = false,
   showCancelMessage = false,
   trigger = undefined,
@@ -32,56 +32,56 @@ export function Drawer({
   }, []);
 
   const handleOk = useCallback(async () => {
-    if (!drawerOk) {
+    if (!onDrawerOk) {
       messageApi.error("OK handler not provided");
       return false;
     }
 
     try {
-      const result = await drawerOk();
+      const result = await onDrawerOk();
       closeDrawer();
       if (showOkMessage && result?.message) {
         messageApi.success(result.message);
       }
-      drawerOkSuccess?.(result);
+      onDrawerOkSuccess?.(result);
       return result || true;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      drawerOkError?.(error);
+      onDrawerOkError?.(error);
       return false;
     }
   }, [
-    drawerOk,
-    drawerOkSuccess,
-    drawerOkError,
+    onDrawerOk,
+    onDrawerOkSuccess,
+    onDrawerOkError,
     showOkMessage,
     messageApi,
     closeDrawer,
   ]);
 
   const handleCancel = useCallback(async () => {
-    if (!drawerCancel) {
+    if (!onDrawerCancel) {
       closeDrawer();
       return false;
     }
 
     try {
-      const result = await drawerCancel();
+      const result = await onDrawerCancel();
       closeDrawer();
       if (showCancelMessage && result?.message) {
         messageApi.warning(result.message);
       }
-      drawerCancelSuccess?.(result);
+      onDrawerCancelSuccess?.(result);
       return result || false;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      drawerCancelError?.(error);
+      onDrawerCancelError?.(error);
       return false;
     }
   }, [
-    drawerCancel,
-    drawerCancelSuccess,
-    drawerCancelError,
+    onDrawerCancel,
+    onDrawerCancelSuccess,
+    onDrawerCancelError,
     showCancelMessage,
     messageApi,
     closeDrawer,

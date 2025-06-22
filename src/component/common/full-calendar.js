@@ -18,9 +18,9 @@ function getBreakpoint(screens) {
 }
 
 export function FullCalendar({
-  calendarRequest = undefined,
-  calendarRequestError = undefined,
-  calendarRequestSuccess = undefined,
+  onCalendarRequest = undefined,
+  onCalendarRequestError = undefined,
+  onCalendarRequestSuccess = undefined,
   calendarItem = undefined,
   plugins = [],
   height = "auto",
@@ -52,7 +52,7 @@ export function FullCalendar({
   // Handlers
   const handleDataRequest = useCallback(
     async (requestParams = {}) => {
-      if (!calendarRequest) {
+      if (!onCalendarRequest) {
         messageApi.error("Data request handler not provided");
         return;
       }
@@ -63,7 +63,7 @@ export function FullCalendar({
       }
 
       try {
-        const result = await calendarRequest(requestParams);
+        const result = await onCalendarRequest(requestParams);
         let finalEvents = [];
 
         if (calendarItem) {
@@ -73,19 +73,19 @@ export function FullCalendar({
         }
 
         setCalendarEvents(finalEvents);
-        calendarRequestSuccess?.(result);
+        onCalendarRequestSuccess?.(result);
       } catch (error) {
         messageApi.error(error?.message || "Đã xảy ra lỗi");
-        calendarRequestError?.(error);
+        onCalendarRequestError?.(error);
         setCalendarEvents([]);
       } finally {
         setLoading(false);
       }
     },
     [
-      calendarRequest,
-      calendarRequestSuccess,
-      calendarRequestError,
+      onCalendarRequest,
+      onCalendarRequestSuccess,
+      onCalendarRequestError,
       calendarItem,
       messageApi,
       setLoading,
@@ -133,13 +133,20 @@ export function FullCalendar({
 
   // Handle data request on component mount and when dates or loading state change
   useEffect(() => {
-    if (calendarRequest && startDate && endDate && loading) {
+    if (onCalendarRequest && startDate && endDate && loading) {
       // Process params here, removing current and pageSize
       const { current, pageSize, ...processedParams } = params;
 
       handleDataRequest(processedParams);
     }
-  }, [handleDataRequest, calendarRequest, startDate, endDate, loading, params]);
+  }, [
+    handleDataRequest,
+    onCalendarRequest,
+    startDate,
+    endDate,
+    loading,
+    params,
+  ]);
 
   // Return the component
   return (

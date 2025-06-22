@@ -6,9 +6,9 @@ import { ProTable as AntProTable } from "@ant-design/pro-components";
 import { TABLE_CONFIG } from "@/component/config";
 
 export function ProTable({
-  tableRequest = undefined,
-  tableRequestError = undefined,
-  tableRequestSuccess = undefined,
+  onTableRequest = undefined,
+  onTableRequestError = undefined,
+  onTableRequestSuccess = undefined,
   onRowsSelect = undefined,
   onRowsSelectError = undefined,
   onRowClick = undefined,
@@ -29,27 +29,27 @@ export function ProTable({
   // Handlers
   const handleDataRequest = useCallback(
     async (params, sort, filter) => {
-      if (!tableRequest) {
+      if (!onTableRequest) {
         messageApi.error("Data request handler not provided");
         return false;
       }
 
       try {
-        const result = await tableRequest(params, sort, filter);
+        const result = await onTableRequest(params, sort, filter);
         // result: { success, message , data: array, total }
         setParams(params);
-        tableRequestSuccess?.(result);
+        onTableRequestSuccess?.(result);
         return result;
       } catch (error) {
         messageApi.error(error?.message || "Đã xảy ra lỗi");
-        tableRequestError?.(error);
+        onTableRequestError?.(error);
         return false;
       }
     },
     [
-      tableRequest,
-      tableRequestSuccess,
-      tableRequestError,
+      onTableRequest,
+      onTableRequestSuccess,
+      onTableRequestError,
       messageApi,
       setParams,
     ]
@@ -95,7 +95,7 @@ export function ProTable({
         {...props}
         actionRef={tableRef}
         columns={[...leftColumns, ...columns, ...rightColumns]}
-        request={tableRequest ? handleDataRequest : undefined}
+        request={onTableRequest ? handleDataRequest : undefined}
         rowSelection={
           onRowsSelect
             ? { type: selectType, onChange: handleRowsSelect }

@@ -8,15 +8,15 @@ import { FORM_CONFIG, DRAWER_CONFIG } from "@/component/config";
 
 export function DrawerForm({
   fields = null,
-  formRequest = undefined,
-  formRequestError = undefined,
-  formRequestSuccess = undefined,
-  formSubmit = undefined,
-  formSubmitError = undefined,
-  formSubmitSuccess = undefined,
-  formDelete = undefined,
-  formDeleteError = undefined,
-  formDeleteSuccess = undefined,
+  onFormRequest = undefined,
+  onFormRequestError = undefined,
+  onFormRequestSuccess = undefined,
+  onFormSubmit = undefined,
+  onFormSubmitError = undefined,
+  onFormSubmitSuccess = undefined,
+  onFormDelete = undefined,
+  onFormDeleteError = undefined,
+  onFormDeleteSuccess = undefined,
   formHook = {},
   ...props
 }) {
@@ -26,66 +26,66 @@ export function DrawerForm({
   // Handlers
   const handleDataRequest = useCallback(
     async (params) => {
-      if (!formRequest) {
+      if (!onFormRequest) {
         messageApi.error("Data request handler not provided");
         return false;
       }
 
       try {
-        const result = await formRequest(params);
+        const result = await onFormRequest(params);
         // result: { success, message, data: array }
-        formRequestSuccess?.(result);
+        onFormRequestSuccess?.(result);
         return result.data[0] || {};
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
-        formRequestError?.(error);
+        onFormRequestError?.(error);
         return false;
       }
     },
-    [formRequest, formRequestSuccess, formRequestError, messageApi]
+    [onFormRequest, onFormRequestSuccess, onFormRequestError, messageApi]
   );
 
   const handleDataSubmit = useCallback(
     async (values) => {
-      if (!formSubmit) {
+      if (!onFormSubmit) {
         messageApi.error("Data submit handler not provided");
         return false;
       }
       if (!values) return false;
 
       try {
-        const result = await formSubmit(values);
+        const result = await onFormSubmit(values);
         // result: { success, message, data: array }
         messageApi.success(result.message);
-        formSubmitSuccess?.(result);
+        onFormSubmitSuccess?.(result);
         return true;
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
-        formSubmitError?.(error);
+        onFormSubmitError?.(error);
         return false;
       }
     },
-    [formSubmit, formSubmitSuccess, formSubmitError, messageApi]
+    [onFormSubmit, onFormSubmitSuccess, onFormSubmitError, messageApi]
   );
 
   const handleDataDelete = useCallback(async () => {
-    if (!formDelete) {
+    if (!onFormDelete) {
       messageApi.error("Data delete handler not provided");
       return false;
     }
 
     try {
-      const result = await formDelete();
+      const result = await onFormDelete();
       // result: { success, message, data: array }
       messageApi.success(result.message);
-      formDeleteSuccess?.(result);
+      onFormDeleteSuccess?.(result);
       return true;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      formDeleteError?.(error);
+      onFormDeleteError?.(error);
       return false;
     }
-  }, [formDelete, formDeleteSuccess, formDeleteError, messageApi]);
+  }, [onFormDelete, onFormDeleteSuccess, onFormDeleteError, messageApi]);
 
   // Render component
   return (
@@ -95,15 +95,15 @@ export function DrawerForm({
         {...props}
         {...FORM_CONFIG}
         formRef={formRef}
-        request={formRequest ? handleDataRequest : undefined}
-        onFinish={formSubmit ? handleDataSubmit : undefined}
+        request={onFormRequest ? handleDataRequest : undefined}
+        onFinish={onFormSubmit ? handleDataSubmit : undefined}
         open={visible}
         onOpenChange={setVisible}
         drawerProps={DRAWER_CONFIG}
         submitter={{
           render: (_, defaultDoms) => {
             return [
-              formDelete ? (
+              onFormDelete ? (
                 <Popconfirm
                   title="Xác nhận xóa?"
                   description="Bạn có chắc chắn muốn xóa?"

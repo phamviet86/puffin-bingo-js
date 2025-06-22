@@ -13,8 +13,8 @@ export function OptionsForm(props) {
   return (
     <DrawerForm
       {...props}
-      formRequest={(params) => fetchList("/api/options", params)}
-      formSubmit={(values) => fetchPost("/api/options", values)}
+      onFormRequest={(params) => fetchList("/api/options", params)}
+      onFormSubmit={(values) => fetchPost("/api/options", values)}
     />
   );
 }
@@ -23,9 +23,9 @@ export function OptionsFormId({ id, ...props }) {
   return (
     <DrawerForm
       {...props}
-      formRequest={() => fetchGet(`/api/options/${id}`)}
-      formSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
-      formDelete={() => fetchDelete(`/api/options/${id}`)}
+      onFormRequest={() => fetchGet(`/api/options/${id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
+      onFormDelete={() => fetchDelete(`/api/options/${id}`)}
     />
   );
 }

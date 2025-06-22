@@ -5,12 +5,12 @@ import { Modal as AntModal, message } from "antd";
 import { MODAL_CONFIG } from "@/component/config";
 
 export function Modal({
-  modalOk = undefined,
-  modalOkError = undefined,
-  modalOkSuccess = undefined,
-  modalCancel = undefined,
-  modalCancelError = undefined,
-  modalCancelSuccess = undefined,
+  onModalOk = undefined,
+  onModalOkError = undefined,
+  onModalOkSuccess = undefined,
+  onModalCancel = undefined,
+  onModalCancelError = undefined,
+  onModalCancelSuccess = undefined,
   showOkMessage = false,
   showCancelMessage = false,
   trigger = undefined,
@@ -29,56 +29,56 @@ export function Modal({
   }, []);
 
   const handleOk = useCallback(async () => {
-    if (!modalOk) {
+    if (!onModalOk) {
       messageApi.error("OK handler not provided");
       return false;
     }
 
     try {
-      const result = await modalOk();
+      const result = await onModalOk();
       closeModal();
       if (showOkMessage && result?.message) {
         messageApi.success(result.message);
       }
-      modalOkSuccess?.(result);
+      onModalOkSuccess?.(result);
       return result || true;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      modalOkError?.(error);
+      onModalOkError?.(error);
       return false;
     }
   }, [
-    modalOk,
-    modalOkSuccess,
-    modalOkError,
+    onModalOk,
+    onModalOkSuccess,
+    onModalOkError,
     showOkMessage,
     messageApi,
     closeModal,
   ]);
 
   const handleCancel = useCallback(async () => {
-    if (!modalCancel) {
+    if (!onModalCancel) {
       closeModal();
       return false;
     }
 
     try {
-      const result = await modalCancel();
+      const result = await onModalCancel();
       closeModal();
       if (showCancelMessage && result?.message) {
         messageApi.warning(result.message);
       }
-      modalCancelSuccess?.(result);
+      onModalCancelSuccess?.(result);
       return result || false;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi");
-      modalCancelError?.(error);
+      onModalCancelError?.(error);
       return false;
     }
   }, [
-    modalCancel,
-    modalCancelSuccess,
-    modalCancelError,
+    onModalCancel,
+    onModalCancelSuccess,
+    onModalCancelError,
     showCancelMessage,
     messageApi,
     closeModal,
