@@ -104,7 +104,7 @@ function PageContent() {
           extra: [
             <DetailButton
               key="detail-button"
-              label="Xem chi tiết"
+              label="Chi tiết"
               variant="filled"
               id={useRolesInfo?.dataSource?.id}
             />,

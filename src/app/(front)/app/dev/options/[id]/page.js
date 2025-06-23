@@ -43,10 +43,9 @@ export default function Page({ params }) {
         descHook={optionDesc}
         columns={OptionsColumns()}
         params={{ id: optionId }}
-        onDescRequestSuccess={(result) => {
-          console.log("Desc request success:", result);
-          optionDesc.setDataSource(result?.data?.[0]);
-        }}
+        onDescRequestSuccess={(result) =>
+          optionDesc.setDataSource(result?.data?.[0])
+        }
       />
     </ProCard>
   );

@@ -1,6 +1,6 @@
 ---
 mode: "edit"
-description: "Tạo 3 file hoàn chỉnh cho quản lý entity: provider, list page và detail page với hiển thị bảng, form tạo/sửa và chức năng xem chi tiết"
+description: "Tạo 3 file hoàn chỉnh cho quản lý entity: provider, list page và detail page với hiển thị bảng, form tạo/sửa và chức năng Chi tiết"
 ---
 
 ## Yêu cầu
@@ -8,11 +8,13 @@ description: "Tạo 3 file hoàn chỉnh cho quản lý entity: provider, list p
 Tạo **3 files** cho mỗi entity:
 
 1. **Provider File**: `/src/app/(front)/app/dev/{tableName}/provider.js`
+
    - Context provider cho shared data và selections
    - Sử dụng `convertSelection` utility cho option data
    - Export `PageProvider` và `usePageContext`
 
 2. **List Page File**: `/src/app/(front)/app/dev/{tableName}/page.js`
+
    - Main component với provider wrapper pattern
    - Table view với create/info/detail actions
    - Sử dụng `"use client";` directive
@@ -122,27 +124,32 @@ import { PageProvider, usePageContext } from "../provider";
 ## Critical Implementation Rules
 
 1. **ALWAYS create 3 files** for each entity:
+
    - `provider.js` - Context provider
    - `page.js` - List page
    - `[id]/page.js` - Detail page
 
 2. **Provider Pattern Requirements**:
+
    - Import `useAppContext` and `convertSelection`
    - Create context with `createContext(null)`
    - Memoize context value with `useMemo`
    - Export both `PageProvider` and `usePageContext`
 
 3. **Component Import Pattern**:
+
    - Always use PascalCase for component names
    - Import from `/src/component/custom/`
    - Include Table, Info, FormCreate, FormEdit, Desc, Columns, Fields
 
 4. **File Structure Requirements**:
+
    - Provider: `/src/app/(front)/app/dev/{tableName}/provider.js`
    - List: `/src/app/(front)/app/dev/{tableName}/page.js`
    - Detail: `/src/app/(front)/app/dev/{tableName}/[id]/page.js`
 
 5. **Hook Usage Pattern**:
+
    - List page: `useTable`, `useInfo`, `useNav`, `usePageContext`
    - Detail page: `useDesc`, `useForm`, `useNav`, `usePageContext`
    - Always destructure specific methods from hooks
@@ -157,11 +164,13 @@ import { PageProvider, usePageContext } from "../provider";
 **Tạo 3 files cho mỗi entity theo thứ tự:**
 
 ### Bước 1: Parse Input SQL
+
 - Parse SQL table definition để xác định table name và entity name
 - Identify foreign key relationships cho option selections
 - Map Vietnamese entity names cho UI text
 
 ### Bước 2: Tạo Provider File (`provider.js`)
+
 - Comment header: `// {TABLE_NAME} PROVIDER`
 - Setup context với `createContext` và `useContext`
 - Import `useAppContext` và `convertSelection`
@@ -169,6 +178,7 @@ import { PageProvider, usePageContext } from "../provider";
 - Memoize context value và export provider hooks
 
 ### Bước 3: Tạo List Page (`page.js`)
+
 - Comment header: `// {TABLE_NAME} LIST PAGE`
 - Setup import statements theo pattern cố định
 - Provider wrapper với PageContent component
@@ -178,6 +188,7 @@ import { PageProvider, usePageContext } from "../provider";
 - Info drawer với proper title và actions
 
 ### Bước 4: Tạo Detail Page (`[id]/page.js`)
+
 - Comment header: `// {TABLE_NAME} DETAIL PAGE`
 - Setup import statements cho detail components
 - Provider wrapper pattern
@@ -188,6 +199,7 @@ import { PageProvider, usePageContext } from "../provider";
 - Breadcrumb với back navigation link
 
 ### Bước 5: Verify File Structure
+
 - Ensure tất cả 3 files được tạo đúng path
 - Check provider context được shared properly
 - Verify navigation flows giữa list và detail pages
@@ -365,7 +377,7 @@ function PageContent() {
           extra: [
             <DetailButton
               key="detail-button"
-              label="Xem chi tiết"
+              label="Chi tiết"
               variant="filled"
               id={useRolesInfo?.dataSource?.id}
             />,
