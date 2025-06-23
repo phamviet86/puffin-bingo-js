@@ -17,18 +17,18 @@ export default function Page({ params }) {
   const { id: optionId } = use(params);
 
   // page content: options
-  const optionDesc = useDesc();
-  const optionForm = useForm();
+  const useOptionDesc = useDesc();
+  const useOptionForm = useForm();
 
   const pageButton = [
     <BackButton key="back-button" />,
     <OptionsFormEdit
-      formHook={optionForm}
+      formHook={useOptionForm}
       fields={OptionsFields()}
       id={optionId}
-      onFormSubmitSuccess={() => optionDesc.reload()}
+      onFormSubmitSuccess={() => useOptionDesc.reload()}
       onFormDeleteSuccess={() => {
-        optionForm.close();
+        useOptionForm.close();
         navBack();
       }}
       key="edit-form"
@@ -40,17 +40,17 @@ export default function Page({ params }) {
   const pageContent = (
     <ProCard bordered>
       <OptionsDesc
-        descHook={optionDesc}
+        descHook={useOptionDesc}
         columns={OptionsColumns()}
         params={{ id: optionId }}
         onDescRequestSuccess={(result) =>
-          optionDesc.setDataSource(result?.data?.[0])
+          useOptionDesc.setDataSource(result?.data?.[0])
         }
       />
     </ProCard>
   );
 
-  const pageTitle = optionDesc?.dataSource?.option_column || "Chi tiết";
+  const pageTitle = useOptionDesc?.dataSource?.option_column || "Chi tiết";
   document.title = `Tùy chọn - ${pageTitle}`;
 
   return (
