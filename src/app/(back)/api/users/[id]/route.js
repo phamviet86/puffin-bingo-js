@@ -29,7 +29,6 @@ export async function PUT(request, context) {
       user_name,
       user_status_id,
       user_email,
-      user_password,
       user_phone = null,
       user_parent_phone = null,
       user_avatar = null,
@@ -38,14 +37,13 @@ export async function PUT(request, context) {
     } = await request.json();
 
     // Validate required fields (dựa vào NOT NULL trong SQL)
-    if (!user_name || !user_status_id || !user_email || !user_password)
+    if (!user_name || !user_status_id || !user_email)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
     const data = {
       user_name,
       user_status_id,
       user_email,
-      user_password,
       user_phone,
       user_parent_phone,
       user_avatar,

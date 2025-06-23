@@ -18,10 +18,18 @@ export function UsersColumns(params) {
       sorter: { multiple: 1 },
     },
     {
+      title: "Mô tả",
+      dataIndex: "user_desc",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      hidden: true,
+    },
+    {
       title: "Email",
       dataIndex: "user_email",
       valueType: "text",
       sorter: { multiple: 1 },
+      responsive: ["md"],
     },
     {
       title: "Trạng thái",
@@ -35,7 +43,7 @@ export function UsersColumns(params) {
       dataIndex: "user_phone",
       valueType: "text",
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "SĐT phụ huynh",
@@ -45,11 +53,12 @@ export function UsersColumns(params) {
       responsive: ["lg"],
     },
     {
-      title: "Mô tả",
-      dataIndex: "user_desc",
-      valueType: "text",
+      title: "Ghi chú",
+      dataIndex: "user_notes",
+      valueType: "textarea",
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      hidden: true,
+      search: false,
     },
   ];
 }
@@ -65,7 +74,7 @@ export function UsersFields(params) {
         label="Email"
         placeholder="Nhập email"
         rules={[{ required: true }, { type: "email" }]}
-        colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormSelect
         name="user_status_id"
@@ -73,20 +82,20 @@ export function UsersFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={userStatus?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormText
         name="user_name"
         label="Tên người dùng"
         placeholder="Nhập tên người dùng"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormText
         name="user_desc"
         label="Mô tả"
         placeholder="Nhập mô tả"
-        colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormText
         name="user_phone"
