@@ -6,6 +6,7 @@ export function useForm() {
   const formRef = useRef();
   const [params, setParams] = useState({});
   const [initialValues, setInitialValues] = useState({});
+  const [id, setId] = useState({});
   const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
 
@@ -33,6 +34,8 @@ export function useForm() {
     setParams,
     initialValues,
     setInitialValues,
+    id,
+    setId,
     title,
     setTitle,
     visible,

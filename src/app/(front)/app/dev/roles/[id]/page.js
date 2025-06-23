@@ -25,22 +25,22 @@ export default function Page(props) {
 
 function PageContent({ params }) {
   const { navBack } = useNav();
-  const { id: roleId } = use(params);
   const { roleStatus } = usePageContext();
+  const { id: roleId } = use(params);
 
   // page content: roles
-  const roleDesc = useDesc();
-  const roleForm = useForm();
+  const useRolesDesc = useDesc();
+  const useRolesForm = useForm();
 
   const pageButton = [
     <BackButton key="back-button" />,
     <RolesFormEdit
-      formHook={roleForm}
+      formHook={useRolesForm}
       fields={RolesFields({ roleStatus })}
       id={roleId}
-      onFormSubmitSuccess={() => roleDesc.reload()}
+      onFormSubmitSuccess={() => useRolesDesc.reload()}
       onFormDeleteSuccess={() => {
-        roleForm.close();
+        useRolesForm.close();
         navBack();
       }}
       key="edit-form"
@@ -52,30 +52,29 @@ function PageContent({ params }) {
   const pageContent = (
     <ProCard bordered>
       <RolesDesc
-        descHook={roleDesc}
+        descHook={useRolesDesc}
         columns={RolesColumns({ roleStatus })}
         params={{ id: roleId }}
         onDescRequestSuccess={(result) =>
-          roleDesc.setDataSource(result?.data?.[0])
+          useRolesDesc.setDataSource(result?.data?.[0])
         }
       />
     </ProCard>
   );
 
-  const pageTitle = roleDesc?.dataSource?.name || "Chi tiết";
+  const pageTitle = useRolesDesc?.dataSource?.role_name || "Chi tiết";
   document.title = `Vai trò - ${pageTitle}`;
 
   return (
     <PageContainer
       items={[
         { title: "Hệ thống" },
-        { title: "Vai trò", path: "/app/dev/roles" },
+        { title: "Vai trò", path: "/app/system/roles" },
         { title: pageTitle },
       ]}
       title={pageTitle}
       extra={pageButton}
       content={pageContent}
-      // tabList={[]}
     />
   );
 }

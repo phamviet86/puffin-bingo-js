@@ -57,7 +57,7 @@ export default function Page({ params }) {
     <PageContainer
       items={[
         { title: "Hệ thống" },
-        { title: "Tuỳ chọn", path: "/app/manager/courses" },
+        { title: "Tuỳ chọn", path: "/app/system/options" },
         { title: pageTitle },
       ]}
       title={pageTitle}

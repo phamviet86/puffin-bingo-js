@@ -32,6 +32,7 @@ function PageContent() {
   const { navDetail } = useNav();
   const { roleStatus } = usePageContext();
 
+  // page content: roles
   const useRolesTable = useTable();
   const useRolesInfo = useInfo();
 
