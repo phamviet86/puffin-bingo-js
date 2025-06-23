@@ -49,7 +49,7 @@ export function RolesFields(params) {
       <ProFormSelect
         name="role_status_id"
         label="Trạng thái"
-        placeholder="Nhập ID trạng thái"
+        placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={roleStatus.options || []}
       />
