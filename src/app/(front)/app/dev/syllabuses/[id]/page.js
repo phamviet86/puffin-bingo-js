@@ -211,7 +211,7 @@ function PageContent({ params }) {
               onClick={() => useLecturesTable.reload()}
             />
             <LecturesFormCreate
-              fields={LecturesFields({ lectureStatus })}
+              fields={LecturesFields({ syllabusId, lectureStatus })}
               onFormSubmitSuccess={(result) => {
                 useLecturesInfo.close();
                 useLecturesTable.reload();
@@ -224,7 +224,8 @@ function PageContent({ params }) {
       >
         <LecturesTable
           tableHook={useLecturesTable}
-          columns={LecturesColumns({ lectureStatus })}
+          columns={LecturesColumns({ syllabusId, lectureStatus })}
+          params={{ syllabus_id: syllabusId }}
           leftColumns={[
             {
               width: 56,
@@ -263,7 +264,7 @@ function PageContent({ params }) {
         />
         <LecturesInfo
           infoHook={useLecturesInfo}
-          columns={LecturesColumns({ lectureStatus })}
+          columns={LecturesColumns({ syllabusId, lectureStatus })}
           dataSource={useLecturesInfo.dataSource}
           drawerProps={{
             title: "Thông tin bài giảng",
@@ -283,7 +284,7 @@ function PageContent({ params }) {
         />
         <LecturesFormEdit
           formHook={useLecturesForm}
-          fields={LecturesFields({ lectureStatus })}
+          fields={LecturesFields({ syllabusId, lectureStatus })}
           id={useLecturesForm.id}
           onFormSubmitSuccess={() => useLecturesTable.reload()}
           onFormDeleteSuccess={() => {

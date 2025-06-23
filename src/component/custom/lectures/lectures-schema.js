@@ -6,22 +6,30 @@ import {
   ProFormTextArea,
   ProFormSelect,
 } from "@ant-design/pro-form";
+import { fetchOption } from "@/lib/util/fetch-util";
 
 export function LecturesColumns(params) {
-  const { modules, lectureStatus } = params || {};
+  const { syllabusId, lectureStatus } = params || {};
 
   return [
+    {
+      title: "Học phần",
+      dataIndex: "module_id",
+      valueType: "select",
+      request: (params) =>
+        fetchOption("/api/modules", params, {
+          label: "module_name",
+          value: "id",
+        }),
+      params: {
+        syllabus_id_e: syllabusId,
+      },
+      sorter: { multiple: 1 },
+    },
     {
       title: "Tên bài giảng",
       dataIndex: "lecture_name",
       valueType: "text",
-      sorter: { multiple: 1 },
-    },
-    {
-      title: "Module",
-      dataIndex: "module_id",
-      valueType: "select",
-      valueEnum: modules?.valueEnum || {},
       sorter: { multiple: 1 },
     },
     {
@@ -49,24 +57,25 @@ export function LecturesColumns(params) {
 }
 
 export function LecturesFields(params) {
-  const { modules, lectureStatus } = params || {};
+  const { syllabusId, lectureStatus } = params || {};
 
   return (
     <ProForm.Group>
       <ProFormText name="id" label="ID" hidden disabled />
-      <ProFormText
-        name="lecture_name"
-        label="Tên bài giảng"
-        placeholder="Nhập tên bài giảng"
-        rules={[{ required: true }]}
-        colProps={{ xs: 24 }}
-      />
       <ProFormSelect
         name="module_id"
-        label="Module"
-        placeholder="Chọn module"
+        label="Học phần"
+        placeholder="Chọn học phần"
         rules={[{ required: true }]}
-        options={modules?.options || []}
+        request={(params) =>
+          fetchOption("/api/modules", params, {
+            label: "module_name",
+            value: "id",
+          })
+        }
+        params={{
+          syllabus_id_e: syllabusId,
+        }}
         colProps={{ xs: 12 }}
       />
       <ProFormSelect
@@ -78,17 +87,21 @@ export function LecturesFields(params) {
         colProps={{ xs: 12 }}
       />
       <ProFormText
+        name="lecture_name"
+        label="Tên bài giảng"
+        placeholder="Nhập tên bài giảng"
+        rules={[{ required: true }]}
+      />
+      <ProFormText
         name="lecture_no"
         label="Số thứ tự"
         placeholder="Nhập số thứ tự"
-        colProps={{ xs: 12 }}
       />
       <ProFormTextArea
         name="lecture_desc"
         label="Mô tả"
         placeholder="Nhập mô tả bài giảng"
         fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}
-        colProps={{ xs: 24 }}
       />
     </ProForm.Group>
   );

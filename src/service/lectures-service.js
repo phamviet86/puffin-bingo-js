@@ -13,11 +13,19 @@ export async function getLectures(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT *, COUNT(*) OVER() AS total
-      FROM lectures
-      WHERE deleted_at IS NULL
+      SELECT l.*,
+        s.syllabus_name,
+        m.module_name,
+        COUNT(*) OVER() AS total
+      FROM lectures l
+      LEFT JOIN modules m ON l.module_id = m.id AND m.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      WHERE l.deleted_at IS NULL
       ${whereClause}
-      ${orderByClause || "ORDER BY created_at"}
+      ${
+        orderByClause ||
+        "ORDER BY syllabus_name, module_name, lecture_no, lecture_name"
+      }
       ${limitClause};
     `;
 
@@ -30,9 +38,13 @@ export async function getLectures(searchParams) {
 export async function getLecture(id) {
   try {
     return await sql`
-      SELECT *
-      FROM lectures
-      WHERE deleted_at IS NULL AND id = ${id};
+      SELECT l.*,
+        s.syllabus_name,
+        m.module_name
+      FROM lectures l
+      LEFT JOIN modules m ON l.module_id = m.id AND m.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      WHERE l.deleted_at IS NULL AND l.id = ${id};
     `;
   } catch (error) {
     throw new Error(error.message);
