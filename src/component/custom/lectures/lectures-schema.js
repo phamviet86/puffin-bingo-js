@@ -25,6 +25,7 @@ export function LecturesColumns(params) {
         syllabus_id_e: syllabusId,
       },
       sorter: { multiple: 1 },
+      responsive: ["sm"],
     },
     {
       title: "Tên bài giảng",
@@ -44,7 +45,7 @@ export function LecturesColumns(params) {
       dataIndex: "lecture_no",
       valueType: "text",
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Mô tả",
