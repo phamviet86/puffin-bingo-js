@@ -169,7 +169,7 @@ export function RolesFields(params) {
         label="Tên vai trò"
         placeholder="Nhập tên vai trò"
         rules={[{ required: true }]}
-        colProps={{ xs: 12 }}
+        colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormSelect
         name="role_status_id"
@@ -177,7 +177,7 @@ export function RolesFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={roleStatus?.options || []}
-        colProps={{ xs: 12 }}
+        colProps={{ xs: 24, sm: 12 }}
       />
       <ProFormText
         name="role_path"
