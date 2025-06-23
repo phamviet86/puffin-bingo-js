@@ -303,8 +303,8 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Hệ thống" },
-        { title: "Giáo trình", path: "/app/dev/syllabuses" },
+        { title: "Quản lý" },
+        { title: "Giáo trình", path: "/app/manager/syllabuses" },
         { title: pageTitle },
       ]}
       title={pageTitle}

@@ -1,4 +1,4 @@
-// SYLLABUSES LIST PAGE
+// USERS LIST PAGE
 
 "use client";
 
@@ -11,11 +11,11 @@ import {
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
-  SyllabusesTable,
-  SyllabusesInfo,
-  SyllabusesFormCreate,
-  SyllabusesColumns,
-  SyllabusesFields,
+  UsersTable,
+  UsersInfo,
+  UsersFormCreate,
+  UsersColumns,
+  UsersFields,
 } from "@/component/custom";
 import { useTable, useInfo, useNav } from "@/component/hook";
 import { PageProvider, usePageContext } from "./provider";
@@ -30,11 +30,11 @@ export default function Page(props) {
 
 function PageContent() {
   const { navDetail } = useNav();
-  const { syllabusStatus } = usePageContext();
+  const { userStatus } = usePageContext();
 
-  // page content: syllabuses
-  const useSyllabusesTable = useTable();
-  const useSyllabusesInfo = useInfo();
+  // page content: users
+  const useUsersTable = useTable();
+  const useUsersInfo = useInfo();
 
   const pageButton = [
     <Button
@@ -43,25 +43,25 @@ function PageContent() {
       label="Tải lại"
       color="default"
       variant="filled"
-      onClick={() => useSyllabusesTable.reload()}
+      onClick={() => useUsersTable.reload()}
     />,
-    <SyllabusesFormCreate
+    <UsersFormCreate
       key="create-form"
-      fields={SyllabusesFields({ syllabusStatus })}
+      fields={UsersFields({ userStatus })}
       onFormSubmitSuccess={(result) => {
-        useSyllabusesInfo.close();
+        useUsersInfo.close();
         navDetail(result?.data[0]?.id);
       }}
-      title="Tạo giáo trình"
+      title="Tạo người dùng"
       trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
     />,
   ];
 
   const pageContent = (
     <ProCard boxShadow>
-      <SyllabusesTable
-        tableHook={useSyllabusesTable}
-        columns={SyllabusesColumns({ syllabusStatus })}
+      <UsersTable
+        tableHook={useUsersTable}
+        columns={UsersColumns({ userStatus })}
         leftColumns={[
           {
             width: 56,
@@ -72,8 +72,8 @@ function PageContent() {
                 icon={<InfoCircleOutlined />}
                 variant="link"
                 onClick={() => {
-                  useSyllabusesInfo.setDataSource(record);
-                  useSyllabusesInfo.open();
+                  useUsersInfo.setDataSource(record);
+                  useUsersInfo.open();
                 }}
               />
             ),
@@ -95,18 +95,18 @@ function PageContent() {
           },
         ]}
       />
-      <SyllabusesInfo
-        infoHook={useSyllabusesInfo}
-        columns={SyllabusesColumns({ syllabusStatus })}
-        dataSource={useSyllabusesInfo.dataSource}
+      <UsersInfo
+        infoHook={useUsersInfo}
+        columns={UsersColumns({ userStatus })}
+        dataSource={useUsersInfo.dataSource}
         drawerProps={{
-          title: "Thông tin giáo trình",
+          title: "Thông tin người dùng",
           extra: [
             <DetailButton
               key="detail-button"
               label="Chi tiết"
               variant="filled"
-              id={useSyllabusesInfo?.dataSource?.id}
+              id={useUsersInfo?.dataSource?.id}
             />,
           ],
         }}
@@ -116,8 +116,8 @@ function PageContent() {
 
   return (
     <PageContainer
-      items={[{ title: "Quản lý" }, { title: "Giáo trình" }]}
-      title="Quản lý giáo trình"
+      items={[{ title: "Quản lý" }, { title: "Người dùng" }]}
+      title="Quản lý người dùng"
       extra={pageButton}
       content={pageContent}
     />

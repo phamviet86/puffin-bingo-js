@@ -1,4 +1,4 @@
-// path: @/src/component/custom/index.js
+// path: @/component/custom/index.js
 
 // options
 export * from "./options/options-schema";
@@ -27,3 +27,7 @@ export * from "./modules/modules-component";
 // lectures
 export * from "./lectures/lectures-schema";
 export * from "./lectures/lectures-component";
+
+// users
+export * from "./users/users-schema";
+export * from "./users/users-component";
