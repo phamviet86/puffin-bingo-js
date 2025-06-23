@@ -24,13 +24,21 @@ export function PageProvider({ children }) {
     { option_table: "modules", option_column: "module_status_id" }
   );
 
+  // Create a selection for lectures status using the option data
+  const lectureStatus = convertSelection(
+    optionData,
+    { value: "id", label: "option_label", color: "option_color" },
+    { option_table: "lectures", option_column: "lecture_status_id" }
+  );
+
   // Memoize the context value to avoid unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       syllabusStatus,
       moduleStatus,
+      lectureStatus,
     }),
-    [syllabusStatus, moduleStatus]
+    [syllabusStatus, moduleStatus, lectureStatus]
   );
 
   // Provide the context to children components

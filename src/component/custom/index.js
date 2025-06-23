@@ -23,3 +23,7 @@ export * from "./syllabuses/syllabuses-component";
 // modules
 export * from "./modules/modules-schema";
 export * from "./modules/modules-component";
+
+// lectures
+export * from "./lectures/lectures-schema";
+export * from "./lectures/lectures-component";
