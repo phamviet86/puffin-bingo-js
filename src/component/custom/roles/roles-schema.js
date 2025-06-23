@@ -47,7 +47,7 @@ export function RolesFields(params) {
         label="Trạng thái"
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
-        options={roleStatus.options || []}
+        options={roleStatus?.options || []}
         colProps={{ xs: 12 }}
       />
       <ProFormText

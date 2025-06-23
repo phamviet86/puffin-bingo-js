@@ -371,7 +371,7 @@ function PageContent() {
       />
       <RolesInfo
         infoHook={useRolesInfo}
-        columns={RolesColumns()}
+        columns={RolesColumns({ roleStatus })}
         dataSource={useRolesInfo.dataSource}
         drawerProps={{
           title: "Thông tin vai trò",

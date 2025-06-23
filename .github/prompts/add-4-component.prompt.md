@@ -41,7 +41,7 @@ description: "Tạo schema và component files hoàn chỉnh cho hệ thống CR
 
   - File: `/src/component/custom/{tableName}/{tableName}-component.js`
   - **Bắt buộc**: Thêm comment đường dẫn ở đầu file: `// path: @/component/custom/{tableName}/{tableName}-component.js`
-  - Export 5 functions: `{TableName}Table`, `{TableName}Info`, `{TableName}Desc`, `{TableName}FormCreate`, `{TableName}FormEdit`
+  - Export 5 functions: `{TableName}Table`, `{TableName}Desc`, `{TableName}Info`, `{TableName}FormCreate`, `{TableName}FormEdit`
 
 - Import statements cố định
 
@@ -64,8 +64,8 @@ import {
 - Component patterns
 
   - Table: Sử dụng `ProTable` với `onTableRequest` callback
-  - Info: Sử dụng `DrawerInfo` làm wrapper
   - Desc: Sử dụng `ProDescriptions` với `onDescRequest` callback
+  - Info: Sử dụng `DrawerInfo` làm wrapper
   - FormCreate: Sử dụng `DrawerForm` với `onFormSubmit` callback
   - FormEdit: Sử dụng `DrawerForm` với `onFormRequest`, `onFormSubmit`, và `onFormDelete` callbacks
   - Props spreading: Tất cả components phải spread `{...props}`
@@ -93,8 +93,8 @@ import {
 - Bước 2: Tạo Component File
 
   - Tạo `{TableName}Table` với ProTable và API endpoint
-  - Tạo `{TableName}Info` với DrawerInfo wrapper
   - Tạo `{TableName}Desc` với ProDescriptions cho hiển thị chi tiết
+  - Tạo `{TableName}Info` với DrawerInfo wrapper
   - Tạo `{TableName}FormCreate` với DrawerForm và submit handler
   - Tạo `{TableName}FormEdit` với DrawerForm và handlers đầy đủ
 
@@ -108,97 +108,82 @@ import {
 ### Input (SQL Definition)
 
 ```sql
--- table: tuỳ chọn
+-- table: vai trò
 
-DROP TABLE IF EXISTS options CASCADE;
-CREATE TABLE options (
-  id SERIAL PRIMARY KEY,
+DROP TABLE IF EXISTS roles CASCADE;
+CREATE TABLE roles (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   deleted_at TIMESTAMPTZ DEFAULT NULL,
-  option_table VARCHAR(255) NOT NULL,
-  option_column VARCHAR(255) NOT NULL,
-  option_label VARCHAR(255) NOT NULL,
-  option_color VARCHAR(255) DEFAULT NULL,
-  option_group VARCHAR(255) DEFAULT NULL
+  role_name VARCHAR(255) NOT NULL,
+  role_path VARCHAR(255) NOT NULL,
+  role_status_id INTEGER NOT NULL
 );
 CREATE TRIGGER update_record BEFORE
-UPDATE ON options FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+UPDATE ON roles FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
 ### Output Schema File (options-schema.js)
 
 ```javascript
-// path: @/component/custom/options/options-schema.js
+// path: @/component/custom/roles/roles-schema.js
 
-import { ProForm, ProFormText } from "@ant-design/pro-form";
+import { ProForm, ProFormText, ProFormSelect } from "@ant-design/pro-form";
 
-export function OptionsColumns() {
+export function RolesColumns(params) {
+  const { roleStatus } = params || {};
+
   return [
     {
-      title: "Bảng",
-      dataIndex: "option_table",
+      title: "Tên vai trò",
+      dataIndex: "role_name",
       valueType: "text",
       sorter: { multiple: 1 },
     },
     {
-      title: "Cột",
-      dataIndex: "option_column",
-      valueType: "text",
+      title: "Trạng thái",
+      dataIndex: "role_status_id",
+      valueType: "select",
+      valueEnum: roleStatus?.valueEnum || {},
       sorter: { multiple: 1 },
     },
     {
-      title: "Nhãn",
-      dataIndex: "option_label",
+      title: "Đường dẫn",
+      dataIndex: "role_path",
       valueType: "text",
       sorter: { multiple: 1 },
-    },
-    {
-      title: "Màu sắc",
-      dataIndex: "option_color",
-      valueType: "text",
-      sorter: { multiple: 1 },
-    },
-    {
-      title: "Nhóm",
-      dataIndex: "option_group",
-      valueType: "text",
-      sorter: { multiple: 1 },
+      responsive: ["md"],
     },
   ];
 }
 
-export function OptionsFields() {
+export function RolesFields(params) {
+  const { roleStatus } = params || {};
+
   return (
     <ProForm.Group>
       <ProFormText name="id" label="ID" hidden disabled />
       <ProFormText
-        name="option_table"
-        label="Bảng"
-        placeholder="Nhập tên bảng"
+        name="role_name"
+        label="Tên vai trò"
+        placeholder="Nhập tên vai trò"
         rules={[{ required: true }]}
+        colProps={{ xs: 12 }}
       />
-      <ProFormText
-        name="option_column"
-        label="Cột"
-        placeholder="Nhập tên cột"
+      <ProFormSelect
+        name="role_status_id"
+        label="Trạng thái"
+        placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
+        options={roleStatus?.options || []}
+        colProps={{ xs: 12 }}
       />
       <ProFormText
-        name="option_label"
-        label="Nhãn"
-        placeholder="Nhập nhãn"
+        name="role_path"
+        label="Đường dẫn"
+        placeholder="Nhập đường dẫn"
         rules={[{ required: true }]}
-      />
-      <ProFormText
-        name="option_color"
-        label="Màu sắc"
-        placeholder="Nhập mã màu"
-      />
-      <ProFormText
-        name="option_group"
-        label="Nhóm"
-        placeholder="Nhập tên nhóm"
       />
     </ProForm.Group>
   );
@@ -208,7 +193,7 @@ export function OptionsFields() {
 ### Output Component File (options-component.js)
 
 ```javascript
-// path: @/component/custom/options/options-component.js
+// path: @/component/custom/roles/roles-component.js
 
 import {
   ProTable,
@@ -224,46 +209,46 @@ import {
   fetchDelete,
 } from "@/lib/util/fetch-util";
 
-export function OptionsTable(props) {
+export function RolesTable(props) {
   return (
     <ProTable
       {...props}
       onTableRequest={(params, sort, filter) =>
-        fetchList("/api/options", params, sort, filter)
+        fetchList("/api/roles", params, sort, filter)
       }
     />
   );
 }
 
-export function OptionsDesc(props) {
+export function RolesDesc(props) {
   return (
     <ProDescriptions
       {...props}
-      onDescRequest={(params) => fetchGet(`/api/options/${params?.id}`)}
+      onDescRequest={(params) => fetchGet(`/api/roles/${params?.id}`)}
     />
   );
 }
 
-export function OptionsInfo(props) {
+export function RolesInfo(props) {
   return <DrawerInfo {...props} />;
 }
 
-export function OptionsFormCreate(props) {
+export function RolesFormCreate(props) {
   return (
     <DrawerForm
       {...props}
-      onFormSubmit={(values) => fetchPost("/api/options", values)}
+      onFormSubmit={(values) => fetchPost("/api/roles", values)}
     />
   );
 }
 
-export function OptionsFormEdit({ id, ...props }) {
+export function RolesFormEdit({ id, ...props }) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/options/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/options/${id}`)}
+      onFormRequest={() => fetchGet(`/api/roles/${id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/roles/${id}`, values)}
+      onFormDelete={() => fetchDelete(`/api/roles/${id}`)}
     />
   );
 }
@@ -274,6 +259,7 @@ export function OptionsFormEdit({ id, ...props }) {
 ```javascript
 // path: @/component/custom/index.js
 
-export * from "./options/options-schema";
-export * from "./options/options-component";
+// roles
+export * from "./roles/roles-schema";
+export * from "./roles/roles-component";
 ```
