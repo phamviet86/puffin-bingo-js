@@ -101,6 +101,7 @@ function PageContent({ params }) {
                 useModulesInfo.close();
                 useModulesTable.reload();
               }}
+              initialValues={{ syllabus_id: syllabusId }}
               title="Tạo học phần"
               trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
             />
@@ -110,6 +111,7 @@ function PageContent({ params }) {
         <ModulesTable
           tableHook={useModulesTable}
           columns={ModulesColumns({ moduleStatus })}
+          params={{ syllabus_id: syllabusId }}
           leftColumns={[
             {
               width: 56,

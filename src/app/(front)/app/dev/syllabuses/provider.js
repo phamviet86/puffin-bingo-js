@@ -18,7 +18,7 @@ export function PageProvider({ children }) {
   );
 
   // Create a selection for modules status using the option data
-  const modulesStatus = convertSelection(
+  const moduleStatus = convertSelection(
     optionData,
     { value: "id", label: "option_label", color: "option_color" },
     { option_table: "modules", option_column: "module_status_id" }
@@ -28,9 +28,9 @@ export function PageProvider({ children }) {
   const contextValue = useMemo(
     () => ({
       syllabusStatus,
-      modulesStatus,
+      moduleStatus,
     }),
-    [syllabusStatus, modulesStatus]
+    [syllabusStatus, moduleStatus]
   );
 
   // Provide the context to children components
