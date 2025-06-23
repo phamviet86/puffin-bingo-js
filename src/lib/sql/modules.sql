@@ -7,6 +7,7 @@ CREATE TABLE modules (
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   syllabus_id UUID NOT NULL,
   module_name VARCHAR(255) NOT NULL,
+  module_status_id INTEGER NOT NULL,
   module_desc TEXT DEFAULT NULL
 );
 CREATE TRIGGER update_record BEFORE

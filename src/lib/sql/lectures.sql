@@ -7,6 +7,7 @@ CREATE TABLE lectures (
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   module_id UUID NOT NULL,
   lecture_name VARCHAR(255) NOT NULL,
+  lecture_status_id INTEGER NOT NULL,
   lecture_no INTEGER DEFAULT NULL,
   lecture_desc TEXT DEFAULT NULL
 );
