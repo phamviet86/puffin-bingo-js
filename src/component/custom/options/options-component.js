@@ -6,7 +6,13 @@ import {
   DrawerInfo,
   ProDescriptions,
 } from "@/component/common";
-import { fetchList, fetchPost } from "@/lib/util/fetch-util";
+import {
+  fetchList,
+  fetchGet,
+  fetchPost,
+  fetchPut,
+  fetchDelete,
+} from "@/lib/util/fetch-util";
 
 export function OptionsTable(props) {
   return (
@@ -24,7 +30,12 @@ export function OptionsInfo(props) {
 }
 
 export function OptionsDesc(props) {
-  return <ProDescriptions {...props} />;
+  return (
+    <ProDescriptions
+      {...props}
+      onDescRequest={(params) => fetchGet(`/api/options/${params?.id}`)}
+    />
+  );
 }
 
 export function OptionsFormCreate(props) {

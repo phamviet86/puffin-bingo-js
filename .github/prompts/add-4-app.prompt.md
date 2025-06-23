@@ -65,7 +65,7 @@ import {
 
   - Table: Sử dụng `ProTable` với `onTableRequest` callback
   - Info: Sử dụng `DrawerInfo` làm wrapper
-  - Desc: Sử dụng `ProDescriptions` cho hiển thị chi tiết
+  - Desc: Sử dụng `ProDescriptions` với `onDescRequest` callback
   - FormCreate: Sử dụng `DrawerForm` với `onFormSubmit` callback
   - FormEdit: Sử dụng `DrawerForm` với `onFormRequest`, `onFormSubmit`, và `onFormDelete` callbacks
   - Props spreading: Tất cả components phải spread `{...props}`
@@ -210,7 +210,13 @@ import {
   DrawerInfo,
   ProDescriptions,
 } from "@/component/common";
-import { fetchList, fetchPost } from "@/lib/util/fetch-util";
+import {
+  fetchList,
+  fetchPost,
+  fetchGet,
+  fetchPut,
+  fetchDelete,
+} from "@/lib/util/fetch-util";
 
 export function OptionsTable(props) {
   return (
@@ -223,12 +229,17 @@ export function OptionsTable(props) {
   );
 }
 
-export function OptionsInfo(props) {
-  return <DrawerInfo {...props} />;
+export function OptionsDesc(props) {
+  return (
+    <ProDescriptions
+      {...props}
+      onDescRequest={(params) => fetchGet(`/api/options/${params?.id}`)}
+    />
+  );
 }
 
-export function OptionsDesc(props) {
-  return <ProDescriptions {...props} />;
+export function OptionsInfo(props) {
+  return <DrawerInfo {...props} />;
 }
 
 export function OptionsFormCreate(props) {

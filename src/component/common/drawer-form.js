@@ -5,6 +5,7 @@ import { message, Popconfirm } from "antd";
 import { DrawerForm as AntDrawerForm } from "@ant-design/pro-components";
 import { Button } from "@/component/common";
 import { FORM_CONFIG, DRAWER_CONFIG } from "@/component/config";
+import { DeleteOutlined } from "@ant-design/icons";
 
 export function DrawerForm({
   fields = null,
@@ -105,15 +106,19 @@ export function DrawerForm({
             return [
               onFormDelete ? (
                 <Popconfirm
+                  key="delete-button"
                   title="Xác nhận xóa?"
                   description="Bạn có chắc chắn muốn xóa?"
                   onConfirm={handleDataDelete}
                   okText="Xóa"
                   cancelText="Hủy"
                 >
-                  <Button key="delete-button" color="danger" variant="solid">
-                    Xoá
-                  </Button>
+                  <Button
+                    color="danger"
+                    variant="solid"
+                    label="Xoá"
+                    icon={<DeleteOutlined />}
+                  />
                 </Popconfirm>
               ) : (
                 []
