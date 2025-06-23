@@ -15,3 +15,7 @@ export * from "./shifts/shifts-component";
 // rooms
 export * from "./rooms/rooms-schema";
 export * from "./rooms/rooms-component";
+
+// syllabuses
+export * from "./syllabuses/syllabuses-schema";
+export * from "./syllabuses/syllabuses-component";
