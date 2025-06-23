@@ -97,7 +97,7 @@ function PageContent() {
       />
       <RoomsInfo
         infoHook={useRoomsInfo}
-        columns={RoomsColumns()}
+        columns={RoomsColumns({ roomStatus })}
         dataSource={useRoomsInfo.dataSource}
         drawerProps={{
           title: "Thông tin phòng học",
@@ -116,7 +116,7 @@ function PageContent() {
 
   return (
     <PageContainer
-      items={[{ title: "Hệ thống" }, { title: "Phòng học" }]}
+      items={[{ title: "Thiết lập" }, { title: "Phòng học" }]}
       title="Quản lý phòng học"
       extra={pageButton}
       content={pageContent}

@@ -68,8 +68,8 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Hệ thống" },
-        { title: "Phòng học", path: "/app/dev/rooms" },
+        { title: "Thiết lập" },
+        { title: "Phòng học", path: "/app/setting/rooms" },
         { title: pageTitle },
       ]}
       title={pageTitle}
