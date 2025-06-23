@@ -30,35 +30,35 @@ export function convertGoogleImage(link, size = 800) {
 }
 
 /**
- * Tạo cả dữ liệu enum và options từ một mảng đối tượng, có thể lọc theo các tham số
+ * Creates both enum data and options from an array of objects, with optional filtering
  *
- * @param {Array<Object>} data - Mảng dữ liệu cần xử lý
- * @param {Object} columnConfig - Cấu hình các cột
- * @param {string} columnConfig.value - Tên thuộc tính sử dụng làm khóa/giá trị
- * @param {string} columnConfig.label - Tên thuộc tính sử dụng làm văn bản hiển thị
- * @param {string} [columnConfig.color] - Tên thuộc tính tùy chọn cho thông tin màu sắc/trạng thái
- * @param {string} [columnConfig.group] - Tên thuộc tính tùy chọn để nhóm options
- * @param {Object} [filterParams={}] - Tham số lọc tùy chọn (cặp field:value)
- * @returns {Object} Object chứa cả enum và options { enums: Object, options: Array }
+ * @param {Array<Object>} data - Array of data to process
+ * @param {Object} columnConfig - Column configuration
+ * @param {string} columnConfig.value - Property name to use as key/value
+ * @param {string} columnConfig.label - Property name to use as display text
+ * @param {string} [columnConfig.color] - Optional property name for color/status information
+ * @param {string} [columnConfig.group] - Optional property name for grouping options
+ * @param {Object} [filterParams={}] - Optional filter parameters (field:value pairs)
+ * @returns {Object} Object containing both enum and options { valueEnum: Object, options: Array }
  */
-export function setSelection(data, columnConfig, filterParams = {}) {
+export function convertSelection(data, columnConfig, filterParams = {}) {
   if (!data || !Array.isArray(data) || data.length === 0) {
-    return { enums: {}, options: [] };
+    return { valueEnum: {}, options: [] };
   }
 
-  // Lọc dữ liệu nếu có tham số
+  // Filter data if parameters are provided
   let filteredData = data;
   if (filterParams && Object.keys(filterParams).length > 0) {
     filteredData = data.filter((item) => {
-      // Kiểm tra tất cả tham số có khớp không
+      // Check if all parameters match
       return Object.entries(filterParams).every(([key, paramValue]) => {
         return item[key] === paramValue;
       });
     });
   }
 
-  // Tạo enum từ dữ liệu đã lọc
-  const enums = filteredData.reduce((accumulator, item) => {
+  // Create enum from filtered data
+  const valueEnum = filteredData.reduce((accumulator, item) => {
     if (item && item[columnConfig.value] !== undefined) {
       accumulator[item[columnConfig.value]] = {
         text: item[columnConfig.label],
@@ -69,10 +69,10 @@ export function setSelection(data, columnConfig, filterParams = {}) {
     return accumulator;
   }, {});
 
-  // Tạo options từ dữ liệu đã lọc
+  // Create options from filtered data
   let options = [];
 
-  // Nếu không có group, trả về mảng options đơn giản
+  // If no group, return simple options array
   if (!columnConfig.group) {
     options = filteredData
       .filter((item) => item && item[columnConfig.value] !== undefined)
@@ -81,11 +81,11 @@ export function setSelection(data, columnConfig, filterParams = {}) {
         label: item[columnConfig.label],
       }));
   } else {
-    // Nhóm dữ liệu theo trường được chỉ định
+    // Group data by specified field
     const groupedData = filteredData.reduce((acc, item) => {
       if (!item || item[columnConfig.value] === undefined) return acc;
 
-      const groupValue = item[columnConfig.group] || "Ungrouped"; // Sử dụng "Ungrouped" làm nhóm mặc định
+      const groupValue = item[columnConfig.group] || "Ungrouped"; // Use "Ungrouped" as default group
 
       if (!acc[groupValue]) {
         acc[groupValue] = [];
@@ -99,16 +99,16 @@ export function setSelection(data, columnConfig, filterParams = {}) {
       return acc;
     }, {});
 
-    // Chuyển đổi sang định dạng options nhóm của Ant Design
+    // Convert to Ant Design grouped options format
     options = Object.keys(groupedData).map((key) => ({
       label: key,
-      key: key, // Sử dụng làm React key
+      key: key, // Use as React key
       options: groupedData[key],
     }));
   }
 
   return {
-    enums,
+    valueEnum,
     options,
   };
 }

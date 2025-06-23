@@ -8,19 +8,19 @@ export function PageProvider({ children }) {
   // Access the option data from the AppContext
   const { optionData } = useAppContext(); // sử dụng lại dữ liệu có trong cache
 
-  // Create a selection for course status using the option data
-  const courseStatus = convertSelection(
+  // Create a selection for role status using the option data
+  const roleStatus = convertSelection(
     optionData,
     { value: "id", label: "option_label", color: "option_color" }, // Define how to map the option data
-    { option_table: "courses", option_column: "course_status_id" } // Define filtering criteria
+    { option_table: "roles", option_column: "role_status_id" } // Define filtering criteria
   );
 
   // Memoize the context value to avoid unnecessary re-renders
   const contextValue = useMemo(
     () => ({
-      courseStatus,
+      roleStatus,
     }),
-    [courseStatus]
+    [roleStatus]
   );
 
   // Provide the context to children components

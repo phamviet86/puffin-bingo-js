@@ -30,8 +30,8 @@ description: "Tạo file service JavaScript hoàn chỉnh với các thao tác C
 - **Soft Delete**: điều kiện `deleted_at IS NULL`
 - **Security**: chống SQL injection bằng tagged template literals
 - **Query Structure**:
-  - SELECT: loại bỏ `created_at`, `deleted_at`, thêm `COUNT(*) OVER() AS total` cho getAll
-  - INSERT/UPDATE: dùng RETURNING với các cột nghiệp vụ
+  - SELECT: dùng `SELECT *`, thêm `COUNT(*) OVER() AS total` cho getAll
+  - INSERT/UPDATE/DELETE: dùng RETURNING \*
   - DELETE: cập nhật `deleted_at = NOW()`
   - ORDER BY mặc định: `ORDER BY created_at` nếu không có orderByClause
 

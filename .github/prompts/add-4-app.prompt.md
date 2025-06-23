@@ -91,11 +91,17 @@ import {
   - Tạo `{TableName}Fields` function với validation rules
 
 - Bước 2: Tạo Component File
+
   - Tạo `{TableName}Table` với ProTable và API endpoint
   - Tạo `{TableName}Info` với DrawerInfo wrapper
   - Tạo `{TableName}Desc` với ProDescriptions cho hiển thị chi tiết
   - Tạo `{TableName}FormCreate` với DrawerForm và submit handler
   - Tạo `{TableName}FormEdit` với DrawerForm và handlers đầy đủ
+
+- Bước 3: Cập nhật Index File
+  - Thêm export statements vào `/src/component/custom/index.js`
+  - Format: `// {tableName}` comment trước exports
+  - Export both schema và component: `export * from "./{tableName}/{tableName}-schema";` và `export * from "./{tableName}/{tableName}-component";`
 
 ## 5. Ví dụ code mẫu
 
@@ -261,4 +267,13 @@ export function OptionsFormEdit({ id, ...props }) {
     />
   );
 }
+```
+
+### Update the Index File (`/src/component/custom/index.js`)
+
+```javascript
+// path: @/component/custom/index.js
+
+export * from "./options/options-schema";
+export * from "./options/options-component";
 ```
