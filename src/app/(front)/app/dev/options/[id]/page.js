@@ -11,18 +11,8 @@ import {
   OptionsFields,
 } from "@/component/custom";
 import { useDesc, useForm, useNav } from "@/component/hook";
-import { PageProvider, usePageContext } from "../provider";
 
-export default function Page(props) {
-  return (
-    <PageProvider>
-      <PageContent {...props} />
-    </PageProvider>
-  );
-}
-
-function PageContent({ params }) {
-  const {} = usePageContext();
+export default function Page({ params }) {
   const { navBack } = useNav();
   const { id: optionId } = use(params);
 

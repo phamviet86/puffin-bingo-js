@@ -18,18 +18,8 @@ import {
   OptionsFields,
 } from "@/component/custom";
 import { useTable, useInfo, useNav } from "@/component/hook";
-import { PageProvider, usePageContext } from "./provider";
 
-export default function Page(props) {
-  return (
-    <PageProvider>
-      <PageContent {...props} />
-    </PageProvider>
-  );
-}
-
-function PageContent() {
-  const {} = usePageContext();
+export default function Page() {
   const { navDetail } = useNav();
 
   // page content: options
