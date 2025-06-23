@@ -1,4 +1,5 @@
 -- table: bài giảng
+
 DROP TABLE IF EXISTS lectures CASCADE;
 CREATE TABLE lectures (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

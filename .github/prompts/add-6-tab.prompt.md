@@ -185,6 +185,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
+import { Space } from "antd";
 import { PageContainer, Button } from "@/component/common";
 import {
   RolesTable,
@@ -220,26 +221,26 @@ function PageContent() {
       <ProCard
         boxShadow
         title="Danh sách vai trò"
-        extra={[
-          <Button
-            key="roles-table-reload"
-            icon={<SyncOutlined />}
-            label="Tải lại"
-            color="default"
-            variant="filled"
-            onClick={() => useRolesTable.reload()}
-          />,
-          <RolesFormCreate
-            key="roles-form-create"
-            fields={RolesFields({ roleStatus })}
-            onFormSubmitSuccess={(result) => {
-              useRolesInfo.close();
-              useRolesTable.reload();
-            }}
-            title="Tạo vai trò"
-            trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
-          />,
-        ]}
+        extra={
+          <Space>
+            <Button
+              icon={<SyncOutlined />}
+              label="Tải lại"
+              color="default"
+              variant="filled"
+              onClick={() => useRolesTable.reload()}
+            />
+            <RolesFormCreate
+              fields={RolesFields({ roleStatus })}
+              onFormSubmitSuccess={(result) => {
+                useRolesInfo.close();
+                useRolesTable.reload();
+              }}
+              title="Tạo vai trò"
+              trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+            />,
+          </Space>
+        }
       >
         <RolesTable
           tableHook={useRolesTable}

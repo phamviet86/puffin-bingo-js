@@ -1,4 +1,5 @@
 -- table: học phần
+
 DROP TABLE IF EXISTS modules CASCADE;
 CREATE TABLE modules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

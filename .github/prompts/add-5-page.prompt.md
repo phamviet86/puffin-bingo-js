@@ -428,9 +428,9 @@ export default function Page(props) {
 }
 
 function PageContent({ params }) {
+  const { id: roleId } = use(params);
   const { navBack } = useNav();
   const { roleStatus } = usePageContext();
-  const { id: roleId } = use(params);
 
   // page content: roles
   const useRolesDesc = useDesc();

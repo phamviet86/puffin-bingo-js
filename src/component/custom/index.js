@@ -19,3 +19,7 @@ export * from "./rooms/rooms-component";
 // syllabuses
 export * from "./syllabuses/syllabuses-schema";
 export * from "./syllabuses/syllabuses-component";
+
+// modules
+export * from "./modules/modules-schema";
+export * from "./modules/modules-component";
