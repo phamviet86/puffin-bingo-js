@@ -25,17 +25,15 @@ export async function PUT(request, context) {
     const { id } = await context.params;
     if (!id) return buildApiResponse(400, false, "Thiếu ID vai trò.");
 
-    const { role_name, role_path, role_color, role_status_id } =
-      await request.json();
+    const { role_name, role_path, role_status_id } = await request.json();
 
     // Validate required fields (dựa vào NOT NULL trong SQL)
-    if (!role_name || !role_path || !role_color || !role_status_id)
+    if (!role_name || !role_path || !role_status_id)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
     const data = {
       role_name,
       role_path,
-      role_color,
       role_status_id,
     };
 

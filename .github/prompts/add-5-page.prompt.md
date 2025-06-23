@@ -220,7 +220,6 @@ CREATE TABLE roles (
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   role_name VARCHAR(255) NOT NULL,
   role_path VARCHAR(255) NOT NULL,
-  role_color VARCHAR(255) NOT NULL,
   role_status_id INTEGER NOT NULL
 );
 CREATE TRIGGER update_record BEFORE
@@ -242,7 +241,7 @@ export function PageProvider({ children }) {
   // Access the option data from the AppContext
   const { optionData } = useAppContext(); // sử dụng lại dữ liệu có trong cache
 
-  // Create a selection for role status using the option data
+  /* Sample: Create a selection for role status using the option data
   const roleStatus = convertSelection(
     optionData,
     { value: "id", label: "option_label", color: "option_color" }, // Define how to map the option data
@@ -256,6 +255,10 @@ export function PageProvider({ children }) {
     }),
     [roleStatus]
   );
+  */
+
+  // Memoize the context value to avoid unnecessary re-renders
+  const contextValue = useMemo(() => ({}), []);
 
   // Provide the context to children components
   return (
@@ -320,7 +323,6 @@ function PageContent() {
     <RolesFormCreate
       key="create-form"
       fields={RolesFields({ roleStatus })}
-      initialValues={{ role_color: "default" }}
       onFormSubmitSuccess={(result) => {
         useRolesInfo.close();
         navDetail(result?.data[0]?.id);

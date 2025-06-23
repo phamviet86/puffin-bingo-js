@@ -47,7 +47,6 @@ function PageContent() {
     <RolesFormCreate
       key="create-form"
       fields={RolesFields({ roleStatus })}
-      initialValues={{ role_color: "default" }}
       onFormSubmitSuccess={(result) => {
         useRolesInfo.close();
         navDetail(result?.data[0]?.id);

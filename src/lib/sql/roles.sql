@@ -8,7 +8,6 @@ CREATE TABLE roles (
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   role_name VARCHAR(255) NOT NULL,
   role_path VARCHAR(255) NOT NULL,
-  role_color VARCHAR(255) NOT NULL,
   role_status_id INTEGER NOT NULL
 );
 CREATE TRIGGER update_record BEFORE

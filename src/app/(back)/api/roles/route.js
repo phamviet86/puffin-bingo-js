@@ -19,17 +19,15 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { role_name, role_path, role_color, role_status_id } =
-      await request.json();
+    const { role_name, role_path, role_status_id } = await request.json();
 
     // Validate required fields (based on NOT NULL constraints in SQL)
-    if (!role_name || !role_path || !role_color || !role_status_id)
+    if (!role_name || !role_path || !role_status_id)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
     const data = {
       role_name,
       role_path,
-      role_color,
       role_status_id,
     };
 

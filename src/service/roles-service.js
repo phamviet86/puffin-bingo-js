@@ -41,13 +41,13 @@ export async function getRole(id) {
 
 export async function createRole(data) {
   try {
-    const { role_name, role_path, role_color, role_status_id } = data;
+    const { role_name, role_path, role_status_id } = data;
 
     return await sql`
       INSERT INTO roles (
-        role_name, role_path, role_color, role_status_id
+        role_name, role_path, role_status_id
       ) VALUES (
-        ${role_name}, ${role_path}, ${role_color}, ${role_status_id}
+        ${role_name}, ${role_path}, ${role_status_id}
       )
       RETURNING *;
     `;
@@ -58,11 +58,11 @@ export async function createRole(data) {
 
 export async function updateRole(data, id) {
   try {
-    const { role_name, role_path, role_color, role_status_id } = data;
+    const { role_name, role_path, role_status_id } = data;
 
     return await sql`
       UPDATE roles
-      SET role_name = ${role_name}, role_path = ${role_path}, role_color = ${role_color}, role_status_id = ${role_status_id}
+      SET role_name = ${role_name}, role_path = ${role_path}, role_status_id = ${role_status_id}
       WHERE deleted_at IS NULL AND id = ${id}
       RETURNING *;
     `;

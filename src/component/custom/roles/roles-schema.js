@@ -19,12 +19,6 @@ export function RolesColumns(params) {
       sorter: { multiple: 1 },
     },
     {
-      title: "Màu sắc",
-      dataIndex: "role_color",
-      valueType: "text",
-      sorter: { multiple: 1 },
-    },
-    {
       title: "Trạng thái",
       dataIndex: "role_status_id",
       valueType: "select",
@@ -50,12 +44,6 @@ export function RolesFields(params) {
         name="role_path"
         label="Đường dẫn"
         placeholder="Nhập đường dẫn"
-        rules={[{ required: true }]}
-      />
-      <ProFormText
-        name="role_color"
-        label="Màu sắc"
-        placeholder="Nhập mã màu"
         rules={[{ required: true }]}
       />
       <ProFormSelect
