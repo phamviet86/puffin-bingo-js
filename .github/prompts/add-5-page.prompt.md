@@ -241,7 +241,8 @@ export function PageProvider({ children }) {
   // Access the option data from the AppContext
   const { optionData } = useAppContext(); // sử dụng lại dữ liệu có trong cache
 
-  /* Sample: Create a selection for role status using the option data
+  /* 
+  // Create a selection for role status using the option data
   const roleStatus = convertSelection(
     optionData,
     { value: "id", label: "option_label", color: "option_color" }, // Define how to map the option data
@@ -256,9 +257,6 @@ export function PageProvider({ children }) {
     [roleStatus]
   );
   */
-
-  // Memoize the context value to avoid unnecessary re-renders
-  const contextValue = useMemo(() => ({}), []);
 
   // Provide the context to children components
   return (

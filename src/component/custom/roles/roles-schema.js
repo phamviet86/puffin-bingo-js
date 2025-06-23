@@ -13,17 +13,18 @@ export function RolesColumns(params) {
       sorter: { multiple: 1 },
     },
     {
-      title: "Đường dẫn",
-      dataIndex: "role_path",
-      valueType: "text",
-      sorter: { multiple: 1 },
-    },
-    {
       title: "Trạng thái",
       dataIndex: "role_status_id",
       valueType: "select",
       valueEnum: roleStatus?.valueEnum || {},
       sorter: { multiple: 1 },
+    },
+    {
+      title: "Đường dẫn",
+      dataIndex: "role_path",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      responsive: ["md"],
     },
   ];
 }
@@ -39,12 +40,7 @@ export function RolesFields(params) {
         label="Tên vai trò"
         placeholder="Nhập tên vai trò"
         rules={[{ required: true }]}
-      />
-      <ProFormText
-        name="role_path"
-        label="Đường dẫn"
-        placeholder="Nhập đường dẫn"
-        rules={[{ required: true }]}
+        colProps={{ xs: 12 }}
       />
       <ProFormSelect
         name="role_status_id"
@@ -52,6 +48,13 @@ export function RolesFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={roleStatus.options || []}
+        colProps={{ xs: 12 }}
+      />
+      <ProFormText
+        name="role_path"
+        label="Đường dẫn"
+        placeholder="Nhập đường dẫn"
+        rules={[{ required: true }]}
       />
     </ProForm.Group>
   );
