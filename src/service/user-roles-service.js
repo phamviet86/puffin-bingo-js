@@ -88,3 +88,47 @@ export async function deleteUserRole(id) {
     throw new Error(error.message);
   }
 }
+
+// Create multiple user roles by user ID and role IDs
+export async function createUserRolesByUser(userId, roleIds) {
+  try {
+    const queryValues = [];
+    const valuePlaceholders = roleIds
+      .map((roleId, index) => {
+        queryValues.push(userId, roleId);
+        return `($${index * 2 + 1}, $${index * 2 + 2})`;
+      })
+      .join(", ");
+
+    const queryText = `
+      INSERT INTO user_roles (user_id, role_id)
+      VALUES ${valuePlaceholders}
+      RETURNING *;
+    `;
+
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// Soft-delete multiple user roles by user ID and role IDs
+export async function deleteUserRolesByUser(userId, roleIds) {
+  try {
+    const placeholders = roleIds.map((_, index) => `$${index + 2}`).join(", ");
+
+    const queryText = `
+      UPDATE user_roles
+      SET deleted_at = NOW()
+      WHERE deleted_at IS NULL 
+        AND user_id = $1 
+        AND role_id IN (${placeholders})
+      RETURNING *;
+    `;
+
+    const queryValues = [userId, ...roleIds];
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}

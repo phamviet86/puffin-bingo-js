@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { message, Modal, Transfer as AntTransfer } from "antd";
+import { convertTransferItems } from "@/lib/util/convert-util";
+import styles from "./transfer.module.css";
 import { MODAL_CONFIG } from "@/component/config";
 
 export function ModalTransfer({
@@ -12,12 +14,13 @@ export function ModalTransfer({
   onTargetParams = undefined,
   onTargetItem = undefined,
   onAddTarget = undefined,
-  onTransferClose = undefined,
   onRemoveTarget = undefined,
+  onTransferClose = undefined,
   listStyle = undefined,
   rowKey = (item) => item.key,
   render = (item) => item.title,
   modalProps = {},
+  transferHook = {},
   ...props
 }) {
   const { visible, close } = transferHook;
@@ -32,52 +35,46 @@ export function ModalTransfer({
     onTransferClose?.();
   }, [close, onTransferClose]);
 
-  const handleSourceRequest = useCallback(
-    async (onSourceParams) => {
-      if (!onSourceRequest) {
-        messageApi.error("Data request handler not provided");
-        return [];
+  const handleSourceRequest = useCallback(async () => {
+    if (!onSourceRequest) {
+      messageApi.error("Data request handler not provided");
+      return [];
+    }
+    try {
+      const result = await onSourceRequest(onSourceParams);
+      if (onSourceItem) {
+        return convertTransferItems(result.data || [], onSourceItem);
       }
-      try {
-        const result = await onSourceRequest(onSourceParams);
-        if (onSourceItem) {
-          return convertTransferItems(result.data || [], onSourceItem);
-        }
-        return result.data || [];
-      } catch (error) {
-        messageApi.error(error.message || "Đã xảy ra lỗi");
-        return [];
-      }
-    },
-    [onSourceRequest, onSourceItem, messageApi]
-  );
+      return result.data || [];
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi");
+      return [];
+    }
+  }, [onSourceRequest, onSourceItem, onSourceParams, messageApi]);
 
-  const handleTargetRequest = useCallback(
-    async (onTargetParams) => {
-      if (!onTargetRequest) {
-        messageApi.error("Data request handler not provided");
-        return [];
+  const handleTargetRequest = useCallback(async () => {
+    if (!onTargetRequest) {
+      messageApi.error("Data request handler not provided");
+      return [];
+    }
+    try {
+      const result = await onTargetRequest(onTargetParams);
+      if (onTargetItem) {
+        return convertTransferItems(result.data || [], onTargetItem);
       }
-      try {
-        const result = await onTargetRequest(onTargetParams);
-        if (onTargetItem) {
-          return convertTransferItems(result.data || [], onTargetItem);
-        }
-        return result.data || [];
-      } catch (error) {
-        messageApi.error(error.message || "Đã xảy ra lỗi");
-        return [];
-      }
-    },
-    [onTargetRequest, onTargetItem, messageApi]
-  );
+      return result.data || [];
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi");
+      return [];
+    }
+  }, [onTargetRequest, onTargetItem, onTargetParams, messageApi]);
 
   // Reload data function
   const reloadData = useCallback(async () => {
     try {
       const [source, target] = await Promise.all([
-        handleSourceRequest(onSourceParams),
-        handleTargetRequest(onTargetParams),
+        handleSourceRequest(),
+        handleTargetRequest(),
       ]);
 
       // Merge source and target data to ensure all items are available
@@ -93,13 +90,7 @@ export function ModalTransfer({
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
     }
-  }, [
-    onSourceParams,
-    onTargetParams,
-    messageApi,
-    handleSourceRequest,
-    handleTargetRequest,
-  ]);
+  }, [messageApi, handleSourceRequest, handleTargetRequest]);
 
   const handleAddTarget = useCallback(
     async (keys) => {

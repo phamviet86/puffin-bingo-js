@@ -25,52 +25,46 @@ export function Transfer({
   const [messageApi, contextHolder] = message.useMessage();
 
   // Handlers
-  const handleSourceRequest = useCallback(
-    async (onSourceParams) => {
-      if (!onSourceRequest) {
-        messageApi.error("Data request handler not provided");
-        return [];
+  const handleSourceRequest = useCallback(async () => {
+    if (!onSourceRequest) {
+      messageApi.error("Data request handler not provided");
+      return [];
+    }
+    try {
+      const result = await onSourceRequest(onSourceParams);
+      if (onSourceItem) {
+        return convertTransferItems(result.data || [], onSourceItem);
       }
-      try {
-        const result = await onSourceRequest(onSourceParams);
-        if (onSourceItem) {
-          return convertTransferItems(result.data || [], onSourceItem);
-        }
-        return result.data || [];
-      } catch (error) {
-        messageApi.error(error.message || "Đã xảy ra lỗi");
-        return [];
-      }
-    },
-    [onSourceRequest, onSourceItem, messageApi]
-  );
+      return result.data || [];
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi");
+      return [];
+    }
+  }, [onSourceRequest, onSourceItem, onSourceParams, messageApi]);
 
-  const handleTargetRequest = useCallback(
-    async (onTargetParams) => {
-      if (!onTargetRequest) {
-        messageApi.error("Data request handler not provided");
-        return [];
+  const handleTargetRequest = useCallback(async () => {
+    if (!onTargetRequest) {
+      messageApi.error("Data request handler not provided");
+      return [];
+    }
+    try {
+      const result = await onTargetRequest(onTargetParams);
+      if (onTargetItem) {
+        return convertTransferItems(result.data || [], onTargetItem);
       }
-      try {
-        const result = await onTargetRequest(onTargetParams);
-        if (onTargetItem) {
-          return convertTransferItems(result.data || [], onTargetItem);
-        }
-        return result.data || [];
-      } catch (error) {
-        messageApi.error(error.message || "Đã xảy ra lỗi");
-        return [];
-      }
-    },
-    [onTargetRequest, onTargetItem, messageApi]
-  );
+      return result.data || [];
+    } catch (error) {
+      messageApi.error(error.message || "Đã xảy ra lỗi");
+      return [];
+    }
+  }, [onTargetRequest, onTargetItem, onTargetParams, messageApi]);
 
   // Reload data function
   const reloadData = useCallback(async () => {
     try {
       const [source, target] = await Promise.all([
-        handleSourceRequest(onSourceParams),
-        handleTargetRequest(onTargetParams),
+        handleSourceRequest(),
+        handleTargetRequest(),
       ]);
 
       // Merge source and target data to ensure all items are available
@@ -86,13 +80,7 @@ export function Transfer({
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
     }
-  }, [
-    onSourceParams,
-    onTargetParams,
-    messageApi,
-    handleSourceRequest,
-    handleTargetRequest,
-  ]);
+  }, [messageApi, handleSourceRequest, handleTargetRequest]);
 
   const handleAddTarget = useCallback(
     async (keys) => {

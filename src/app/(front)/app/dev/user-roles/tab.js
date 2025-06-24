@@ -31,8 +31,6 @@ export default function Page(props) {
 }
 
 function PageContent() {
-  const { users, roles } = usePageContext();
-
   // tab content: user-roles
   const useUserRolesTable = useTable();
   const useUserRolesInfo = useInfo();
@@ -55,7 +53,7 @@ function PageContent() {
               onClick={() => useUserRolesTable.reload()}
             />
             <UserRolesFormCreate
-              fields={UserRolesFields({ users, roles })}
+              fields={UserRolesFields()}
               onFormSubmitSuccess={(result) => {
                 useUserRolesInfo.close();
                 useUserRolesTable.reload();
@@ -68,7 +66,7 @@ function PageContent() {
       >
         <UserRolesTable
           tableHook={useUserRolesTable}
-          columns={UserRolesColumns({ users, roles })}
+          columns={UserRolesColumns()}
           leftColumns={[
             {
               width: 56,
@@ -107,7 +105,7 @@ function PageContent() {
         />
         <UserRolesInfo
           infoHook={useUserRolesInfo}
-          columns={UserRolesColumns({ users, roles })}
+          columns={UserRolesColumns()}
           dataSource={useUserRolesInfo.dataSource}
           drawerProps={{
             title: "Thông tin phân quyền",
@@ -127,7 +125,7 @@ function PageContent() {
         />
         <UserRolesFormEdit
           formHook={useUserRolesForm}
-          fields={UserRolesFields({ users, roles })}
+          fields={UserRolesFields()}
           id={useUserRolesForm.id}
           onFormSubmitSuccess={() => useUserRolesTable.reload()}
           onFormDeleteSuccess={() => {

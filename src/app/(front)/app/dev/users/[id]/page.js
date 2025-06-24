@@ -3,16 +3,36 @@
 "use client";
 
 import { use } from "react";
-import { EditOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  InfoCircleOutlined,
+  SyncOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
+import { Space } from "antd";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
   UsersDesc,
   UsersFormEdit,
   UsersColumns,
   UsersFields,
+  UserRolesTable,
+  UserRolesInfo,
+  UserRolesFormCreate,
+  UserRolesFormEdit,
+  UserRolesColumns,
+  UserRolesFields,
+  UserRolesTransfer,
 } from "@/component/custom";
-import { useDesc, useForm, useNav } from "@/component/hook";
+import {
+  useDesc,
+  useForm,
+  useNav,
+  useTable,
+  useInfo,
+  useTransfer,
+} from "@/component/hook";
 import { PageProvider, usePageContext } from "../provider";
 
 export default function Page(props) {
@@ -62,6 +82,50 @@ function PageContent({ params }) {
     </ProCard>
   );
 
+  // tab content: user-roles
+  const useUserRolesTable = useTable();
+  const useUserRoleTransfer = useTransfer();
+
+  const userRolesTab = {
+    key: "user-roles",
+    label: "Phân quyền",
+    children: (
+      <ProCard
+        boxShadow
+        title="Danh sách phân quyền"
+        extra={
+          <Space>
+            <Button
+              icon={<SyncOutlined />}
+              label="Tải lại"
+              color="default"
+              variant="filled"
+              onClick={() => useUserRolesTable.reload()}
+            />
+            <Button
+              icon={<EditOutlined />}
+              label="Transfer"
+              color="default"
+              variant="filled"
+              onClick={() => useUserRoleTransfer.open()}
+            />
+          </Space>
+        }
+      >
+        <UserRolesTable
+          tableHook={useUserRolesTable}
+          columns={UserRolesColumns()}
+          params={{ user_id: userId }}
+        />
+        <UserRolesTransfer
+          transferHook={useUserRoleTransfer}
+          userId={userId}
+          onTransferClose={() => useUserRolesTable.reload()}
+        />
+      </ProCard>
+    ),
+  };
+
   const pageTitle = useUsersDesc?.dataSource?.user_name || "Chi tiết";
   document.title = `Người dùng - ${pageTitle}`;
 
@@ -75,6 +139,7 @@ function PageContent({ params }) {
       title={pageTitle}
       extra={pageButton}
       content={pageContent}
+      tabList={[userRolesTab]}
     />
   );
 }
