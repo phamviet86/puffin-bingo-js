@@ -59,10 +59,8 @@ import { convertSelection } from "@/lib/util/convert-util";
 
 ```javascript
 import {
-  PlusOutlined,
   InfoCircleOutlined,
   EyeOutlined,
-  SyncOutlined,
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
@@ -90,7 +88,6 @@ import { PageProvider, usePageContext } from "./provider";
 
 ```javascript
 import { use } from "react";
-import { EditOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -276,12 +273,7 @@ export function usePageContext() {
 
 "use client";
 
-import {
-  PlusOutlined,
-  InfoCircleOutlined,
-  EyeOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, EyeOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
@@ -313,7 +305,6 @@ function PageContent() {
   const pageButton = [
     <Button
       key="refresh-button"
-      icon={<SyncOutlined />}
       label="Tải lại"
       color="default"
       variant="filled"
@@ -327,7 +318,7 @@ function PageContent() {
         navDetail(result?.data[0]?.id);
       }}
       title="Tạo vai trò"
-      trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+      trigger={<Button label="Tạo mới" />}
     />,
   ];
 
@@ -407,7 +398,6 @@ function PageContent() {
 "use client";
 
 import { use } from "react";
-import { EditOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -449,7 +439,7 @@ function PageContent({ params }) {
       }}
       key="edit-form"
       title="Sửa vai trò"
-      trigger={<Button label="Sửa" icon={<EditOutlined />} />}
+      trigger={<Button label="Sửa" />}
     />,
   ];
 

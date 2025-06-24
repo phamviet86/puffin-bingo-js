@@ -2,12 +2,7 @@
 
 "use client";
 
-import {
-  PlusOutlined,
-  InfoCircleOutlined,
-  EyeOutlined,
-  SyncOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, EyeOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
@@ -29,7 +24,6 @@ export default function Page() {
   const pageButton = [
     <Button
       key="refresh-button"
-      icon={<SyncOutlined />}
       label="Tải lại"
       color="default"
       variant="filled"
@@ -44,7 +38,7 @@ export default function Page() {
         navDetail(result?.data[0]?.id);
       }}
       title="Tạo tùy chọn"
-      trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+      trigger={<Button label="Tạo mới" />}
     />,
   ];
 

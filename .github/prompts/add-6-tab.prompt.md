@@ -32,9 +32,7 @@ Tạo **1 file** cho mỗi entity:
 
 ```javascript
 import {
-  PlusOutlined,
   InfoCircleOutlined,
-  SyncOutlined,
   EditOutlined,
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
@@ -178,12 +176,7 @@ UPDATE ON roles FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 "use client";
 
-import {
-  PlusOutlined,
-  InfoCircleOutlined,
-  SyncOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { Space } from "antd";
 import { PageContainer, Button } from "@/component/common";
@@ -224,7 +217,6 @@ function PageContent() {
         extra={
           <Space>
             <Button
-              icon={<SyncOutlined />}
               label="Tải lại"
               color="default"
               variant="filled"
@@ -237,7 +229,7 @@ function PageContent() {
                 useRolesTable.reload();
               }}
               title="Tạo vai trò"
-              trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" />}
             />,
           </Space>
         }

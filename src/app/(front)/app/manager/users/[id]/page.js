@@ -3,12 +3,6 @@
 "use client";
 
 import { use } from "react";
-import {
-  PlusOutlined,
-  InfoCircleOutlined,
-  SyncOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { Space } from "antd";
 import { PageContainer, Button, BackButton } from "@/component/common";
@@ -18,11 +12,7 @@ import {
   UsersColumns,
   UsersFields,
   UserRolesTable,
-  UserRolesInfo,
-  UserRolesFormCreate,
-  UserRolesFormEdit,
   UserRolesColumns,
-  UserRolesFields,
   UserRolesTransfer,
 } from "@/component/custom";
 import {
@@ -30,7 +20,6 @@ import {
   useForm,
   useNav,
   useTable,
-  useInfo,
   useTransfer,
 } from "@/component/hook";
 import { PageProvider, usePageContext } from "../provider";
@@ -65,7 +54,7 @@ function PageContent({ params }) {
       }}
       key="edit-form"
       title="Sửa người dùng"
-      trigger={<Button label="Sửa" icon={<EditOutlined />} />}
+      trigger={<Button label="Sửa" />}
     />,
   ];
 
@@ -96,16 +85,13 @@ function PageContent({ params }) {
         extra={
           <Space>
             <Button
-              icon={<SyncOutlined />}
               label="Tải lại"
               color="default"
               variant="filled"
               onClick={() => useUserRolesTable.reload()}
             />
             <Button
-              icon={<EditOutlined />}
-              label="Transfer"
-              color="default"
+              label="Điều chỉnh"
               variant="filled"
               onClick={() => useUserRoleTransfer.open()}
             />

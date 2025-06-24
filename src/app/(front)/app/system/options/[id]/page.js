@@ -1,7 +1,6 @@
 "use client";
 
 import { use } from "react";
-import { EditOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -33,7 +32,7 @@ export default function Page({ params }) {
       }}
       key="edit-form"
       title="Sửa tùy chọn"
-      trigger={<Button label="Sửa" icon={<EditOutlined />} />}
+      trigger={<Button label="Sửa" />}
     />,
   ];
 

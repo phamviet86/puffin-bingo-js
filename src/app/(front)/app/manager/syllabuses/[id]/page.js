@@ -3,12 +3,7 @@
 "use client";
 
 import { use } from "react";
-import {
-  PlusOutlined,
-  InfoCircleOutlined,
-  SyncOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { InfoCircleOutlined, EditOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { Space } from "antd";
 import { PageContainer, Button, BackButton } from "@/component/common";
@@ -63,7 +58,7 @@ function PageContent({ params }) {
       }}
       key="edit-form"
       title="Sửa giáo trình"
-      trigger={<Button label="Sửa" icon={<EditOutlined />} />}
+      trigger={<Button label="Sửa" />}
     />,
   ];
 
@@ -95,7 +90,6 @@ function PageContent({ params }) {
         extra={
           <Space>
             <Button
-              icon={<SyncOutlined />}
               label="Tải lại"
               color="default"
               variant="filled"
@@ -109,7 +103,7 @@ function PageContent({ params }) {
               }}
               initialValues={{ syllabus_id: syllabusId }}
               title="Tạo học phần"
-              trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" />}
             />
           </Space>
         }
@@ -204,7 +198,6 @@ function PageContent({ params }) {
         extra={
           <Space>
             <Button
-              icon={<SyncOutlined />}
               label="Tải lại"
               color="default"
               variant="filled"
@@ -217,7 +210,7 @@ function PageContent({ params }) {
                 useLecturesTable.reload();
               }}
               title="Tạo bài giảng"
-              trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" />}
             />
           </Space>
         }
