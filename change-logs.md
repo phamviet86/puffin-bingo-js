@@ -21,15 +21,20 @@
 
 # DB NAME
 
-- options: tuỳ chọn
-- roles: vai trò
-- users: người dùng
-- user-roles: phân quyền
-- shifts: ca học
-- rooms: phòng học
-- syllabuses: giáo trình
-- modules: học phần
-- lectures: bài giảng
-- courses: khoá học
-- classes: lớp học
-- schedules: lịch học
+- [x] options: tuỳ chọn
+- [x] roles: vai trò
+- [x] users: người dùng
+- [ ] user-roles: phân quyền
+- [x] shifts: ca học
+- [x] rooms: phòng học
+- [x] syllabuses: giáo trình
+- [x] modules: học phần
+- [x] lectures: bài giảng
+- [ ] courses: khoá học
+- [ ] classes: lớp học
+- [ ] enrollments: đăng ký
+- [ ] schedules: lịch học
+- [ ] attendances: điểm danh
+- [ ] assessments: đánh giá
+- [ ] tuitions: học phí
+- [ ] invoices: hoá đơn
