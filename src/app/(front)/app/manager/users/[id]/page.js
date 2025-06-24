@@ -81,7 +81,7 @@ function PageContent({ params }) {
     children: (
       <ProCard
         boxShadow
-        title="Danh sách phân quyền"
+        title="Danh sách quyền"
         extra={
           <Space>
             <Button
@@ -102,6 +102,7 @@ function PageContent({ params }) {
           tableHook={useUserRolesTable}
           columns={UserRolesColumns()}
           params={{ user_id: userId }}
+          showSearch={false}
         />
         <UserRolesTransfer
           transferHook={useUserRoleTransfer}
