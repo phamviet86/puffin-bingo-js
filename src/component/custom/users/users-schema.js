@@ -60,6 +60,12 @@ export function UsersColumns(params) {
       hidden: true,
       search: false,
     },
+    {
+      title: "Vai trò",
+      dataIndex: "role_names",
+      valueType: "textarea",
+      sorter: { multiple: 1 },
+    },
   ];
 }
 

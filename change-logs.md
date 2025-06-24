@@ -24,7 +24,7 @@
 - [x] options: tuỳ chọn
 - [x] roles: vai trò
 - [x] users: người dùng
-- [ ] user-roles: phân quyền
+- [x] user-roles: phân quyền
 - [x] shifts: ca học
 - [x] rooms: phòng học
 - [x] syllabuses: giáo trình
