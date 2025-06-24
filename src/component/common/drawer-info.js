@@ -9,6 +9,7 @@ export function DrawerInfo({
   onInfoRequest = undefined,
   onInfoRequestError = undefined,
   onInfoRequestSuccess = undefined,
+  onInfoRequestParams = undefined,
   column = 1,
   infoHook = {},
   drawerProps = {},
@@ -53,6 +54,7 @@ export function DrawerInfo({
           {...props}
           actionRef={infoRef}
           request={onInfoRequest ? handleDataRequest : undefined}
+          params={onInfoRequestParams}
           column={column}
         />
       </Drawer>

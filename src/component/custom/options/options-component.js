@@ -47,13 +47,13 @@ export function OptionsFormCreate(props) {
   );
 }
 
-export function OptionsFormEdit({ id, ...props }) {
+export function OptionsFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/options/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/options/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/options/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/options/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/options/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/options/${params.id}`)}
     />
   );
 }

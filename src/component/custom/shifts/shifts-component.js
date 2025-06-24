@@ -47,13 +47,13 @@ export function ShiftsFormCreate(props) {
   );
 }
 
-export function ShiftsFormEdit({ id, ...props }) {
+export function ShiftsFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/shifts/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/shifts/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/shifts/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/shifts/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/shifts/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/shifts/${params.id}`)}
     />
   );
 }

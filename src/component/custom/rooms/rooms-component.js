@@ -47,13 +47,13 @@ export function RoomsFormCreate(props) {
   );
 }
 
-export function RoomsFormEdit({ id, ...props }) {
+export function RoomsFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/rooms/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/rooms/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/rooms/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/rooms/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/rooms/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/rooms/${params.id}`)}
     />
   );
 }

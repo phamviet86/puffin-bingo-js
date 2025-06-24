@@ -36,8 +36,9 @@ function PageContent({ params }) {
     <RoomsFormEdit
       formHook={useRoomsForm}
       fields={RoomsFields({ roomStatus })}
-      id={roomId}
+      onFormRequestParams={{ id: roomId }}
       onFormSubmitSuccess={() => useRoomsDesc.reload()}
+      onFormDeleteParams={{ id: roomId }}
       onFormDeleteSuccess={() => {
         useRoomsForm.close();
         navBack();
@@ -53,7 +54,7 @@ function PageContent({ params }) {
       <RoomsDesc
         descHook={useRoomsDesc}
         columns={RoomsColumns({ roomStatus })}
-        params={{ id: roomId }}
+        onDescRequestParams={{ id: roomId }}
         onDescRequestSuccess={(result) =>
           useRoomsDesc.setDataSource(result?.data?.[0])
         }

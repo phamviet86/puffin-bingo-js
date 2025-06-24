@@ -47,13 +47,13 @@ export function UsersFormCreate(props) {
   );
 }
 
-export function UsersFormEdit({ id, ...props }) {
+export function UsersFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/users/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/users/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/users/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/users/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/users/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/users/${params.id}`)}
     />
   );
 }

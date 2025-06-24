@@ -418,9 +418,9 @@ export default function Page(props) {
 }
 
 function PageContent({ params }) {
-  const { id: roleId } = use(params);
   const { navBack } = useNav();
   const { roleStatus } = usePageContext();
+  const { id: roleId } = use(params);
 
   // page content: roles
   const useRolesDesc = useDesc();
@@ -431,8 +431,9 @@ function PageContent({ params }) {
     <RolesFormEdit
       formHook={useRolesForm}
       fields={RolesFields({ roleStatus })}
-      id={roleId}
+      onFormRequestParams={{ id: roleId }}
       onFormSubmitSuccess={() => useRolesDesc.reload()}
+      onFormDeleteParams={{ id: roleId }}
       onFormDeleteSuccess={() => {
         useRolesForm.close();
         navBack();
@@ -448,7 +449,7 @@ function PageContent({ params }) {
       <RolesDesc
         descHook={useRolesDesc}
         columns={RolesColumns({ roleStatus })}
-        params={{ id: roleId }}
+        onDescRequestParams={{ id: roleId }}
         onDescRequestSuccess={(result) =>
           useRolesDesc.setDataSource(result?.data?.[0])
         }

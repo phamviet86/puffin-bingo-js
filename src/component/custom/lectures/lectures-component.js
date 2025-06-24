@@ -47,13 +47,13 @@ export function LecturesFormCreate(props) {
   );
 }
 
-export function LecturesFormEdit({ id, ...props }) {
+export function LecturesFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/lectures/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/lectures/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/lectures/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/lectures/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/lectures/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/lectures/${params.id}`)}
     />
   );
 }

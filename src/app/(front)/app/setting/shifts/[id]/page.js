@@ -36,8 +36,9 @@ function PageContent({ params }) {
     <ShiftsFormEdit
       formHook={useShiftsForm}
       fields={ShiftsFields({ shiftStatus })}
-      id={shiftId}
+      onFormRequestParams={{ id: shiftId }}
       onFormSubmitSuccess={() => useShiftsDesc.reload()}
+      onFormDeleteParams={{ id: shiftId }}
       onFormDeleteSuccess={() => {
         useShiftsForm.close();
         navBack();
@@ -53,7 +54,7 @@ function PageContent({ params }) {
       <ShiftsDesc
         descHook={useShiftsDesc}
         columns={ShiftsColumns({ shiftStatus })}
-        params={{ id: shiftId }}
+        onDescRequestParams={{ id: shiftId }}
         onDescRequestSuccess={(result) =>
           useShiftsDesc.setDataSource(result?.data?.[0])
         }

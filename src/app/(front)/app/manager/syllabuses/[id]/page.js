@@ -50,8 +50,9 @@ function PageContent({ params }) {
     <SyllabusesFormEdit
       formHook={useSyllabusesForm}
       fields={SyllabusesFields({ syllabusStatus })}
-      id={syllabusId}
+      onFormRequestParams={{ id: syllabusId }}
       onFormSubmitSuccess={() => useSyllabusesDesc.reload()}
+      onFormDeleteParams={{ id: syllabusId }}
       onFormDeleteSuccess={() => {
         useSyllabusesForm.close();
         navBack();
@@ -67,7 +68,7 @@ function PageContent({ params }) {
       <SyllabusesDesc
         descHook={useSyllabusesDesc}
         columns={SyllabusesColumns({ syllabusStatus })}
-        params={{ id: syllabusId }}
+        onDescRequestParams={{ id: syllabusId }}
         onDescRequestSuccess={(result) =>
           useSyllabusesDesc.setDataSource(result?.data?.[0])
         }
@@ -111,7 +112,7 @@ function PageContent({ params }) {
         <ModulesTable
           tableHook={useModulesTable}
           columns={ModulesColumns({ moduleStatus })}
-          params={{ syllabus_id: syllabusId }}
+          onTableRequestParams={{ syllabus_id: syllabusId }}
           leftColumns={[
             {
               width: 56,
@@ -171,8 +172,9 @@ function PageContent({ params }) {
         <ModulesFormEdit
           formHook={useModulesForm}
           fields={ModulesFields({ moduleStatus })}
-          id={useModulesForm.id}
+          onFormRequestParams={{ id: useModulesForm.id }}
           onFormSubmitSuccess={() => useModulesTable.reload()}
+          onFormDeleteParams={{ id: useModulesForm.id }}
           onFormDeleteSuccess={() => {
             useModulesForm.close();
             useModulesTable.reload();
@@ -218,7 +220,7 @@ function PageContent({ params }) {
         <LecturesTable
           tableHook={useLecturesTable}
           columns={LecturesColumns({ syllabusId, lectureStatus })}
-          params={{ syllabus_id: syllabusId }}
+          onTableRequestParams={{ syllabus_id: syllabusId }}
           leftColumns={[
             {
               width: 56,
@@ -278,8 +280,9 @@ function PageContent({ params }) {
         <LecturesFormEdit
           formHook={useLecturesForm}
           fields={LecturesFields({ syllabusId, lectureStatus })}
-          id={useLecturesForm.id}
+          onFormRequestParams={{ id: useLecturesForm.id }}
           onFormSubmitSuccess={() => useLecturesTable.reload()}
+          onFormDeleteParams={{ id: useLecturesForm.id }}
           onFormDeleteSuccess={() => {
             useLecturesForm.close();
             useLecturesTable.reload();

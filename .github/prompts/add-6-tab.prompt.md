@@ -296,8 +296,9 @@ function PageContent() {
         <RolesFormEdit
           formHook={useRolesForm}
           fields={RolesFields({ roleStatus })}
-          id={useRolesForm.id}
+          onFormRequestParams={{ id: useRolesForm.id }}
           onFormSubmitSuccess={() => useRolesTable.reload()}
+          onFormDeleteParams={{ id: useRolesForm.id }}
           onFormDeleteSuccess={() => {
             useRolesForm.close();
             useRolesTable.reload();

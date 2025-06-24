@@ -47,13 +47,13 @@ export function RolesFormCreate(props) {
   );
 }
 
-export function RolesFormEdit({ id, ...props }) {
+export function RolesFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/roles/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/roles/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/roles/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/roles/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/roles/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/roles/${params.id}`)}
     />
   );
 }

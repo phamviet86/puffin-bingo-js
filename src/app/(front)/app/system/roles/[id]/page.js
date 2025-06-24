@@ -36,8 +36,9 @@ function PageContent({ params }) {
     <RolesFormEdit
       formHook={useRolesForm}
       fields={RolesFields({ roleStatus })}
-      id={roleId}
+      onFormRequestParams={{ id: roleId }}
       onFormSubmitSuccess={() => useRolesDesc.reload()}
+      onFormDeleteParams={{ id: roleId }}
       onFormDeleteSuccess={() => {
         useRolesForm.close();
         navBack();
@@ -53,7 +54,7 @@ function PageContent({ params }) {
       <RolesDesc
         descHook={useRolesDesc}
         columns={RolesColumns({ roleStatus })}
-        params={{ id: roleId }}
+        onDescRequestParams={{ id: roleId }}
         onDescRequestSuccess={(result) =>
           useRolesDesc.setDataSource(result?.data?.[0])
         }

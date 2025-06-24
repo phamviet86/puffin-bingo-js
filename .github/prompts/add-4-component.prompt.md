@@ -193,7 +193,7 @@ export function RolesFields(params) {
 ### Output Component File (options-component.js)
 
 ```javascript
-// path: @/component/custom/roles/roles-component.js
+// path: @/component/custom/options/options-component.js
 
 import {
   ProTable,
@@ -203,52 +203,52 @@ import {
 } from "@/component/common";
 import {
   fetchList,
-  fetchPost,
   fetchGet,
+  fetchPost,
   fetchPut,
   fetchDelete,
 } from "@/lib/util/fetch-util";
 
-export function RolesTable(props) {
+export function OptionsTable(props) {
   return (
     <ProTable
       {...props}
       onTableRequest={(params, sort, filter) =>
-        fetchList("/api/roles", params, sort, filter)
+        fetchList("/api/options", params, sort, filter)
       }
     />
   );
 }
 
-export function RolesDesc(props) {
-  return (
-    <ProDescriptions
-      {...props}
-      onDescRequest={(params) => fetchGet(`/api/roles/${params?.id}`)}
-    />
-  );
-}
-
-export function RolesInfo(props) {
+export function OptionsInfo(props) {
   return <DrawerInfo {...props} />;
 }
 
-export function RolesFormCreate(props) {
+export function OptionsDesc(props) {
   return (
-    <DrawerForm
+    <ProDescriptions
       {...props}
-      onFormSubmit={(values) => fetchPost("/api/roles", values)}
+      onDescRequest={(params) => fetchGet(`/api/options/${params?.id}`)}
     />
   );
 }
 
-export function RolesFormEdit({ id, ...props }) {
+export function OptionsFormCreate(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/roles/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/roles/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/roles/${id}`)}
+      onFormSubmit={(values) => fetchPost("/api/options", values)}
+    />
+  );
+}
+
+export function OptionsFormEdit(props) {
+  return (
+    <DrawerForm
+      {...props}
+      onFormRequest={(params) => fetchGet(`/api/options/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/options/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/options/${params.id}`)}
     />
   );
 }

@@ -8,6 +8,7 @@ export function ProDescriptions({
   onDescRequest = undefined,
   onDescRequestError = undefined,
   onDescRequestSuccess = undefined,
+  onDescRequestParams = undefined,
   column = { xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 3 },
   descHook = {},
   ...props
@@ -45,6 +46,7 @@ export function ProDescriptions({
         {...props}
         actionRef={descRef}
         request={onDescRequest ? handleDataRequest : undefined}
+        params={onDescRequestParams}
         column={column}
       />
     </>

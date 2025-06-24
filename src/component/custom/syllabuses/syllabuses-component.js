@@ -47,13 +47,15 @@ export function SyllabusesFormCreate(props) {
   );
 }
 
-export function SyllabusesFormEdit({ id, ...props }) {
+export function SyllabusesFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/syllabuses/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/syllabuses/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/syllabuses/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/syllabuses/${params.id}`)}
+      onFormSubmit={(values) =>
+        fetchPut(`/api/syllabuses/${values.id}`, values)
+      }
+      onFormDelete={(params) => fetchDelete(`/api/syllabuses/${params.id}`)}
     />
   );
 }

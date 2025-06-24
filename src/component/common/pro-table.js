@@ -9,6 +9,7 @@ export function ProTable({
   onTableRequest = undefined,
   onTableRequestError = undefined,
   onTableRequestSuccess = undefined,
+  onTableRequestParams = undefined,
   onRowsSelect = undefined,
   onRowsSelectError = undefined,
   onRowClick = undefined,
@@ -96,6 +97,7 @@ export function ProTable({
         actionRef={tableRef}
         columns={[...leftColumns, ...columns, ...rightColumns]}
         request={onTableRequest ? handleDataRequest : undefined}
+        params={onTableRequestParams}
         rowSelection={
           onRowsSelect
             ? { type: selectType, onChange: handleRowsSelect }

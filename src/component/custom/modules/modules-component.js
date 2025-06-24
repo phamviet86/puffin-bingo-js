@@ -47,13 +47,13 @@ export function ModulesFormCreate(props) {
   );
 }
 
-export function ModulesFormEdit({ id, ...props }) {
+export function ModulesFormEdit(props) {
   return (
     <DrawerForm
       {...props}
-      onFormRequest={() => fetchGet(`/api/modules/${id}`)}
-      onFormSubmit={(values) => fetchPut(`/api/modules/${id}`, values)}
-      onFormDelete={() => fetchDelete(`/api/modules/${id}`)}
+      onFormRequest={(params) => fetchGet(`/api/modules/${params.id}`)}
+      onFormSubmit={(values) => fetchPut(`/api/modules/${values.id}`, values)}
+      onFormDelete={(params) => fetchDelete(`/api/modules/${params.id}`)}
     />
   );
 }

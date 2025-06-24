@@ -24,7 +24,8 @@ export default function Page({ params }) {
     <OptionsFormEdit
       formHook={useOptionForm}
       fields={OptionsFields()}
-      id={optionId}
+      onFormRequestParams={{ id: optionId }}
+      onFormDeleteParams={{ id: optionId }}
       onFormSubmitSuccess={() => useOptionDesc.reload()}
       onFormDeleteSuccess={() => {
         useOptionForm.close();
@@ -41,7 +42,7 @@ export default function Page({ params }) {
       <OptionsDesc
         descHook={useOptionDesc}
         columns={OptionsColumns()}
-        params={{ id: optionId }}
+        onDescRequestParams={{ id: optionId }}
         onDescRequestSuccess={(result) =>
           useOptionDesc.setDataSource(result?.data?.[0])
         }

@@ -46,8 +46,9 @@ function PageContent({ params }) {
     <UsersFormEdit
       formHook={useUsersForm}
       fields={UsersFields({ userStatus })}
-      id={userId}
+      onFormRequestParams={{ id: userId }}
       onFormSubmitSuccess={() => useUsersDesc.reload()}
+      onFormDeleteParams={{ id: userId }}
       onFormDeleteSuccess={() => {
         useUsersForm.close();
         navBack();
@@ -63,7 +64,7 @@ function PageContent({ params }) {
       <UsersDesc
         descHook={useUsersDesc}
         columns={UsersColumns({ userStatus })}
-        params={{ id: userId }}
+        onDescRequestParams={{ id: userId }}
         onDescRequestSuccess={(result) =>
           useUsersDesc.setDataSource(result?.data?.[0])
         }
@@ -101,7 +102,7 @@ function PageContent({ params }) {
         <UserRolesTable
           tableHook={useUserRolesTable}
           columns={UserRolesColumns()}
-          params={{ user_id: userId }}
+          onTableRequestParams={{ user_id: userId }}
           showSearch={false}
         />
         <UserRolesTransfer

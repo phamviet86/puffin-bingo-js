@@ -12,12 +12,14 @@ export function DrawerForm({
   onFormRequest = undefined,
   onFormRequestError = undefined,
   onFormRequestSuccess = undefined,
+  onFormRequestParams = undefined,
   onFormSubmit = undefined,
   onFormSubmitError = undefined,
   onFormSubmitSuccess = undefined,
   onFormDelete = undefined,
   onFormDeleteError = undefined,
   onFormDeleteSuccess = undefined,
+  onFormDeleteParams = undefined,
   formHook = {},
   ...props
 }) {
@@ -76,7 +78,7 @@ export function DrawerForm({
     }
 
     try {
-      const result = await onFormDelete();
+      const result = await onFormDelete(onFormDeleteParams);
       // result: { success, message, data: array }
       messageApi.success(result.message);
       onFormDeleteSuccess?.(result);
@@ -86,7 +88,13 @@ export function DrawerForm({
       onFormDeleteError?.(error);
       return false;
     }
-  }, [onFormDelete, onFormDeleteSuccess, onFormDeleteError, messageApi]);
+  }, [
+    onFormDelete,
+    onFormDeleteSuccess,
+    onFormDeleteError,
+    onFormDeleteParams,
+    messageApi,
+  ]);
 
   // Render component
   return (
@@ -97,6 +105,7 @@ export function DrawerForm({
         {...FORM_CONFIG}
         formRef={formRef}
         request={onFormRequest ? handleDataRequest : undefined}
+        params={onFormRequestParams}
         onFinish={onFormSubmit ? handleDataSubmit : undefined}
         open={visible}
         onOpenChange={setVisible}
