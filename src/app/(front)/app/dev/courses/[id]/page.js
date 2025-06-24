@@ -3,6 +3,8 @@
 "use client";
 
 import { use } from "react";
+import { Space } from "antd";
+import { CodeOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -69,7 +71,15 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Hệ thống" },
+        {
+          title: (
+            <Space>
+              <CodeOutlined style={{ color: "#fa541c" }} />
+              <span>Development</span>
+            </Space>
+          ),
+          path: "/app/dev",
+        },
         { title: "Khóa học", path: "/app/dev/courses" },
         { title: pageTitle },
       ]}

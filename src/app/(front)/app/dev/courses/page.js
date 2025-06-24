@@ -2,7 +2,12 @@
 
 "use client";
 
-import { InfoCircleOutlined, EyeOutlined } from "@ant-design/icons";
+import { Space } from "antd";
+import {
+  CodeOutlined,
+  InfoCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
@@ -110,7 +115,18 @@ function PageContent() {
 
   return (
     <PageContainer
-      items={[{ title: "Hệ thống" }, { title: "Khóa học" }]}
+      items={[
+        {
+          title: (
+            <Space>
+              <CodeOutlined style={{ color: "#fa541c" }} />
+              <span>Development</span>
+            </Space>
+          ),
+          path: "/app/dev",
+        },
+        { title: "Khóa học" },
+      ]}
       title="Quản lý khóa học"
       extra={pageButton}
       content={pageContent}

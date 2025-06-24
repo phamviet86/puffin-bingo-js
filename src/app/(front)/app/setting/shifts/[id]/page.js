@@ -3,6 +3,8 @@
 "use client";
 
 import { use } from "react";
+import { Space } from "antd";
+import { ToolOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -68,7 +70,14 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Thiết lập" },
+        {
+          title: (
+            <Space>
+              <ToolOutlined />
+              <span>Thiết lập</span>
+            </Space>
+          ),
+        },
         { title: "Ca học", path: "/app/setting/shifts" },
         { title: pageTitle },
       ]}

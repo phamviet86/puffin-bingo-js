@@ -1,6 +1,8 @@
 "use client";
 
 import { use } from "react";
+import { Space } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -56,7 +58,14 @@ export default function Page({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Hệ thống" },
+        {
+          title: (
+            <Space>
+              <SettingOutlined />
+              <span>Hệ thống</span>
+            </Space>
+          ),
+        },
         { title: "Tuỳ chọn", path: "/app/system/options" },
         { title: pageTitle },
       ]}

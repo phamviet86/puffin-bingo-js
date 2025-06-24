@@ -1,46 +1,47 @@
 "use client";
 
 import Link from "next/link";
-import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { List, Typography, Breadcrumb, Space, Avatar } from 'antd';
-import { FolderOutlined, HomeOutlined } from '@ant-design/icons';
+import { PageContainer, ProCard } from "@ant-design/pro-components";
+import { List, Typography, Breadcrumb, Space, Avatar } from "antd";
+import { FolderOutlined, CodeOutlined } from "@ant-design/icons";
 
 const { Title, Text } = Typography;
 
 export default function DevDirectoryView({ subFolders, currentPath }) {
   const breadcrumbItems = [
     {
-      href: '/app',
       title: (
         <Space>
-          <HomeOutlined />
-          <span>Home</span>
+          <CodeOutlined />
+          <span>Development</span>
         </Space>
       ),
-    },
-    {
-      title: 'Development',
     },
   ];
 
   const folderListData = subFolders.map((folderName) => ({
     title: folderName,
     href: `/app${currentPath}/${folderName}`,
-    avatar: <Avatar icon={<FolderOutlined />} style={{ backgroundColor: '#1890ff' }} />,
+    avatar: (
+      <Avatar
+        icon={<FolderOutlined />}
+        style={{ backgroundColor: "#1890ff" }}
+      />
+    ),
     description: `Navigate to ${folderName} directory`,
   }));
 
   return (
     <PageContainer
       header={{
-        title: 'Development Directory',
+        title: "Development Directory",
         breadcrumb: {
           items: breadcrumbItems,
         },
         extra: [
           <Text key="path" type="secondary">
             Current Path: <Text code>{currentPath}</Text>
-          </Text>
+          </Text>,
         ],
       }}
     >
@@ -58,7 +59,7 @@ export default function DevDirectoryView({ subFolders, currentPath }) {
                   actions={[
                     <Link key="enter" href={item.href}>
                       <Text type="link">Enter →</Text>
-                    </Link>
+                    </Link>,
                   ]}
                 >
                   <List.Item.Meta
@@ -77,8 +78,10 @@ export default function DevDirectoryView({ subFolders, currentPath }) {
             />
           </>
         ) : (
-          <div style={{ textAlign: 'center', padding: '48px 0' }}>
-            <FolderOutlined style={{ fontSize: 48, color: '#d9d9d9', marginBottom: 16 }} />
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <FolderOutlined
+              style={{ fontSize: 48, color: "#d9d9d9", marginBottom: 16 }}
+            />
             <Title level={4} type="secondary">
               No sub-folders found
             </Title>

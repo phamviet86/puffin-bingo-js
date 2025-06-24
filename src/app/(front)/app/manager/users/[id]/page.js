@@ -3,8 +3,9 @@
 "use client";
 
 import { use } from "react";
-import { ProCard } from "@ant-design/pro-components";
 import { Space } from "antd";
+import { BankOutlined } from "@ant-design/icons";
+import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
   UsersDesc,
@@ -123,7 +124,14 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Quản lý" },
+        {
+          title: (
+            <Space>
+              <BankOutlined />
+              <span>Quản lý</span>
+            </Space>
+          ),
+        },
         { title: "Người dùng", path: "/app/manager/users" },
         { title: pageTitle },
       ]}

@@ -3,9 +3,13 @@
 "use client";
 
 import { use } from "react";
-import { InfoCircleOutlined, EditOutlined } from "@ant-design/icons";
-import { ProCard } from "@ant-design/pro-components";
 import { Space } from "antd";
+import {
+  BankOutlined,
+  InfoCircleOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
   SyllabusesDesc,
@@ -299,7 +303,14 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Quản lý" },
+        {
+          title: (
+            <Space>
+              <BankOutlined />
+              <span>Quản lý</span>
+            </Space>
+          ),
+        },
         { title: "Giáo trình", path: "/app/manager/syllabuses" },
         { title: pageTitle },
       ]}

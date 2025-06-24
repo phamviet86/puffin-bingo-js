@@ -58,7 +58,9 @@ import { convertSelection } from "@/lib/util/convert-util";
 - Import pattern:
 
 ```javascript
+import { Space } from "antd";
 import {
+  CodeOutlined,
   InfoCircleOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
@@ -88,6 +90,8 @@ import { PageProvider, usePageContext } from "./provider";
 
 ```javascript
 import { use } from "react";
+import { Space } from "antd";
+import { CodeOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -112,7 +116,7 @@ import { PageProvider, usePageContext } from "../provider";
 - Vietnamese entity names:
   - `options` → "Tùy chọn"
   - `roles` → "Vai trò"
-  - Breadcrumb: `[{ title: "Hệ thống" }, { title: "Tùy chọn" }]`
+  - Breadcrumb: `[{ title: "Development" }, { title: "Tùy chọn" }]`
   - Page title: "Quản lý tùy chọn"
   - Form title: "Tạo tùy chọn"
   - Info drawer title: "Thông tin tùy chọn"
@@ -273,7 +277,12 @@ export function usePageContext() {
 
 "use client";
 
-import { InfoCircleOutlined, EyeOutlined } from "@ant-design/icons";
+import { Space } from "antd";
+import {
+  CodeOutlined,
+  InfoCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
 import {
@@ -362,7 +371,7 @@ function PageContent() {
       />
       <RolesInfo
         infoHook={useRolesInfo}
-        columns={RolesColumns({ roleStatus })}
+        columns={RolesColumns()}
         dataSource={useRolesInfo.dataSource}
         drawerProps={{
           title: "Thông tin vai trò",
@@ -381,7 +390,18 @@ function PageContent() {
 
   return (
     <PageContainer
-      items={[{ title: "Hệ thống" }, { title: "Vai trò" }]}
+      items={[
+        {
+          title: (
+            <Space>
+              <CodeOutlined style={{ color: "#fa541c" }} />
+              <span>Development</span>
+            </Space>
+          ),
+          path: "/app/dev",
+        },
+        { title: "Vai trò" },
+      ]}
       title="Quản lý vai trò"
       extra={pageButton}
       content={pageContent}
@@ -398,6 +418,8 @@ function PageContent() {
 "use client";
 
 import { use } from "react";
+import { Space } from "antd";
+import { CodeOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -433,8 +455,7 @@ function PageContent({ params }) {
       fields={RolesFields({ roleStatus })}
       onFormRequestParams={{ id: roleId }}
       onFormSubmitSuccess={() => useRolesDesc.reload()}
-      // enable if needed
-      /* onFormDeleteParams={{ id: roleId }} 
+      /* onFormDeleteParams={{ id: roleId }}
       onFormDeleteSuccess={() => {
         useRolesForm.close();
         navBack();
@@ -464,7 +485,15 @@ function PageContent({ params }) {
   return (
     <PageContainer
       items={[
-        { title: "Hệ thống" },
+        {
+          title: (
+            <Space>
+              <CodeOutlined style={{ color: "#fa541c" }} />
+              <span>Development</span>
+            </Space>
+          ),
+          path: "/app/dev",
+        },
         { title: "Vai trò", path: "/app/system/roles" },
         { title: pageTitle },
       ]}

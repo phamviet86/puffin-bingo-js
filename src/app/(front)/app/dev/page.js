@@ -4,7 +4,14 @@ import DevDirectoryView from "./dev-directory-view";
 
 async function getSubFolders() {
   try {
-    const basePath = path.join(process.cwd(), "src", "app", "(front)", "app", "dev");
+    const basePath = path.join(
+      process.cwd(),
+      "src",
+      "app",
+      "(front)",
+      "app",
+      "dev"
+    );
 
     if (!fs.existsSync(basePath)) {
       return [];

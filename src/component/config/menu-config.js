@@ -68,7 +68,7 @@ export const MENU_CONFIG = [
     routes: [],
   },
   {
-    name: "Developer",
+    name: "Development",
     path: "/app/dev",
     icon: <CodeOutlined style={{ color: "#fa541c" }} />,
   },
