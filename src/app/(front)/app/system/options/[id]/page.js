@@ -26,11 +26,11 @@ export default function Page({ params }) {
       fields={OptionsFields()}
       onFormRequestParams={{ id: optionId }}
       onFormDeleteParams={{ id: optionId }}
-      onFormSubmitSuccess={() => useOptionDesc.reload()}
+      /* onFormSubmitSuccess={() => useOptionDesc.reload()}
       onFormDeleteSuccess={() => {
         useOptionForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa tùy chọn"
       trigger={<Button label="Sửa" />}
@@ -63,7 +63,6 @@ export default function Page({ params }) {
       title={pageTitle}
       extra={pageButton}
       content={pageContent}
-      // tabList={[]}
     />
   );
 }

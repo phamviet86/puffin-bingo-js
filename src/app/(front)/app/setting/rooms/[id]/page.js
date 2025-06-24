@@ -38,11 +38,11 @@ function PageContent({ params }) {
       fields={RoomsFields({ roomStatus })}
       onFormRequestParams={{ id: roomId }}
       onFormSubmitSuccess={() => useRoomsDesc.reload()}
-      onFormDeleteParams={{ id: roomId }}
+      /* onFormDeleteParams={{ id: roomId }}
       onFormDeleteSuccess={() => {
         useRoomsForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa phòng học"
       trigger={<Button label="Sửa" />}

@@ -433,13 +433,12 @@ function PageContent({ params }) {
       fields={RolesFields({ roleStatus })}
       onFormRequestParams={{ id: roleId }}
       onFormSubmitSuccess={() => useRolesDesc.reload()}
-      /* enable delete functionality if needed
-      onFormDeleteParams={{ id: roleId }} // 
+      // enable if needed
+      /* onFormDeleteParams={{ id: roleId }} 
       onFormDeleteSuccess={() => {
         useRolesForm.close();
         navBack();
-      }}
-      */
+      }} */
       key="edit-form"
       title="Sửa vai trò"
       trigger={<Button label="Sửa" />}

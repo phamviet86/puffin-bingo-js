@@ -53,7 +53,7 @@ export function RolesFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/roles/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/roles/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/roles/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/roles/${params.id}`)}
     />
   );
 }

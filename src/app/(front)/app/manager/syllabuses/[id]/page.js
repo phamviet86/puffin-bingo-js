@@ -52,11 +52,11 @@ function PageContent({ params }) {
       fields={SyllabusesFields({ syllabusStatus })}
       onFormRequestParams={{ id: syllabusId }}
       onFormSubmitSuccess={() => useSyllabusesDesc.reload()}
-      onFormDeleteParams={{ id: syllabusId }}
+      /* onFormDeleteParams={{ id: syllabusId }}
       onFormDeleteSuccess={() => {
         useSyllabusesForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa giáo trình"
       trigger={<Button label="Sửa" />}
@@ -174,11 +174,11 @@ function PageContent({ params }) {
           fields={ModulesFields({ moduleStatus })}
           onFormRequestParams={{ id: useModulesForm.id }}
           onFormSubmitSuccess={() => useModulesTable.reload()}
-          onFormDeleteParams={{ id: useModulesForm.id }}
+          /* onFormDeleteParams={{ id: useModulesForm.id }}
           onFormDeleteSuccess={() => {
             useModulesForm.close();
             useModulesTable.reload();
-          }}
+          }} */
           title="Sửa học phần"
         />
       </ProCard>
@@ -282,11 +282,11 @@ function PageContent({ params }) {
           fields={LecturesFields({ syllabusId, lectureStatus })}
           onFormRequestParams={{ id: useLecturesForm.id }}
           onFormSubmitSuccess={() => useLecturesTable.reload()}
-          onFormDeleteParams={{ id: useLecturesForm.id }}
+          /* onFormDeleteParams={{ id: useLecturesForm.id }}
           onFormDeleteSuccess={() => {
             useLecturesForm.close();
             useLecturesTable.reload();
-          }}
+          }} */
           title="Sửa bài giảng"
         />
       </ProCard>

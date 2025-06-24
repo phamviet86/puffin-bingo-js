@@ -53,7 +53,7 @@ export function UsersFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/users/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/users/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/users/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/users/${params.id}`)}
     />
   );
 }

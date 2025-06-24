@@ -53,7 +53,7 @@ export function ShiftsFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/shifts/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/shifts/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/shifts/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/shifts/${params.id}`)}
     />
   );
 }

@@ -53,7 +53,7 @@ export function RoomsFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/rooms/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/rooms/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/rooms/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/rooms/${params.id}`)}
     />
   );
 }

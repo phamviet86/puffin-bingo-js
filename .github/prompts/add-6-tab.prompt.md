@@ -298,13 +298,12 @@ function PageContent() {
           fields={RolesFields({ roleStatus })}
           onFormRequestParams={{ id: useRolesForm.id }}
           onFormSubmitSuccess={() => useRolesTable.reload()}
-          /* enable delete functionality if needed
-          onFormDeleteParams={{ id: useRolesForm.id }}
+          // enable if needed
+          /* onFormDeleteParams={{ id: useRolesForm.id }}
           onFormDeleteSuccess={() => {
             useRolesForm.close();
             useRolesTable.reload();
-          }}
-          */
+          }} */
           title="Sửa vai trò"
         />
       </ProCard>

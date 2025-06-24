@@ -53,7 +53,7 @@ export function LecturesFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/lectures/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/lectures/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/lectures/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/lectures/${params.id}`)}
     />
   );
 }

@@ -55,7 +55,7 @@ export function SyllabusesFormEdit(props) {
       onFormSubmit={(values) =>
         fetchPut(`/api/syllabuses/${values.id}`, values)
       }
-      onFormDelete={(params) => fetchDelete(`/api/syllabuses/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/syllabuses/${params.id}`)}
     />
   );
 }

@@ -38,11 +38,11 @@ function PageContent({ params }) {
       fields={RolesFields({ roleStatus })}
       onFormRequestParams={{ id: roleId }}
       onFormSubmitSuccess={() => useRolesDesc.reload()}
-      onFormDeleteParams={{ id: roleId }}
+      /* onFormDeleteParams={{ id: roleId }}
       onFormDeleteSuccess={() => {
         useRolesForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa vai trò"
       trigger={<Button label="Sửa" />}

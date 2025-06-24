@@ -38,11 +38,11 @@ function PageContent({ params }) {
       fields={ShiftsFields({ shiftStatus })}
       onFormRequestParams={{ id: shiftId }}
       onFormSubmitSuccess={() => useShiftsDesc.reload()}
-      onFormDeleteParams={{ id: shiftId }}
+      /* onFormDeleteParams={{ id: shiftId }}
       onFormDeleteSuccess={() => {
         useShiftsForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa ca học"
       trigger={<Button label="Sửa" />}

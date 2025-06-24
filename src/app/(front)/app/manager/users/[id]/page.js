@@ -48,11 +48,11 @@ function PageContent({ params }) {
       fields={UsersFields({ userStatus })}
       onFormRequestParams={{ id: userId }}
       onFormSubmitSuccess={() => useUsersDesc.reload()}
-      onFormDeleteParams={{ id: userId }}
+      /* onFormDeleteParams={{ id: userId }}
       onFormDeleteSuccess={() => {
         useUsersForm.close();
         navBack();
-      }}
+      }} */
       key="edit-form"
       title="Sửa người dùng"
       trigger={<Button label="Sửa" />}
