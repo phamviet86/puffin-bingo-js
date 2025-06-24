@@ -108,7 +108,10 @@ function PageContent({ params }) {
         <UserRolesTransfer
           transferHook={useUserRoleTransfer}
           userId={userId}
-          onTransferClose={() => useUserRolesTable.reload()}
+          onTransferClose={() => {
+            useUsersDesc.reload();
+            useUserRolesTable.reload();
+          }}
         />
       </ProCard>
     ),
