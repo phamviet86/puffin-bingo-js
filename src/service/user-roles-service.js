@@ -13,9 +13,12 @@ export async function getUserRoles(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT *, COUNT(*) OVER() AS total
-      FROM user_roles
-      WHERE deleted_at IS NULL
+      SELECT ur.*,
+        r.role_name,
+        COUNT(*) OVER() AS total
+      FROM user_roles ur
+      JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
+      WHERE ur.deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY created_at"}
       ${limitClause};
@@ -30,8 +33,10 @@ export async function getUserRoles(searchParams) {
 export async function getUserRole(id) {
   try {
     return await sql`
-      SELECT *
-      FROM user_roles
+      SELECT ur.*,
+        r.role_name
+      FROM user_roles ur
+      JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
       WHERE deleted_at IS NULL AND id = ${id};
     `;
   } catch (error) {

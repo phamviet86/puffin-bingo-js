@@ -31,3 +31,7 @@ export * from "./lectures/lectures-component";
 // users
 export * from "./users/users-schema";
 export * from "./users/users-component";
+
+// user-roles
+export * from "./user-roles/user-roles-schema";
+export * from "./user-roles/user-roles-component";
