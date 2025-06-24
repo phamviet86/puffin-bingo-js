@@ -418,7 +418,7 @@ export default function Page(props) {
 }
 
 function PageContent({ params }) {
-  const { navBack } = useNav();
+  // const { navBack } = useNav(); // enable this if you want to navigate back after delete
   const { roleStatus } = usePageContext();
   const { id: roleId } = use(params);
 

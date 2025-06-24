@@ -12,7 +12,7 @@ import {
 import { useDesc, useForm, useNav } from "@/component/hook";
 
 export default function Page({ params }) {
-  const { navBack } = useNav();
+  // const { navBack } = useNav(); // enable this if you want to navigate back after delete
   const { id: optionId } = use(params);
 
   // page content: options

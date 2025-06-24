@@ -34,7 +34,7 @@ export default function Page(props) {
 
 function PageContent({ params }) {
   const { id: userId } = use(params);
-  const { navBack } = useNav();
+  // const { navBack } = useNav(); // enable this if you want to navigate back after delete
   const { userStatus } = usePageContext();
 
   // page content: users
