@@ -35,7 +35,7 @@ export const MENU_CONFIG = [
     icon: <ToolOutlined />,
     routes: [
       { path: "/app/setting/rooms", name: "Phòng học" },
-      { path: "/app/setting/shifts", name: "Giờ học" },
+      { path: "/app/setting/shifts", name: "Ca học" },
     ],
   },
   {

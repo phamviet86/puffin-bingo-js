@@ -6,13 +6,13 @@ import { buildApiResponse } from "@/lib/util/response-util";
 export async function GET(_, context) {
   try {
     const { id } = await context.params;
-    if (!id) return buildApiResponse(400, false, "Thiếu ID giờ học.");
+    if (!id) return buildApiResponse(400, false, "Thiếu ID ca học.");
 
     const result = await getShift(id);
     if (!result || !result.length)
-      return buildApiResponse(404, false, "Không tìm thấy giờ học.");
+      return buildApiResponse(404, false, "Không tìm thấy ca học.");
 
-    return buildApiResponse(200, true, "Lấy thông tin giờ học thành công.", {
+    return buildApiResponse(200, true, "Lấy thông tin ca học thành công.", {
       data: result,
     });
   } catch (error) {
@@ -23,7 +23,7 @@ export async function GET(_, context) {
 export async function PUT(request, context) {
   try {
     const { id } = await context.params;
-    if (!id) return buildApiResponse(400, false, "Thiếu ID giờ học.");
+    if (!id) return buildApiResponse(400, false, "Thiếu ID ca học.");
 
     const {
       shift_name,
@@ -51,10 +51,10 @@ export async function PUT(request, context) {
       return buildApiResponse(
         404,
         false,
-        "Không tìm thấy giờ học hoặc giờ học đã bị xóa."
+        "Không tìm thấy ca học hoặc ca học đã bị xóa."
       );
 
-    return buildApiResponse(200, true, "Cập nhật giờ học thành công.", {
+    return buildApiResponse(200, true, "Cập nhật ca học thành công.", {
       data: result,
     });
   } catch (error) {
@@ -65,7 +65,7 @@ export async function PUT(request, context) {
 export async function DELETE(_, context) {
   try {
     const { id } = await context.params;
-    if (!id) return buildApiResponse(400, false, "Thiếu ID giờ học.");
+    if (!id) return buildApiResponse(400, false, "Thiếu ID ca học.");
 
     const result = await deleteShift(id);
 
@@ -73,10 +73,10 @@ export async function DELETE(_, context) {
       return buildApiResponse(
         404,
         false,
-        "Không tìm thấy giờ học hoặc giờ học đã bị xóa."
+        "Không tìm thấy ca học hoặc ca học đã bị xóa."
       );
 
-    return buildApiResponse(200, true, "Xóa giờ học thành công.", {
+    return buildApiResponse(200, true, "Xóa ca học thành công.", {
       data: result,
     });
   } catch (error) {

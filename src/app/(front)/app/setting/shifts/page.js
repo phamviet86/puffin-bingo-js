@@ -52,7 +52,7 @@ function PageContent() {
         useShiftsInfo.close();
         navDetail(result?.data[0]?.id);
       }}
-      title="Tạo giờ học"
+      title="Tạo ca học"
       trigger={<Button icon={<PlusOutlined />} label="Tạo mới" />}
     />,
   ];
@@ -100,7 +100,7 @@ function PageContent() {
         columns={ShiftsColumns({ shiftStatus })}
         dataSource={useShiftsInfo.dataSource}
         drawerProps={{
-          title: "Thông tin giờ học",
+          title: "Thông tin ca học",
           extra: [
             <DetailButton
               key="detail-button"
@@ -116,8 +116,8 @@ function PageContent() {
 
   return (
     <PageContainer
-      items={[{ title: "Thiết lập" }, { title: "Giờ học" }]}
-      title="Quản lý giờ học"
+      items={[{ title: "Thiết lập" }, { title: "Ca học" }]}
+      title="Quản lý ca học"
       extra={pageButton}
       content={pageContent}
     />

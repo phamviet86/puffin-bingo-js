@@ -22,7 +22,7 @@ description: "Tạo file SQL để định nghĩa bảng dữ liệu mới với
 ### Input
 
 ```text
-Table: shifts - giờ học
+Table: shifts - ca học
 Columns:
 - shift_name varchar not null
 - shift_start_time time not null
@@ -34,7 +34,7 @@ Columns:
 ### Output
 
 ```sql
--- table: giờ học
+-- table: ca học
 
 DROP TABLE IF EXISTS shifts CASCADE;
 CREATE TABLE shifts (

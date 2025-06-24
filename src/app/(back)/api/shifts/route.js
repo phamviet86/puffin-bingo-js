@@ -8,7 +8,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const result = await getShifts(searchParams);
     const { data, total } = handleData(result);
-    return buildApiResponse(200, true, "Lấy danh sách giờ học thành công", {
+    return buildApiResponse(200, true, "Lấy danh sách ca học thành công", {
       data,
       total,
     });
@@ -44,7 +44,7 @@ export async function POST(request) {
     if (!result || !result.length)
       return buildApiResponse(500, false, "Không thể thực hiện thao tác.");
 
-    return buildApiResponse(201, true, "Tạo giờ học thành công.", {
+    return buildApiResponse(201, true, "Tạo ca học thành công.", {
       data: result,
     });
   } catch (error) {

@@ -18,3 +18,18 @@
 ## 2025-06-21
 
 - [x] add base file
+
+# DB NAME
+
+- options: tuỳ chọn
+- roles: vai trò
+- users: người dùng
+- user-roles: phân quyền
+- shifts: ca học
+- rooms: phòng học
+- syllabuses: giáo trình
+- modules: học phần
+- lectures: bài giảng
+- courses: khoá học
+- classes: lớp học
+- schedules: lịch học

@@ -1,4 +1,4 @@
--- table: giờ học
+-- table: ca học
 
 DROP TABLE IF EXISTS shifts CASCADE;
 CREATE TABLE shifts (

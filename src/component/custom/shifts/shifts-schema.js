@@ -13,7 +13,7 @@ export function ShiftsColumns(params) {
 
   return [
     {
-      title: "Tên giờ học",
+      title: "Tên ca học",
       dataIndex: "shift_name",
       valueType: "text",
       sorter: { multiple: 1 },
@@ -57,8 +57,8 @@ export function ShiftsFields(params) {
       <ProFormText name="id" label="ID" hidden disabled />
       <ProFormText
         name="shift_name"
-        label="Tên giờ học"
-        placeholder="Nhập tên giờ học"
+        label="Tên ca học"
+        placeholder="Nhập tên ca học"
         rules={[{ required: true }]}
         colProps={{ xs: 24, sm: 12 }}
       />
@@ -91,7 +91,7 @@ export function ShiftsFields(params) {
       <ProFormTextArea
         name="shift_desc"
         label="Mô tả"
-        placeholder="Nhập mô tả giờ học"
+        placeholder="Nhập mô tả ca học"
         fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}
       />
     </ProForm.Group>

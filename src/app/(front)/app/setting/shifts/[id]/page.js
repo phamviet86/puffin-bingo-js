@@ -44,7 +44,7 @@ function PageContent({ params }) {
         navBack();
       }}
       key="edit-form"
-      title="Sửa giờ học"
+      title="Sửa ca học"
       trigger={<Button label="Sửa" icon={<EditOutlined />} />}
     />,
   ];
@@ -63,13 +63,13 @@ function PageContent({ params }) {
   );
 
   const pageTitle = useShiftsDesc?.dataSource?.shift_name || "Chi tiết";
-  document.title = `Giờ học - ${pageTitle}`;
+  document.title = `Ca học - ${pageTitle}`;
 
   return (
     <PageContainer
       items={[
         { title: "Thiết lập" },
-        { title: "Giờ học", path: "/app/setting/shifts" },
+        { title: "Ca học", path: "/app/setting/shifts" },
         { title: pageTitle },
       ]}
       title={pageTitle}
