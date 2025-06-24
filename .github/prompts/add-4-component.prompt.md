@@ -248,7 +248,7 @@ export function OptionsFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/options/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/options/${values.id}`, values)}
-      onFormDelete={(params) => fetchDelete(`/api/options/${params.id}`)}
+      // onFormDelete={(params) => fetchDelete(`/api/options/${params.id}`)} // enable if needed
     />
   );
 }
