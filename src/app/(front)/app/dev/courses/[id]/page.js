@@ -18,12 +18,10 @@ import {
   CoursesFields,
   ClassesTable,
   ClassesInfo,
-  ClassesFormCreate,
   ClassesFormEdit,
   ClassesColumns,
   ClassesFields,
   ClassesTransfer,
-  ClassesTableTransfer,
 } from "@/component/custom";
 import {
   useDesc,
@@ -191,11 +189,6 @@ function PageContent({ params }) {
           onTransferClose={() => {
             useClassesTable.reload();
           }}
-        />
-        <ClassesTableTransfer
-          courseId={courseId}
-          leftColumns={ClassesColumns()}
-          rightColumns={ClassesColumns()}
         />
       </ProCard>
     ),

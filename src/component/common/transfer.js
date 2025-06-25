@@ -16,7 +16,7 @@ export function Transfer({
   onRemoveTarget = undefined,
   listStyle = undefined,
   rowKey = (record) => record.key,
-  render = (record) => record.title,
+  render = (record) => record.key,
   reloadFlag = undefined, // NEW: flag to trigger reload
   ...props
 }) {

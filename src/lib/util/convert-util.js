@@ -114,115 +114,52 @@ export function convertSelection(data, columnConfig, filterParams = {}) {
 }
 
 /**
- * Converts an array of objects into a format suitable for transfer components.
+ * Converts an array of objects into a format suitable for transfer components, adding key and disabled properties.
  *
  * @param {Array<Object>} data - The input array of items to convert.
  * @param {Object} transferProps - The mapping options for keys in the output.
- * @param {string} [transferProps.key] - The property name to use as the unique key for each item.
- * @param {string} [transferProps.title] - The property name to use as the title for each item.
- * @param {string} [transferProps.description] - The property name to use as the description for each item.
+ * @param {string} transferProps.key - The property name to use as the unique key for each item.
  * @param {string|Array} [transferProps.disabled] - The property name or array to determine if the item is disabled.
  *   - String: Field name to map directly (e.g., 'isDisabled')
- *   - Array [fieldName, values]: Check if field value is in values array (legacy format)
- *   - Array [fieldName, inArray, notInArray]: Advanced conditional logic
- *     - If field value is in inArray → disabled = true
- *     - If field value is NOT in notInArray → disabled = true
+ *   - Array [fieldName, inArray, notInArray]:
  *     - If both arrays are empty → treat as string mapping (!!fieldValue)
- * @param {string} [transferProps.customProps] - Additional custom properties to include in the output.
- * @returns {Array<Object>} The converted array of items with mapped properties.
- *
- * @example
- * const data = [
- *   { id: 1, name: 'Item 1', desc: 'First item', isDisabled: false, status: 'active' },
- *   { id: 2, name: 'Item 2', desc: 'Second item', isDisabled: true, status: 'inactive' }
- * ];
- *
- * // Basic usage with defaults
- * const result1 = convertTransferItems(data, {
- *   key: 'id',
- *   title: 'name',
- *   description: 'desc'
- * });
- *
- * // String mapping for disabled
- * const result2 = convertTransferItems(data, {
- *   key: 'id',
- *   title: 'name',
- *   disabled: 'isDisabled'
- * });
- *
- * // Legacy array format: disable if status is in array
- * const result3 = convertTransferItems(data, {
- *   key: 'id',
- *   title: 'name',
- *   disabled: ['status', ['inactive', 'removed']]
- * });
- *
- * // Advanced array format: conditional logic
- * const result4 = convertTransferItems(data, {
- *   key: 'id',
- *   title: 'name',
- *   disabled: ['status', ['inactive'], ['active', 'pending']]
- * });
+ *     - If inArray: disabled = true if field value is in inArray
+ *     - If notInArray: disabled = true if field value is NOT in notInArray
+ * @returns {Array<Object>} The converted array of items with all original properties, plus key and disabled.
  */
 export function convertTransferItems(data = [], transferProps = {}) {
   if (!Array.isArray(data) || data.length === 0) return [];
 
+  const keyProp = transferProps.key;
+  const disabledProp = transferProps.disabled;
+
   return data.map((item) => {
-    const convertedItem = {};
+    const result = { ...item };
+    result.key = keyProp && item.hasOwnProperty(keyProp) ? item[keyProp] : undefined;
 
-    // Map all specified properties from transferProps except disabled
-    Object.entries(transferProps).forEach(([outputKey, sourceKey]) => {
-      if (outputKey === "disabled") return; // Handle disabled separately
-
-      if (sourceKey && item.hasOwnProperty(sourceKey)) {
-        convertedItem[outputKey] = item[sourceKey];
-      } else if (
-        outputKey === "key" &&
-        !sourceKey &&
-        item.hasOwnProperty("id")
-      ) {
-        // Fallback to 'id' if key mapping is not specified
-        convertedItem[outputKey] = item.id;
-      }
-    });
-
-    // Handle disabled property
-    if (!transferProps.disabled) {
-      // Default case: disabled is false
-      convertedItem.disabled = false;
-    } else if (typeof transferProps.disabled === "string") {
-      // String case: map from source field
-      convertedItem.disabled = item.hasOwnProperty(transferProps.disabled)
-        ? item[transferProps.disabled]
+    // Handle disabled logic
+    if (!disabledProp) {
+      result.disabled = false;
+    } else if (typeof disabledProp === "string") {
+      result.disabled = item.hasOwnProperty(disabledProp)
+        ? item[disabledProp]
         : false;
-    } else if (
-      Array.isArray(transferProps.disabled) &&
-      transferProps.disabled.length === 3
-    ) {
-      // Array case: [fieldName, inArray, notInArray]
-      const [fieldName, inArray, notInArray] = transferProps.disabled;
-
+    } else if (Array.isArray(disabledProp) && disabledProp.length === 3) {
+      const [fieldName, inArray, notInArray] = disabledProp;
       if (fieldName && item.hasOwnProperty(fieldName)) {
         const fieldValue = item[fieldName];
-
-        // If both arrays are empty, treat as string mapping
         if (
           (!inArray || inArray.length === 0) &&
           (!notInArray || notInArray.length === 0)
         ) {
-          convertedItem.disabled = !!fieldValue;
+          result.disabled = !!fieldValue;
         } else {
           let isDisabled = false;
-
-          // Check inArray condition - if field value is in this array, set disabled = true
           if (inArray && Array.isArray(inArray) && inArray.length > 0) {
             if (inArray.includes(fieldValue)) {
               isDisabled = true;
             }
           }
-
-          // Check notInArray condition - if field value is NOT in this array, set disabled = true
           if (
             notInArray &&
             Array.isArray(notInArray) &&
@@ -232,32 +169,15 @@ export function convertTransferItems(data = [], transferProps = {}) {
               isDisabled = true;
             }
           }
-
-          convertedItem.disabled = isDisabled;
+          result.disabled = isDisabled;
         }
       } else {
-        convertedItem.disabled = false;
-      }
-    } else if (
-      Array.isArray(transferProps.disabled) &&
-      transferProps.disabled.length === 2
-    ) {
-      // Legacy array case: [fieldName, values] - check if field value is in the array
-      const [fieldName, disabledValues] = transferProps.disabled;
-      if (
-        fieldName &&
-        Array.isArray(disabledValues) &&
-        item.hasOwnProperty(fieldName)
-      ) {
-        convertedItem.disabled = disabledValues.includes(item[fieldName]);
-      } else {
-        convertedItem.disabled = false;
+        result.disabled = false;
       }
     } else {
-      // Fallback case
-      convertedItem.disabled = false;
+      result.disabled = false;
     }
-    return convertedItem;
+    return result;
   });
 }
 

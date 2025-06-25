@@ -7,14 +7,18 @@ import { ProTable } from "./pro-table";
 export function TableTransfer({
   leftColumns = [],
   rightColumns = [],
+  onLeftTableRequest,
+  onLeftTableRequestParams,
+  onLeftTableRequestSuccess,
+  onLeftTableRequestError,
+  onRightTableRequest,
+  onRightTableRequestParams,
+  onRightTableRequestSuccess,
+  onRightTableRequestError,
   ...props
 }) {
   return (
-    <Transfer
-      {...props}
-      // Custom render for each panel using ProTable
-      render={undefined} // Disable default render
-    >
+    <Transfer {...props} render={undefined}>
       {({
         direction,
         filteredItems,
@@ -23,7 +27,21 @@ export function TableTransfer({
         selectedKeys: listSelectedKeys,
         disabled: listDisabled,
       }) => {
-        const columns = direction === "left" ? leftColumns : rightColumns;
+        const isLeft = direction === "left";
+        const columns = isLeft ? leftColumns : rightColumns;
+        // Chọn các props request phù hợp với panel
+        const onTableRequest = isLeft
+          ? onLeftTableRequest
+          : onRightTableRequest;
+        const onTableRequestParams = isLeft
+          ? onLeftTableRequestParams
+          : onRightTableRequestParams;
+        const onTableRequestSuccess = isLeft
+          ? onLeftTableRequestSuccess
+          : onRightTableRequestSuccess;
+        const onTableRequestError = isLeft
+          ? onLeftTableRequestError
+          : onRightTableRequestError;
         const rowSelection = {
           getCheckboxProps: () => ({ disabled: listDisabled }),
           onChange(selectedRowKeys) {
@@ -47,6 +65,12 @@ export function TableTransfer({
             })}
             bordered
             ghost
+            // Thêm các props để enable search/filter
+            onTableRequest={onTableRequest}
+            onTableRequestParams={onTableRequestParams}
+            onTableRequestSuccess={onTableRequestSuccess}
+            onTableRequestError={onTableRequestError}
+            showSearch={true}
           />
         );
       }}

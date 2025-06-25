@@ -32,8 +32,9 @@ export function UserRolesTransfer({ userId, ...props }) {
           roleIds: keys,
         })
       }
-      onSourceItem={{ key: "id", title: "role_name" }}
-      onTargetItem={{ key: "role_id", title: "role_name" }}
+      onSourceItem={{ key: "id" }}
+      onTargetItem={{ key: "role_id" }}
+      render={(record) => record.role_name}
       titles={["Vai trò", "Đã gán"]}
       operations={["Thêm quyền", "Xóa quyền"]}
       listStyle={{

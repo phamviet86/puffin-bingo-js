@@ -6,7 +6,6 @@ import {
   DrawerDescriptions,
   ProDescriptions,
   ModalTransfer,
-  TableTransfer,
 } from "@/component/common";
 import {
   fetchList,
@@ -78,17 +77,12 @@ export function ClassesTransfer({ courseId, ...props }) {
           moduleIds: keys,
         })
       }
-      onSourceItem={{
-        key: "id",
-        syllabus: "syllabus_name",
-        module: "module_name",
-      }}
+      onSourceItem={{ key: "id" }}
       onTargetItem={{
         key: "module_id",
-        syllabus: "syllabus_name",
-        module: "module_name",
         disabled: ["class_status", [], ["Chưa có lịch"]],
       }}
+      render={(record) => `${record.syllabus_name} - ${record.module_name}`}
       titles={["Học phần", "Đã gán"]}
       operations={["Thêm", "Xóa"]}
       listStyle={{
@@ -96,57 +90,7 @@ export function ClassesTransfer({ courseId, ...props }) {
         height: "100%",
         minHeight: "200px",
       }}
-      render={(record) => `${record.syllabus} - ${record.module}`}
       modalProps={{ title: "Lộ trình" }}
-    />
-  );
-}
-
-export function ClassesTableTransfer({
-  courseId,
-  leftColumns = [],
-  rightColumns = [],
-  ...props
-}) {
-  return (
-    <TableTransfer
-      {...props}
-      leftColumns={leftColumns}
-      rightColumns={rightColumns}
-      onSourceRequest={() => fetchList(`/api/modules`)}
-      onTargetRequest={() => fetchList(`/api/classes`, { course_id: courseId })}
-      onAddTarget={(keys) =>
-        fetchPost(`/api/classes/transfer`, {
-          course_id: courseId,
-          moduleIds: keys,
-        })
-      }
-      onRemoveTarget={(keys) =>
-        fetchDelete(`/api/classes/transfer`, {
-          course_id: courseId,
-          moduleIds: keys,
-        })
-      }
-      onSourceItem={{
-        key: "id",
-        syllabus: "syllabus_name",
-        module: "module_name",
-      }}
-      onTargetItem={{
-        key: "module_id",
-        syllabus: "syllabus_name",
-        module: "module_name",
-        disabled: ["class_status", [], ["Chưa có lịch"]],
-      }}
-      titles={["Học phần", "Đã gán"]}
-      operations={["Thêm", "Xóa"]}
-      listStyle={{
-        width: "100%",
-        height: "100%",
-        minHeight: "200px",
-      }}
-      // Optionally, you can provide a default render for table rows
-      render={(record) => `${record.syllabus} - ${record.module}`}
     />
   );
 }
