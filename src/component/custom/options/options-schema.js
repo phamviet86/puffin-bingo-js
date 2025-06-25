@@ -37,6 +37,7 @@ export function OptionsColumns() {
       dataIndex: "option_color",
       valueType: "select",
       valueEnum: COLOR_ENUM,
+      filters: true,
       sorter: { multiple: 1 },
       responsive: ["xl"],
     },
