@@ -34,24 +34,36 @@ export function ClassesColumns() {
       dataIndex: "class_start_date",
       valueType: "date",
       sorter: { multiple: 1 },
+      responsive: ["md"],
     },
     {
       title: "Ngày kết thúc",
       dataIndex: "class_end_date",
       valueType: "date",
       sorter: { multiple: 1 },
+      responsive: ["md"],
     },
     {
       title: "Học phí",
       dataIndex: "class_fee",
-      valueType: "text",
+      valueType: "money",
+      fieldProps: {
+        precision: 0,
+      },
+      search: false,
       sorter: { multiple: 1 },
+      responsive: ["lg"],
     },
     {
       title: "Tổng học phí",
       dataIndex: "class_total_fee",
-      valueType: "text",
+      valueType: "money",
+      fieldProps: {
+        precision: 0,
+      },
+      search: false,
       sorter: { multiple: 1 },
+      responsive: ["lg"],
     },
   ];
 }

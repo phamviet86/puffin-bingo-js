@@ -229,7 +229,7 @@ function PageContent() {
                 useRolesTable.reload();
               }}
               title="Tạo vai trò"
-              trigger={<Button label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" variant="filled" />}
             />,
           </Space>
         }
