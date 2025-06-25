@@ -49,7 +49,7 @@ description: "Tạo schema và component files hoàn chỉnh cho hệ thống CR
 import {
   ProTable,
   DrawerForm,
-  DrawerInfo,
+  DrawerDescriptions,
   ProDescriptions,
 } from "@/component/common";
 import {
@@ -65,7 +65,7 @@ import {
 
   - Table: Sử dụng `ProTable` với `onTableRequest` callback
   - Desc: Sử dụng `ProDescriptions` với `onDescRequest` callback
-  - Info: Sử dụng `DrawerInfo` làm wrapper
+  - Info: Sử dụng `DrawerDescriptions` làm wrapper
   - FormCreate: Sử dụng `DrawerForm` với `onFormSubmit` callback
   - FormEdit: Sử dụng `DrawerForm` với `onFormRequest`, `onFormSubmit`, và `onFormDelete` callbacks
   - Props spreading: Tất cả components phải spread `{...props}`
@@ -94,7 +94,7 @@ import {
 
   - Tạo `{TableName}Table` với ProTable và API endpoint
   - Tạo `{TableName}Desc` với ProDescriptions cho hiển thị chi tiết
-  - Tạo `{TableName}Info` với DrawerInfo wrapper
+  - Tạo `{TableName}Info` với DrawerDescriptions wrapper
   - Tạo `{TableName}FormCreate` với DrawerForm và submit handler
   - Tạo `{TableName}FormEdit` với DrawerForm và handlers đầy đủ
 
@@ -198,7 +198,7 @@ export function RolesFields(params) {
 import {
   ProTable,
   DrawerForm,
-  DrawerInfo,
+  DrawerDescriptions,
   ProDescriptions,
 } from "@/component/common";
 import {
@@ -221,7 +221,7 @@ export function OptionsTable(props) {
 }
 
 export function OptionsInfo(props) {
-  return <DrawerInfo {...props} />;
+  return <DrawerDescriptions {...props} />;
 }
 
 export function OptionsDesc(props) {

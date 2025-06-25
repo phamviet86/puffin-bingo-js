@@ -3,7 +3,7 @@
 import {
   ProTable,
   DrawerForm,
-  DrawerInfo,
+  DrawerDescriptions,
   ProDescriptions,
 } from "@/component/common";
 import {
@@ -35,7 +35,7 @@ export function ShiftsDesc(props) {
 }
 
 export function ShiftsInfo(props) {
-  return <DrawerInfo {...props} />;
+  return <DrawerDescriptions {...props} />;
 }
 
 export function ShiftsFormCreate(props) {

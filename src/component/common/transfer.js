@@ -17,6 +17,7 @@ export function Transfer({
   listStyle = undefined,
   rowKey = (record) => record.key,
   render = (record) => record.title,
+  reloadFlag = undefined, // NEW: flag to trigger reload
   ...props
 }) {
   const [dataSource, setDataSource] = useState([]);
@@ -141,10 +142,10 @@ export function Transfer({
     setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
   };
 
-  // Fetch data khi mount
+  // Fetch data khi mount hoặc khi reloadFlag thay đổi
   useEffect(() => {
     reloadData();
-  }, [reloadData]);
+  }, [reloadData, reloadFlag]);
 
   return (
     <>

@@ -3,7 +3,7 @@
 import {
   ProTable,
   DrawerForm,
-  DrawerInfo,
+  DrawerDescriptions,
   ProDescriptions,
 } from "@/component/common";
 import {
@@ -26,7 +26,7 @@ export function CoursesTable(props) {
 }
 
 export function CoursesInfo(props) {
-  return <DrawerInfo {...props} />;
+  return <DrawerDescriptions {...props} />;
 }
 
 export function CoursesDesc(props) {
