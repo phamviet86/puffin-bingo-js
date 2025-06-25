@@ -5,7 +5,7 @@
 import { use } from "react";
 import { Space } from "antd";
 import {
-  CodeOutlined,
+  BankOutlined,
   InfoCircleOutlined,
   EditOutlined,
 } from "@ant-design/icons";
@@ -104,7 +104,7 @@ function PageContent({ params }) {
               onClick={() => useClassesTable.reload()}
             />
             <Button
-              label="Điều chỉnh"
+              label="Tạo lớp"
               variant="filled"
               onClick={() => useClassesTransfer.open()}
             />
@@ -203,13 +203,12 @@ function PageContent({ params }) {
         {
           title: (
             <Space>
-              <CodeOutlined style={{ color: "#fa541c" }} />
-              <span>Development</span>
+              <BankOutlined />
+              <span>Quản lý</span>
             </Space>
           ),
-          path: "/app/dev",
         },
-        { title: "Khóa học", path: "/app/dev/courses" },
+        { title: "Khóa học", path: "/app/manager/courses" },
         { title: pageTitle },
       ]}
       title={pageTitle}
