@@ -10,13 +10,7 @@ import {
 } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, DetailButton } from "@/component/common";
-import {
-  ClassesTable,
-  ClassesInfo,
-  ClassesFormCreate,
-  ClassesColumns,
-  ClassesFields,
-} from "@/component/custom";
+import { ClassesTable, ClassesInfo, ClassesColumns } from "@/component/custom";
 import { useTable, useInfo, useNav } from "@/component/hook";
 import { PageProvider, usePageContext } from "./provider";
 
@@ -42,16 +36,6 @@ function PageContent() {
       color="default"
       variant="filled"
       onClick={() => useClassesTable.reload()}
-    />,
-    <ClassesFormCreate
-      key="create-form"
-      fields={ClassesFields()}
-      onFormSubmitSuccess={(result) => {
-        useClassesInfo.close();
-        navDetail(result?.data[0]?.id);
-      }}
-      title="Tạo lớp học"
-      trigger={<Button label="Tạo mới" />}
     />,
   ];
 
