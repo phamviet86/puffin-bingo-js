@@ -19,7 +19,7 @@ import {
   ClassesTable,
   ClassesInfo,
   ClassesFormEdit,
-  ClassesColumns,
+  CourseClassesColumns,
   ClassesFields,
   ClassesTransfer,
 } from "@/component/custom";
@@ -113,7 +113,7 @@ function PageContent({ params }) {
       >
         <ClassesTable
           tableHook={useClassesTable}
-          columns={ClassesColumns()}
+          columns={CourseClassesColumns()}
           leftColumns={[
             {
               width: 56,
@@ -152,7 +152,7 @@ function PageContent({ params }) {
         />
         <ClassesInfo
           infoHook={useClassesInfo}
-          columns={ClassesColumns()}
+          columns={CourseClassesColumns()}
           dataSource={useClassesInfo.dataSource}
           drawerProps={{
             title: "Thông tin lớp học",

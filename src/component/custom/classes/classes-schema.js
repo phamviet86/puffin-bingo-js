@@ -11,10 +11,17 @@ import { SECTION_STATUS } from "@/component/config/enum-config";
 export function ClassesColumns() {
   return [
     {
+      title: "Khoá học",
+      dataIndex: "course_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+    },
+    {
       title: "Giáo trình",
       dataIndex: "syllabus_name",
       valueType: "text",
       sorter: { multiple: 1 },
+      hidden: true,
     },
     {
       title: "Học phần",
@@ -27,21 +34,24 @@ export function ClassesColumns() {
       dataIndex: "class_status",
       valueType: "text",
       valueEnum: SECTION_STATUS,
+      filters: true,
       sorter: { multiple: 1 },
     },
     {
       title: "Ngày bắt đầu",
       dataIndex: "class_start_date",
       valueType: "date",
+      search: false,
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Ngày kết thúc",
       dataIndex: "class_end_date",
       valueType: "date",
+      search: false,
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Học phí",
@@ -52,7 +62,7 @@ export function ClassesColumns() {
       },
       search: false,
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      responsive: ["xl"],
     },
     {
       title: "Tổng học phí",
@@ -63,7 +73,71 @@ export function ClassesColumns() {
       },
       search: false,
       sorter: { multiple: 1 },
+      responsive: ["xl"],
+    },
+  ];
+}
+
+export function CourseClassesColumns() {
+  return [
+    {
+      title: "Giáo trình",
+      dataIndex: "syllabus_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      responsive: ["md"],
+    },
+    {
+      title: "Học phần",
+      dataIndex: "module_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "class_status",
+      valueType: "select",
+      valueEnum: SECTION_STATUS,
+      filters: true,
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Ngày bắt đầu",
+      dataIndex: "class_start_date",
+      valueType: "date",
+      search: false,
+      sorter: { multiple: 1 },
       responsive: ["lg"],
+    },
+    {
+      title: "Ngày kết thúc",
+      dataIndex: "class_end_date",
+      valueType: "date",
+      search: false,
+      sorter: { multiple: 1 },
+      responsive: ["lg"],
+    },
+    {
+      title: "Học phí",
+      dataIndex: "class_fee",
+      valueType: "money",
+      fieldProps: {
+        precision: 0,
+      },
+      search: false,
+      sorter: { multiple: 1 },
+      responsive: ["xl"],
+    },
+    {
+      title: "Tổng học phí",
+      dataIndex: "class_total_fee",
+      valueType: "money",
+      fieldProps: {
+        precision: 0,
+      },
+      search: false,
+      sorter: { multiple: 1 },
+      responsive: ["xl"],
     },
   ];
 }
@@ -75,15 +149,21 @@ export function ClassesFields() {
       <ProFormText name="course_id" label="ID khóa học" hidden disabled />
       <ProFormText name="module_id" label="ID học phần" hidden disabled />
       <ProFormText
+        name="course_name"
+        label="Khoá"
+        colProps={{ xs: 8 }}
+        disabled
+      />
+      <ProFormText
         name="syllabus_name"
         label="Giáo trình"
-        colProps={{ xs: 12 }}
+        colProps={{ xs: 8 }}
         disabled
       />
       <ProFormText
         name="module_name"
         label="Học phần"
-        colProps={{ xs: 12 }}
+        colProps={{ xs: 8 }}
         disabled
       />
 

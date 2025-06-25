@@ -1,0 +1,134 @@
+// CLASSES LIST PAGE
+
+"use client";
+
+import { Space } from "antd";
+import {
+  CodeOutlined,
+  InfoCircleOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
+import { ProCard } from "@ant-design/pro-components";
+import { PageContainer, Button, DetailButton } from "@/component/common";
+import {
+  ClassesTable,
+  ClassesInfo,
+  ClassesFormCreate,
+  ClassesColumns,
+  ClassesFields,
+} from "@/component/custom";
+import { useTable, useInfo, useNav } from "@/component/hook";
+import { PageProvider, usePageContext } from "./provider";
+
+export default function Page(props) {
+  return (
+    <PageProvider>
+      <PageContent {...props} />
+    </PageProvider>
+  );
+}
+
+function PageContent() {
+  const { navDetail } = useNav();
+  const {} = usePageContext();
+
+  const useClassesTable = useTable();
+  const useClassesInfo = useInfo();
+
+  const pageButton = [
+    <Button
+      key="refresh-button"
+      label="Tải lại"
+      color="default"
+      variant="filled"
+      onClick={() => useClassesTable.reload()}
+    />,
+    <ClassesFormCreate
+      key="create-form"
+      fields={ClassesFields()}
+      onFormSubmitSuccess={(result) => {
+        useClassesInfo.close();
+        navDetail(result?.data[0]?.id);
+      }}
+      title="Tạo lớp học"
+      trigger={<Button label="Tạo mới" />}
+    />,
+  ];
+
+  const pageContent = (
+    <ProCard boxShadow>
+      <ClassesTable
+        tableHook={useClassesTable}
+        columns={ClassesColumns()}
+        leftColumns={[
+          {
+            width: 56,
+            align: "center",
+            search: false,
+            render: (_, record) => (
+              <Button
+                icon={<InfoCircleOutlined />}
+                variant="link"
+                onClick={() => {
+                  useClassesInfo.setDataSource(record);
+                  useClassesInfo.open();
+                }}
+              />
+            ),
+          },
+        ]}
+        rightColumns={[
+          {
+            width: 56,
+            align: "center",
+            search: false,
+            render: (_, record) => (
+              <DetailButton
+                icon={<EyeOutlined />}
+                variant="link"
+                id={record?.id}
+              />
+            ),
+            responsive: ["md"],
+          },
+        ]}
+      />
+      <ClassesInfo
+        infoHook={useClassesInfo}
+        columns={ClassesColumns()}
+        dataSource={useClassesInfo.dataSource}
+        drawerProps={{
+          title: "Thông tin lớp học",
+          extra: [
+            <DetailButton
+              key="detail-button"
+              label="Chi tiết"
+              variant="filled"
+              id={useClassesInfo?.dataSource?.id}
+            />,
+          ],
+        }}
+      />
+    </ProCard>
+  );
+
+  return (
+    <PageContainer
+      items={[
+        {
+          title: (
+            <Space>
+              <CodeOutlined style={{ color: "#fa541c" }} />
+              <span>Development</span>
+            </Space>
+          ),
+          path: "/app/dev",
+        },
+        { title: "Lớp học" },
+      ]}
+      title="Quản lý lớp học"
+      extra={pageButton}
+      content={pageContent}
+    />
+  );
+}
