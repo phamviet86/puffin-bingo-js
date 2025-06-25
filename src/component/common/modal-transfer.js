@@ -17,8 +17,8 @@ export function ModalTransfer({
   onRemoveTarget = undefined,
   onTransferClose = undefined,
   listStyle = undefined,
-  rowKey = (item) => item.key,
-  render = (item) => item.title,
+  rowKey = (record) => record.key,
+  render = (record) => record.title,
   modalProps = {},
   transferHook = {},
   ...props

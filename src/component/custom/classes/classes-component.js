@@ -95,7 +95,7 @@ export function ClassesTransfer({ courseId, ...props }) {
         height: "100%",
         minHeight: "200px",
       }}
-      render={(item) => `${item.syllabus} - ${item.module}`}
+      render={(record) => `${record.syllabus} - ${record.module}`}
       modalProps={{ title: "Lộ trình" }}
     />
   );

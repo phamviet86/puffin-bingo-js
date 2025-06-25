@@ -4,7 +4,11 @@
 
 import { use } from "react";
 import { Space } from "antd";
-import { CodeOutlined } from "@ant-design/icons";
+import {
+  CodeOutlined,
+  InfoCircleOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
 import { PageContainer, Button, BackButton } from "@/component/common";
 import {
@@ -12,8 +16,22 @@ import {
   CoursesFormEdit,
   CoursesColumns,
   CoursesFields,
+  ClassesTable,
+  ClassesInfo,
+  ClassesFormCreate,
+  ClassesFormEdit,
+  ClassesColumns,
+  ClassesFields,
+  ClassesTransfer,
 } from "@/component/custom";
-import { useDesc, useForm, useNav } from "@/component/hook";
+import {
+  useDesc,
+  useForm,
+  useNav,
+  useTable,
+  useInfo,
+  useTransfer,
+} from "@/component/hook";
 import { PageProvider, usePageContext } from "../provider";
 
 export default function Page(props) {
@@ -65,6 +83,118 @@ function PageContent({ params }) {
     </ProCard>
   );
 
+  // tab content: classes
+  const useClassesTable = useTable();
+  const useClassesInfo = useInfo();
+  const useClassesForm = useForm();
+  const useClassesTransfer = useTransfer();
+
+  const classesTab = {
+    key: "classes",
+    label: "Lớp học",
+    children: (
+      <ProCard
+        boxShadow
+        title="Danh sách lớp học"
+        extra={
+          <Space>
+            <Button
+              label="Tải lại"
+              color="default"
+              variant="filled"
+              onClick={() => useClassesTable.reload()}
+            />
+            <Button
+              label="Điều chỉnh"
+              variant="filled"
+              onClick={() => useClassesTransfer.open()}
+            />
+          </Space>
+        }
+      >
+        <ClassesTable
+          tableHook={useClassesTable}
+          columns={ClassesColumns()}
+          leftColumns={[
+            {
+              width: 56,
+              align: "center",
+              search: false,
+              render: (_, record) => (
+                <Button
+                  icon={<InfoCircleOutlined />}
+                  variant="link"
+                  onClick={() => {
+                    useClassesInfo.setDataSource(record);
+                    useClassesInfo.open();
+                  }}
+                />
+              ),
+            },
+          ]}
+          rightColumns={[
+            {
+              width: 56,
+              align: "center",
+              search: false,
+              render: (_, record) => (
+                <Button
+                  icon={<EditOutlined />}
+                  variant="link"
+                  onClick={() => {
+                    useClassesForm.setId(record?.id);
+                    useClassesForm.open();
+                  }}
+                />
+              ),
+              responsive: ["md"],
+            },
+          ]}
+        />
+        <ClassesInfo
+          infoHook={useClassesInfo}
+          columns={ClassesColumns()}
+          dataSource={useClassesInfo.dataSource}
+          drawerProps={{
+            title: "Thông tin lớp học",
+            extra: [
+              <Button
+                key="classes-form-edit"
+                label="Sửa"
+                variant="filled"
+                onClick={() => {
+                  useClassesInfo.close();
+                  useClassesForm.setId(useClassesInfo?.dataSource?.id);
+                  useClassesForm.open();
+                }}
+              />,
+            ],
+          }}
+        />
+        <ClassesFormEdit
+          formHook={useClassesForm}
+          fields={ClassesFields()}
+          onFormRequestParams={{ id: useClassesForm.id }}
+          onFormSubmitSuccess={() => useClassesTable.reload()}
+          // enable if needed
+          /* onFormDeleteParams={{ id: useClassesForm.id }}
+        onFormDeleteSuccess={() => {
+          useClassesForm.close();
+          useClassesTable.reload();
+        }} */
+          title="Sửa lớp học"
+        />
+        <ClassesTransfer
+          courseId={courseId}
+          transferHook={useClassesTransfer}
+          onTransferClose={() => {
+            useClassesTable.reload();
+          }}
+        />
+      </ProCard>
+    ),
+  };
+
   const pageTitle = useCoursesDesc?.dataSource?.course_name || "Chi tiết";
   document.title = `Khóa học - ${pageTitle}`;
 
@@ -86,6 +216,7 @@ function PageContent({ params }) {
       title={pageTitle}
       extra={pageButton}
       content={pageContent}
+      tabList={[classesTab]}
     />
   );
 }

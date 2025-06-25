@@ -50,7 +50,7 @@ function PageContent() {
               onClick={() => useClassesTable.reload()}
             />
             <ClassesFormCreate
-              fields={ClassesFields(pageContext)}
+              fields={ClassesFields()}
               onFormSubmitSuccess={() => {
                 useClassesInfo.close();
                 useClassesTable.reload();
@@ -63,7 +63,7 @@ function PageContent() {
       >
         <ClassesTable
           tableHook={useClassesTable}
-          columns={ClassesColumns(pageContext)}
+          columns={ClassesColumns()}
           leftColumns={[
             {
               width: 56,
@@ -102,7 +102,7 @@ function PageContent() {
         />
         <ClassesInfo
           infoHook={useClassesInfo}
-          columns={ClassesColumns(pageContext)}
+          columns={ClassesColumns()}
           dataSource={useClassesInfo.dataSource}
           drawerProps={{
             title: "Thông tin lớp học",
@@ -122,7 +122,7 @@ function PageContent() {
         />
         <ClassesFormEdit
           formHook={useClassesForm}
-          fields={ClassesFields(pageContext)}
+          fields={ClassesFields()}
           onFormRequestParams={{ id: useClassesForm.id }}
           onFormSubmitSuccess={() => useClassesTable.reload()}
           // enable if needed

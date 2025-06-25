@@ -5,14 +5,20 @@ import { ProForm, ProFormText, ProFormDatePicker } from "@ant-design/pro-form";
 export function ClassesColumns() {
   return [
     {
-      title: "Khóa học",
-      dataIndex: "course_id",
+      title: "Giáo trình",
+      dataIndex: "syllabus_name",
       valueType: "text",
       sorter: { multiple: 1 },
     },
     {
-      title: "Module",
-      dataIndex: "module_id",
+      title: "Học phần",
+      dataIndex: "module_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "class_status",
       valueType: "text",
       sorter: { multiple: 1 },
     },

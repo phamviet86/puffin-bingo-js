@@ -75,7 +75,7 @@ function PageContent({ params }) {
 
   // tab content: user-roles
   const useUserRolesTable = useTable();
-  const useUserRoleTransfer = useTransfer();
+  const useUserRolesTransfer = useTransfer();
 
   const userRolesTab = {
     key: "user-roles",
@@ -95,7 +95,7 @@ function PageContent({ params }) {
             <Button
               label="Điều chỉnh"
               variant="filled"
-              onClick={() => useUserRoleTransfer.open()}
+              onClick={() => useUserRolesTransfer.open()}
             />
           </Space>
         }
@@ -107,8 +107,8 @@ function PageContent({ params }) {
           showSearch={false}
         />
         <UserRolesTransfer
-          transferHook={useUserRoleTransfer}
           userId={userId}
+          transferHook={useUserRolesTransfer}
           onTransferClose={() => {
             useUsersDesc.reload();
             useUserRolesTable.reload();
