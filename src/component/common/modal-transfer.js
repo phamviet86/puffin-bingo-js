@@ -150,10 +150,12 @@ export function ModalTransfer({
     setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
   };
 
-  // Fetch data khi mount
+  // Fetch data khi modal được mở
   useEffect(() => {
-    reloadData();
-  }, [reloadData]);
+    if (visible) {
+      reloadData();
+    }
+  }, [visible, reloadData]);
 
   // Render the component
   return (
