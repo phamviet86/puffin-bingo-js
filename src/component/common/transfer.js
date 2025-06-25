@@ -15,8 +15,8 @@ export function Transfer({
   onAddTarget = undefined,
   onRemoveTarget = undefined,
   listStyle = undefined,
-  rowKey = (item) => item.key,
-  render = (item) => item.title,
+  rowKey = (record) => record.key,
+  render = (record) => record.title,
   ...props
 }) {
   const [dataSource, setDataSource] = useState([]);
@@ -67,16 +67,17 @@ export function Transfer({
         handleTargetRequest(),
       ]);
 
-      // Merge source and target data to ensure all items are available
-      const allItems = [...source, ...target];
-      // Remove duplicates based on key
-      const uniqueItems = allItems.filter(
-        (item, index, self) =>
-          index === self.findIndex((t) => t.key === item.key)
+      // Ưu tiên dữ liệu từ target trước, sau đó mới lấy source để fill những item còn thiếu
+      const targetKeys = target.map((item) => item.key);
+      const sourceItemsNotInTarget = source.filter(
+        (item) => !targetKeys.includes(item.key)
       );
 
-      setDataSource(uniqueItems);
-      setTargetKeys(target.map((item) => item.key));
+      // Merge với target data được ưu tiên trước
+      const allItems = [...target, ...sourceItemsNotInTarget];
+
+      setDataSource(allItems);
+      setTargetKeys(targetKeys);
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
     }
