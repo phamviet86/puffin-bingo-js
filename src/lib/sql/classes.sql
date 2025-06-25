@@ -24,18 +24,14 @@ EXECUTE FUNCTION set_updated_at();
 DROP VIEW IF EXISTS classes_view CASCADE;
 CREATE OR REPLACE VIEW classes_view AS
 SELECT
-  c.*,
-  CONCAT(co.course_code, ' - ', m.module_name) AS class_name,
-  CONCAT(co.course_name, ' - ', m.module_name) AS class_code,
+  *,
   CASE
-    WHEN c.class_start_date IS NULL AND c.class_end_date IS NULL THEN 'Chưa có lịch'
-    WHEN c.class_start_date > c.class_end_date AND c.class_end_date IS NOT NULL THEN 'Nhập sai ngày'
-    WHEN c.class_start_date IS NOT NULL AND NOW() < c.class_start_date THEN 'Chờ'
-    WHEN c.class_start_date IS NOT NULL AND c.class_end_date IS NULL AND NOW() >= c.class_start_date THEN 'Đang học'
-    WHEN c.class_start_date IS NOT NULL AND c.class_end_date IS NOT NULL AND NOW() >= c.class_start_date AND NOW() < c.class_end_date THEN 'Đang học'
-    WHEN c.class_end_date IS NOT NULL AND NOW() >= c.class_end_date THEN 'Đã học xong'
+    WHEN class_start_date IS NULL AND class_end_date IS NULL THEN 'Chưa có lịch'
+    WHEN class_start_date > class_end_date AND class_end_date IS NOT NULL THEN 'Nhập sai ngày'
+    WHEN class_start_date IS NOT NULL AND NOW() < class_start_date THEN 'Chờ'
+    WHEN class_start_date IS NOT NULL AND class_end_date IS NULL AND NOW() >= class_start_date THEN 'Đang học'
+    WHEN class_start_date IS NOT NULL AND class_end_date IS NOT NULL AND NOW() >= class_start_date AND NOW() < class_end_date THEN 'Đang học'
+    WHEN class_end_date IS NOT NULL AND NOW() >= class_end_date THEN 'Đã học xong'
     ELSE 'Chưa có lịch'
   END AS class_status
-FROM classes c
-LEFT JOIN courses co ON c.course_id = co.id
-LEFT JOIN modules m ON c.module_id = m.id;
+FROM classes

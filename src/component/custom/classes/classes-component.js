@@ -5,6 +5,7 @@ import {
   DrawerForm,
   DrawerInfo,
   ProDescriptions,
+  ModalTransfer,
 } from "@/component/common";
 import {
   fetchList,
@@ -54,6 +55,48 @@ export function ClassesFormEdit(props) {
       onFormRequest={(params) => fetchGet(`/api/classes/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/classes/${values.id}`, values)}
       // onFormDelete={(params) => fetchDelete(`/api/classes/${params.id}`)}
+    />
+  );
+}
+
+export function ClassesTransfer({ courseId, ...props }) {
+  return (
+    <ModalTransfer
+      {...props}
+      onSourceRequest={() => fetchList(`/api/modules`)}
+      onTargetRequest={() => fetchList(`/api/classes`, { course_id: courseId })}
+      onAddTarget={(keys) =>
+        fetchPost(`/api/classes/transfer`, {
+          course_id: courseId,
+          moduleIds: keys,
+        })
+      }
+      onRemoveTarget={(keys) =>
+        fetchDelete(`/api/classes/transfer`, {
+          course_id: courseId,
+          moduleIds: keys,
+        })
+      }
+      onSourceItem={{
+        key: "id",
+        syllabus: "syllabus_name",
+        module: "module_name",
+      }}
+      onTargetItem={{
+        key: "module_id",
+        syllabus: "syllabus_name",
+        module: "module_name",
+        disabled: ["class_status", [], ["Chưa có lịch"]],
+      }}
+      titles={["Học phần", "Đã gán"]}
+      operations={["Thêm", "Xóa"]}
+      listStyle={{
+        width: "100%",
+        height: "100%",
+        minHeight: "200px",
+      }}
+      render={(item) => `${item.syllabus} - ${item.module}`}
+      modalProps={{ title: "Lộ trình" }}
     />
   );
 }

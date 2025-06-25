@@ -1,3 +1,5 @@
+// path: @/app/(back)/api/user-roles/transfer/route.js
+
 import {
   createUserRolesByUser,
   deleteUserRolesByUser,
@@ -12,7 +14,7 @@ export async function POST(request) {
     if (!user_id || !Array.isArray(roleIds) || roleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await createUserRolesByUser(user_id, roleIds);
+    const result = await createUserRolesByUser(roleIds, user_id);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không thể thêm quyền.");
@@ -28,13 +30,12 @@ export async function POST(request) {
 export async function DELETE(request) {
   try {
     const { user_id, roleIds } = await request.json();
-    if (!user_id) return buildApiResponse(400, false, "Thiếu ID người dùng.");
 
     // Validate required fields (based on NOT NULL constraints in SQL)
-    if (!Array.isArray(roleIds) || roleIds.length === 0)
+    if (!user_id || !Array.isArray(roleIds) || roleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await deleteUserRolesByUser(user_id, roleIds);
+    const result = await deleteUserRolesByUser(roleIds, user_id);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không tìm thấy phân quyền để xóa");

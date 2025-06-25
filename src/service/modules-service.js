@@ -13,11 +13,14 @@ export async function getModules(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT *, COUNT(*) OVER() AS total
-      FROM modules
-      WHERE deleted_at IS NULL
+      SELECT m.*,
+        s.syllabus_name,
+        COUNT(*) OVER() AS total
+      FROM modules m
+      JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      WHERE m.deleted_at IS NULL
       ${whereClause}
-      ${orderByClause || "ORDER BY created_at"}
+      ${orderByClause || "ORDER BY s.syllabus_name,  m.module_name"}
       ${limitClause};
     `;
 
@@ -30,9 +33,12 @@ export async function getModules(searchParams) {
 export async function getModule(id) {
   try {
     return await sql`
-      SELECT *
-      FROM modules
-      WHERE deleted_at IS NULL AND id = ${id};
+      SELECT m.*,
+        s.syllabus_name,
+        COUNT(*) OVER() AS total
+      FROM modules m
+      JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      WHERE m.deleted_at IS NULL AND m.id = ${id};
     `;
   } catch (error) {
     throw new Error(error.message);
