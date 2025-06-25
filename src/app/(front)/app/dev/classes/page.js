@@ -44,7 +44,7 @@ function PageContent() {
       <ClassesTable
         tableHook={useClassesTable}
         columns={ClassesColumns()}
-        leftColumns={[
+        firstColumns={[
           {
             width: 56,
             align: "center",
@@ -61,7 +61,7 @@ function PageContent() {
             ),
           },
         ]}
-        rightColumns={[
+        lastColumns={[
           {
             width: 56,
             align: "center",

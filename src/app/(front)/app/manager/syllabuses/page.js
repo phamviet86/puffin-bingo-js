@@ -61,7 +61,7 @@ function PageContent() {
       <SyllabusesTable
         tableHook={useSyllabusesTable}
         columns={SyllabusesColumns({ syllabusStatus })}
-        leftColumns={[
+        firstColumns={[
           {
             width: 56,
             align: "center",
@@ -78,7 +78,7 @@ function PageContent() {
             ),
           },
         ]}
-        rightColumns={[
+        lastColumns={[
           {
             width: 56,
             align: "center",

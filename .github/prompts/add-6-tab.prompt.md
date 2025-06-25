@@ -237,7 +237,7 @@ function PageContent() {
         <RolesTable
           tableHook={useRolesTable}
           columns={RolesColumns({ roleStatus })}
-          leftColumns={[
+          firstColumns={[
             {
               width: 56,
               align: "center",
@@ -254,7 +254,7 @@ function PageContent() {
               ),
             },
           ]}
-          rightColumns={[
+          lastColumns={[
             {
               width: 56,
               align: "center",
