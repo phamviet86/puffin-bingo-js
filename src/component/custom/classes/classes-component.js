@@ -63,7 +63,12 @@ export function ClassesTransfer({ courseId, ...props }) {
   return (
     <ModalTransfer
       {...props}
-      onSourceRequest={() => fetchList(`/api/modules`)}
+      onSourceRequest={() =>
+        fetchList(`/api/modules`, {
+          syllabus_status_id: 7, // actived syllabus
+          module_status_id: 10, // actived module
+        })
+      }
       onTargetRequest={() => fetchList(`/api/classes`, { course_id: courseId })}
       onAddTarget={(keys) =>
         fetchPost(`/api/classes/transfer`, {

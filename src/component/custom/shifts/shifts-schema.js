@@ -76,7 +76,7 @@ export function ShiftsFields(params) {
         placeholder="Chọn giờ bắt đầu"
         rules={[{ required: true }]}
         fieldProps={{ format: "HH:mm" }}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
         width="100%"
       />
       <ProFormTimePicker
@@ -85,7 +85,7 @@ export function ShiftsFields(params) {
         placeholder="Chọn giờ kết thúc"
         rules={[{ required: true }]}
         fieldProps={{ format: "HH:mm" }}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
         width="100%"
       />
       <ProFormTextArea

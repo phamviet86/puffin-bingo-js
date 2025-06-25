@@ -18,7 +18,7 @@ export function UserRolesTransfer({ userId, ...props }) {
   return (
     <ModalTransfer
       {...props}
-      onSourceRequest={() => fetchList(`/api/roles`)}
+      onSourceRequest={() => fetchList(`/api/roles`, { role_status_id: 1 })}
       onTargetRequest={() => fetchList(`/api/user-roles`, { user_id: userId })}
       onAddTarget={(keys) =>
         fetchPost(`/api/user-roles/transfer`, {

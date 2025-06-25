@@ -108,7 +108,7 @@ function PageContent({ params }) {
               }}
               initialValues={{ syllabus_id: syllabusId }}
               title="Tạo học phần"
-              trigger={<Button label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" variant="filled" />}
             />
           </Space>
         }
@@ -216,7 +216,7 @@ function PageContent({ params }) {
                 useLecturesTable.reload();
               }}
               title="Tạo bài giảng"
-              trigger={<Button label="Tạo mới" />}
+              trigger={<Button label="Tạo mới" variant="filled" />}
             />
           </Space>
         }

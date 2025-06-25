@@ -1,6 +1,12 @@
 // path: @/component/custom/classes/classes-schema.js
 
-import { ProForm, ProFormText, ProFormDatePicker } from "@ant-design/pro-form";
+import {
+  ProForm,
+  ProFormText,
+  ProFormDatePicker,
+  ProFormMoney,
+} from "@ant-design/pro-form";
+import { SECTION_STATUS } from "@/component/config/enum-config";
 
 export function ClassesColumns() {
   return [
@@ -20,6 +26,7 @@ export function ClassesColumns() {
       title: "Trạng thái",
       dataIndex: "class_status",
       valueType: "text",
+      valueEnum: SECTION_STATUS,
       sorter: { multiple: 1 },
     },
     {
@@ -53,43 +60,52 @@ export function ClassesFields() {
   return (
     <ProForm.Group>
       <ProFormText name="id" label="ID" hidden disabled />
+      <ProFormText name="course_id" label="ID khóa học" hidden disabled />
+      <ProFormText name="module_id" label="ID học phần" hidden disabled />
       <ProFormText
-        name="course_id"
-        label="Khóa học"
-        placeholder="Nhập khóa học"
-        rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        name="syllabus_name"
+        label="Giáo trình"
+        colProps={{ xs: 12 }}
+        disabled
       />
       <ProFormText
-        name="module_id"
-        label="Module"
-        placeholder="Nhập module"
-        rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        name="module_name"
+        label="Học phần"
+        colProps={{ xs: 12 }}
+        disabled
       />
+
       <ProFormDatePicker
         name="class_start_date"
         label="Ngày bắt đầu"
         placeholder="Chọn ngày bắt đầu"
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
+        width="100%"
       />
       <ProFormDatePicker
         name="class_end_date"
         label="Ngày kết thúc"
         placeholder="Chọn ngày kết thúc"
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
+        width="100%"
       />
-      <ProFormText
+      <ProFormMoney
         name="class_fee"
         label="Học phí"
         placeholder="Nhập học phí"
-        colProps={{ xs: 24, sm: 12 }}
+        locale="vn-VN"
+        width="100%"
+        colProps={{ xs: 12 }}
+        precision={0}
       />
-      <ProFormText
+      <ProFormMoney
         name="class_total_fee"
         label="Tổng học phí"
         placeholder="Nhập tổng học phí"
-        colProps={{ xs: 24, sm: 12 }}
+        locale="vn-VN"
+        width="100%"
+        colProps={{ xs: 12 }}
+        precision={0}
       />
     </ProForm.Group>
   );
