@@ -531,7 +531,7 @@ export function Transfer({
           rowKey={rowKey}
           render={render}
           listStyle={listStyle}
-          showSearch={true}
+          showSearch={false}
           filterOption={() => true} // Bỏ qua logic filter mặc định, luôn trả về true để không lọc dữ liệu phía client
         />
       </div>
