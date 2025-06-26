@@ -492,18 +492,26 @@ export function Transfer({
 
   // Cleanup on unmount
   useEffect(() => {
+    // Capture the current values to avoid stale closure issues
+    const currentAbortController = abortControllerRef.current;
+    const currentSourceAbortController = sourceAbortControllerRef.current;
+    const currentTargetAbortController = targetAbortControllerRef.current;
+    const currentRequestCache = requestCacheRef.current;
+
     return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
+      if (currentAbortController) {
+        currentAbortController.abort();
       }
-      if (sourceAbortControllerRef.current) {
-        sourceAbortControllerRef.current.abort();
+      if (currentSourceAbortController) {
+        currentSourceAbortController.abort();
       }
-      if (targetAbortControllerRef.current) {
-        targetAbortControllerRef.current.abort();
+      if (currentTargetAbortController) {
+        currentTargetAbortController.abort();
       }
       // Clear cache on unmount
-      requestCacheRef.current.clear();
+      if (currentRequestCache) {
+        currentRequestCache.clear();
+      }
     };
   }, []);
 
