@@ -65,7 +65,6 @@ export function Transfer({
 
   // Separate reload functions for each side
   const reloadSourceData = useCallback(async () => {
-    console.log("Transfer: Reloading source data");
     if (!onSourceRequest) return;
 
     const sourceParams = { ...onSourceParams, ...onSourceSearchParams };
@@ -126,7 +125,6 @@ export function Transfer({
   ]);
 
   const reloadTargetData = useCallback(async () => {
-    console.log("Transfer: Reloading target data");
     if (!onTargetRequest) return;
 
     const targetParams = { ...onTargetParams, ...onTargetSearchParams };
@@ -190,9 +188,8 @@ export function Transfer({
     mergeDataSafely,
   ]);
 
-  // Initial full reload (loads both sides) - optimized to prevent duplicates
+  // Initial full reload (loads both sides) - target first, then source
   const reloadData = useCallback(async () => {
-    console.log("Transfer: Reloading data");
     // Prevent multiple concurrent requests
     if (isLoading || isSourceLoading || isTargetLoading) {
       return;
@@ -213,57 +210,39 @@ export function Transfer({
     setIsLoading(true);
 
     try {
-      const promises = [];
-      const configs = [];
-
-      // Prepare target request
-      if (onTargetRequest) {
-        const targetParams = { ...onTargetParams };
-        promises.push(onTargetRequest(targetParams));
-        configs.push("target");
-        lastRequestParamsRef.current.target = targetParams;
-      }
-
-      // Prepare source request
-      if (onSourceRequest) {
-        const sourceParams = { ...onSourceParams };
-        promises.push(onSourceRequest(sourceParams));
-        configs.push("source");
-        lastRequestParamsRef.current.source = sourceParams;
-      }
-
-      // Execute requests in parallel
-      const results = await Promise.all(promises);
-
       let originalTargetData = [];
       let sourceData = [];
 
-      // Process results
-      results.forEach((result, index) => {
-        const data = result.data || [];
-        if (configs[index] === "target") {
-          originalTargetData = onTargetItem
-            ? convertTransferItems(data, onTargetItem)
-            : data;
-        } else if (configs[index] === "source") {
-          sourceData = onSourceItem
-            ? convertTransferItems(data, onSourceItem)
-            : data;
-        }
-      });
+      // Step 1: Load target data first and update target keys
+      if (onTargetRequest) {
+        const targetParams = { ...onTargetParams };
+        lastRequestParamsRef.current.target = targetParams;
 
-      // Update original target keys
-      if (originalTargetData.length > 0) {
-        const newOriginalTargetKeys = originalTargetData.map(
-          (item) => item.key
-        );
-        setTargetKeys(newOriginalTargetKeys);
+        const targetResult = await onTargetRequest(targetParams);
+        originalTargetData = onTargetItem
+          ? convertTransferItems(targetResult.data || [], onTargetItem)
+          : targetResult.data || [];
+
+        // Update target keys immediately after loading target data
+        const newTargetKeys = originalTargetData.map((item) => item.key);
+        setTargetKeys(newTargetKeys);
       }
 
-      // Filter source items not in target
+      // Step 2: Load source data after target is complete
+      if (onSourceRequest) {
+        const sourceParams = { ...onSourceParams };
+        lastRequestParamsRef.current.source = sourceParams;
+
+        const sourceResult = await onSourceRequest(sourceParams);
+        sourceData = onSourceItem
+          ? convertTransferItems(sourceResult.data || [], onSourceItem)
+          : sourceResult.data || [];
+      }
+
+      // Step 3: Merge data properly with target keys already set
+      const targetKeysForFiltering = originalTargetData.map((item) => item.key);
       const sourceItemsNotInTarget = sourceData.filter(
-        (item) =>
-          !originalTargetData.some((targetItem) => targetItem.key === item.key)
+        (item) => !targetKeysForFiltering.includes(item.key)
       );
 
       // Merge data with target first
