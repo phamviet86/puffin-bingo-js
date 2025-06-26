@@ -10,12 +10,17 @@ export function ProTable({
   onTableRequestError = undefined,
   onTableRequestSuccess = undefined,
   onTableRequestParams = undefined,
+  onRowsSelect = undefined,
+  onRowsSelectError = undefined,
+  onRowClick = undefined,
+  onRowClickError = undefined,
   columns = [],
-  firstColumns = [],
-  lastColumns = [],
+  leftColumns = [],
+  rightColumns = [],
   showSearch = true,
   showOptions = false,
   showPagination = true,
+  selectType = "checkbox",
   tableHook = {},
   ...props
 }) {
@@ -31,7 +36,8 @@ export function ProTable({
       }
 
       try {
-        const result = await onTableRequest(params, sort, filter); // result: { success, message , data: array, total }
+        const result = await onTableRequest(params, sort, filter);
+        // result: { success, message , data: array, total }
         onTableRequestSuccess?.(result);
         return result;
       } catch (error) {
@@ -43,6 +49,38 @@ export function ProTable({
     [onTableRequest, onTableRequestSuccess, onTableRequestError, messageApi]
   );
 
+  const handleRowsSelect = useCallback(
+    (_, selectedRowsData) => {
+      if (!onRowsSelect) return true;
+
+      try {
+        onRowsSelect(selectedRowsData);
+        return true;
+      } catch (error) {
+        messageApi.error(error?.message || "Đã xảy ra lỗi");
+        onRowsSelectError?.(error);
+        return false;
+      }
+    },
+    [onRowsSelect, onRowsSelectError, messageApi]
+  );
+
+  const handleRowClick = useCallback(
+    (rowRecord) => {
+      if (!onRowClick) return true;
+
+      try {
+        onRowClick(rowRecord);
+        return true;
+      } catch (error) {
+        messageApi.error(error?.message || "Đã xảy ra lỗi");
+        onRowClickError?.(error);
+        return false;
+      }
+    },
+    [onRowClick, onRowClickError, messageApi]
+  );
+
   // Render component
   return (
     <>
@@ -50,9 +88,19 @@ export function ProTable({
       <AntProTable
         {...props}
         actionRef={tableRef}
-        columns={[...firstColumns, ...columns, ...lastColumns]}
+        columns={[...leftColumns, ...columns, ...rightColumns]}
         request={onTableRequest ? handleDataRequest : undefined}
         params={onTableRequestParams}
+        rowSelection={
+          onRowsSelect
+            ? { type: selectType, onChange: handleRowsSelect }
+            : undefined
+        }
+        onRow={
+          onRowClick
+            ? (record) => ({ onClick: () => handleRowClick(record) })
+            : undefined
+        }
         search={showSearch ? TABLE_CONFIG.search : false}
         pagination={showPagination ? TABLE_CONFIG.pagination : false}
         options={showOptions ? TABLE_CONFIG.options : false}
