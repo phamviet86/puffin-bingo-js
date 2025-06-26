@@ -117,7 +117,7 @@ function PageContent({ params }) {
           tableHook={useModulesTable}
           columns={ModulesColumns({ moduleStatus })}
           onTableRequestParams={{ syllabus_id: syllabusId }}
-          firstColumns={[
+          leftColumns={[
             {
               width: 56,
               align: "center",
@@ -134,7 +134,7 @@ function PageContent({ params }) {
               ),
             },
           ]}
-          lastColumns={[
+          rightColumns={[
             {
               width: 56,
               align: "center",
@@ -225,7 +225,7 @@ function PageContent({ params }) {
           tableHook={useLecturesTable}
           columns={LecturesColumns({ syllabusId, lectureStatus })}
           onTableRequestParams={{ syllabus_id: syllabusId }}
-          firstColumns={[
+          leftColumns={[
             {
               width: 56,
               align: "center",
@@ -242,7 +242,7 @@ function PageContent({ params }) {
               ),
             },
           ]}
-          lastColumns={[
+          rightColumns={[
             {
               width: 56,
               align: "center",

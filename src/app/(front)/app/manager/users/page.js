@@ -61,7 +61,7 @@ function PageContent() {
       <UsersTable
         tableHook={useUsersTable}
         columns={UsersColumns({ userStatus })}
-        firstColumns={[
+        leftColumns={[
           {
             width: 56,
             align: "center",
@@ -78,7 +78,7 @@ function PageContent() {
             ),
           },
         ]}
-        lastColumns={[
+        rightColumns={[
           {
             width: 56,
             align: "center",

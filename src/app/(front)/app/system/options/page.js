@@ -52,7 +52,7 @@ export default function Page() {
       <OptionsTable
         tableHook={useOptionsTable}
         columns={OptionsColumns()}
-        firstColumns={[
+        leftColumns={[
           {
             width: 56,
             align: "center",
@@ -69,7 +69,7 @@ export default function Page() {
             ),
           },
         ]}
-        lastColumns={[
+        rightColumns={[
           {
             width: 56,
             align: "center",

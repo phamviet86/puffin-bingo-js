@@ -18,4 +18,3 @@ export * from "./pro-layout";
 export * from "./pro-table";
 export * from "./result";
 export * from "./transfer";
-export * from "./table-transfer";
