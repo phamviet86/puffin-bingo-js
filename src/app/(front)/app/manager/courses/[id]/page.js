@@ -189,6 +189,8 @@ function PageContent({ params }) {
           onTransferClose={() => {
             useClassesTable.reload();
           }}
+          onSourceParams={{ syllabus_status_id: 7, module_status_id: 10 }}
+          onTargetParams={{ course_id: courseId }}
         />
       </ProCard>
     ),

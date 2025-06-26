@@ -61,14 +61,11 @@ export function Transfer({
   const reloadSourceData = useCallback(async () => {
     if (!onSourceRequest) return;
 
-    const sourceParams = { onSourceParams, ...onSourceSearchParams };
+    const sourceParams = { ...onSourceParams, ...onSourceSearchParams };
     const cacheKey = generateCacheKey("source", sourceParams);
 
     // Check if same request is already in progress or params haven't changed
     if (isSourceLoading || !hasParamsChanged("source", sourceParams)) {
-      console.log(
-        "Transfer: Skipping source reload - already loading or same params"
-      );
       return;
     }
 
@@ -82,8 +79,6 @@ export function Transfer({
     lastRequestParamsRef.current.source = sourceParams;
 
     try {
-      console.log("Transfer: Reloading source data", { sourceParams });
-
       const sourceResult = await onSourceRequest(sourceParams);
       const sourceData = onSourceItem
         ? convertTransferItems(sourceResult.data || [], onSourceItem)
@@ -103,11 +98,6 @@ export function Transfer({
           targetKeys.includes(item.key)
         );
         return [...targetItems, ...sourceItemsNotInTarget];
-      });
-
-      console.log("Transfer: Source data reloaded", {
-        sourceCount: sourceData.length,
-        filteredCount: sourceItemsNotInTarget.length,
       });
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -136,14 +126,11 @@ export function Transfer({
   const reloadTargetData = useCallback(async () => {
     if (!onTargetRequest) return;
 
-    const targetParams = { onTargetParams, ...onTargetSearchParams };
+    const targetParams = { ...onTargetParams, ...onTargetSearchParams };
     const cacheKey = generateCacheKey("target", targetParams);
 
     // Check if same request is already in progress or params haven't changed
     if (isTargetLoading || !hasParamsChanged("target", targetParams)) {
-      console.log(
-        "Transfer: Skipping target reload - already loading or same params"
-      );
       return;
     }
 
@@ -157,8 +144,6 @@ export function Transfer({
     lastRequestParamsRef.current.target = targetParams;
 
     try {
-      console.log("Transfer: Reloading target data", { targetParams });
-
       const targetResult = await onTargetRequest(targetParams);
       const targetData = onTargetItem
         ? convertTransferItems(targetResult.data || [], onTargetItem)
@@ -177,10 +162,6 @@ export function Transfer({
           (item) => !targetKeys.includes(item.key)
         );
         return [...targetData, ...sourceItems];
-      });
-
-      console.log("Transfer: Target data reloaded", {
-        targetCount: targetData.length,
       });
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -209,7 +190,6 @@ export function Transfer({
   const reloadData = useCallback(async () => {
     // Prevent multiple concurrent requests
     if (isLoading || isSourceLoading || isTargetLoading) {
-      console.log("Transfer: Skipping full reload - already loading");
       return;
     }
 
@@ -228,14 +208,12 @@ export function Transfer({
     setIsLoading(true);
 
     try {
-      console.log("Transfer: Starting full data reload");
-
       const promises = [];
       const configs = [];
 
       // Prepare target request
       if (onTargetRequest) {
-        const targetParams = { onTargetParams };
+        const targetParams = { ...onTargetParams };
         promises.push(onTargetRequest(targetParams));
         configs.push("target");
         lastRequestParamsRef.current.target = targetParams;
@@ -243,7 +221,7 @@ export function Transfer({
 
       // Prepare source request
       if (onSourceRequest) {
-        const sourceParams = { onSourceParams };
+        const sourceParams = { ...onSourceParams };
         promises.push(onSourceRequest(sourceParams));
         configs.push("source");
         lastRequestParamsRef.current.source = sourceParams;
@@ -287,12 +265,6 @@ export function Transfer({
       // Merge data with target first
       const allItems = [...originalTargetData, ...sourceItemsNotInTarget];
       setDataSource(allItems);
-
-      console.log("Transfer: Full data reload completed", {
-        sourceCount: sourceData.length,
-        targetCount: originalTargetData.length,
-        totalCount: allItems.length,
-      });
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Transfer: Full reload error", error);
