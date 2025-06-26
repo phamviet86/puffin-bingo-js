@@ -19,7 +19,7 @@ export function ProTable({
   tableHook = {},
   ...props
 }) {
-  const { tableRef, setParams } = tableHook;
+  const { tableRef } = tableHook;
   const [messageApi, contextHolder] = message.useMessage();
 
   // Handlers
@@ -31,9 +31,7 @@ export function ProTable({
       }
 
       try {
-        const result = await onTableRequest(params, sort, filter);
-        // result: { success, message , data: array, total }
-        setParams(params);
+        const result = await onTableRequest(params, sort, filter); // result: { success, message , data: array, total }
         onTableRequestSuccess?.(result);
         return result;
       } catch (error) {
@@ -42,13 +40,7 @@ export function ProTable({
         return false;
       }
     },
-    [
-      onTableRequest,
-      onTableRequestSuccess,
-      onTableRequestError,
-      messageApi,
-      setParams,
-    ]
+    [onTableRequest, onTableRequestSuccess, onTableRequestError, messageApi]
   );
 
   // Render component

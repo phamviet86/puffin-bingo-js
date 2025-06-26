@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 export function useTable() {
   const tableRef = useRef();
   const [dataSource, setDataSource] = useState({});
-  const [params, setParams] = useState({});
 
   const reload = () => {
     if (tableRef.current) {
@@ -18,7 +17,5 @@ export function useTable() {
     reload,
     dataSource,
     setDataSource,
-    params,
-    setParams,
   };
 }

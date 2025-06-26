@@ -63,13 +63,16 @@ export function ClassesTransfer({ courseId, ...props }) {
   return (
     <ModalTransfer
       {...props}
-      onSourceRequest={() =>
+      onSourceRequest={(params) =>
         fetchList(`/api/modules`, {
           syllabus_status_id: 7, // actived syllabus
           module_status_id: 10, // actived module
+          ...params,
         })
       }
-      onTargetRequest={() => fetchList(`/api/classes`, { course_id: courseId })}
+      onTargetRequest={(params) =>
+        fetchList(`/api/classes`, { course_id: courseId, ...params })
+      }
       onAddTarget={(keys) =>
         fetchPost(`/api/classes/transfer`, {
           course_id: courseId,
@@ -95,6 +98,9 @@ export function ClassesTransfer({ courseId, ...props }) {
         height: "100%",
         minHeight: "200px",
       }}
+      showSearch={true}
+      onSourceSearch={["syllabus_name_like", "module_name_like"]}
+      onTargetSearch={["syllabus_name_like", "module_name_like"]}
       modalProps={{ title: "Lộ trình" }}
     />
   );
