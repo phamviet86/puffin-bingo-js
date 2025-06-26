@@ -35,11 +35,131 @@ export function Transfer({
   const [isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef(null);
 
-  // Reload data function
+  // Separate reload functions for each side
+  const reloadSourceData = useCallback(async () => {
+    if (!onSourceRequest || isLoading) return;
+
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    setIsLoading(true);
+
+    try {
+      console.log("Transfer: Reloading source data", {
+        sourceParams: { onSourceParams, ...onSourceSearchParams },
+      });
+
+      const sourceParams = { onSourceParams, ...onSourceSearchParams };
+      const sourceResult = await onSourceRequest(sourceParams);
+      const sourceData = onSourceItem
+        ? convertTransferItems(sourceResult.data || [], onSourceItem)
+        : sourceResult.data || [];
+
+      // Use original target keys to filter out items already in target
+      const sourceItemsNotInTarget = sourceData.filter(
+        (item) => !originalTargetKeys.includes(item.key)
+      );
+
+      // Update dataSource by replacing source items while keeping target items
+      setDataSource((prevData) => {
+        const targetItems = prevData.filter((item) =>
+          targetKeys.includes(item.key)
+        );
+        return [...targetItems, ...sourceItemsNotInTarget];
+      });
+
+      console.log("Transfer: Source data reloaded", {
+        sourceCount: sourceData.length,
+        filteredCount: sourceItemsNotInTarget.length,
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Transfer: Source reload error", error);
+        messageApi.error(
+          error.message || "Đã xảy ra lỗi khi tải dữ liệu source"
+        );
+      }
+    } finally {
+      setIsLoading(false);
+      abortControllerRef.current = null;
+    }
+  }, [
+    onSourceRequest,
+    onSourceParams,
+    onSourceSearchParams,
+    onSourceItem,
+    originalTargetKeys,
+    targetKeys,
+    isLoading,
+    messageApi,
+  ]);
+
+  const reloadTargetData = useCallback(async () => {
+    if (!onTargetRequest || isLoading) return;
+
+    // Cancel previous request if exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    abortControllerRef.current = new AbortController();
+    setIsLoading(true);
+
+    try {
+      console.log("Transfer: Reloading target data", {
+        targetParams: { onTargetParams, ...onTargetSearchParams },
+      });
+
+      const targetParams = { onTargetParams, ...onTargetSearchParams };
+      const targetResult = await onTargetRequest(targetParams);
+      const targetData = onTargetItem
+        ? convertTransferItems(targetResult.data || [], onTargetItem)
+        : targetResult.data || [];
+
+      // Update target keys for display
+      const displayTargetKeys = targetData.map((item) => item.key);
+      setTargetKeys(displayTargetKeys);
+
+      // Update dataSource by replacing target items while keeping source items
+      setDataSource((prevData) => {
+        const sourceItems = prevData.filter(
+          (item) => !targetKeys.includes(item.key)
+        );
+        return [...targetData, ...sourceItems];
+      });
+
+      console.log("Transfer: Target data reloaded", {
+        targetCount: targetData.length,
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Transfer: Target reload error", error);
+        messageApi.error(
+          error.message || "Đã xảy ra lỗi khi tải dữ liệu target"
+        );
+      }
+    } finally {
+      setIsLoading(false);
+      abortControllerRef.current = null;
+    }
+  }, [
+    onTargetRequest,
+    onTargetParams,
+    onTargetSearchParams,
+    onTargetItem,
+    targetKeys,
+    isLoading,
+    messageApi,
+  ]);
+
+  // Initial full reload (loads both sides)
   const reloadData = useCallback(async () => {
     // Prevent multiple concurrent requests
     if (isLoading) {
-      console.log('Transfer: Skipping reload - already loading');
+      console.log("Transfer: Skipping reload - already loading");
       return;
     }
 
@@ -52,90 +172,50 @@ export function Transfer({
     setIsLoading(true);
 
     try {
-      console.log('Transfer: Starting data reload', {
-        sourceParams: { onSourceParams, ...onSourceSearchParams },
-        targetParams: { onTargetParams, ...onTargetSearchParams }
-      });
+      console.log("Transfer: Starting full data reload");
 
-      // Check if we're searching
-      const isSourceSearching = Object.keys(onSourceSearchParams).length > 0;
-      const isTargetSearching = Object.keys(onTargetSearchParams).length > 0;
-
-      // Nếu không có target search, lấy dữ liệu target gốc để lưu originalTargetKeys
+      // Load original target data first (without search filters)
       let originalTargetData = [];
-      if (!isTargetSearching && onTargetRequest) {
-        // Lấy dữ liệu target gốc (không filter)
+      if (onTargetRequest) {
         const targetResult = await onTargetRequest({ onTargetParams });
         originalTargetData = onTargetItem
           ? convertTransferItems(targetResult.data || [], onTargetItem)
           : targetResult.data || [];
 
-        // Cập nhật originalTargetKeys chỉ khi không search
-        const newOriginalTargetKeys = originalTargetData.map(item => item.key);
+        const newOriginalTargetKeys = originalTargetData.map(
+          (item) => item.key
+        );
         setOriginalTargetKeys(newOriginalTargetKeys);
+        setTargetKeys(newOriginalTargetKeys);
       }
 
-      // Prepare and execute display requests (có thể đã được filter)
-      const promises = [];
-      const requestConfigs = [];
-
-      // Prepare source request
-      if (onSourceRequest) {
-        const sourceParams = { onSourceParams, ...onSourceSearchParams };
-        promises.push(onSourceRequest(sourceParams));
-        requestConfigs.push('source');
-      }
-
-      // Prepare target request (for display)
-      if (onTargetRequest) {
-        const targetParams = { onTargetParams, ...onTargetSearchParams };
-        promises.push(onTargetRequest(targetParams));
-        requestConfigs.push('target');
-      }
-
-      // Execute all requests in parallel
-      const results = await Promise.all(promises);
-
+      // Load source data
       let sourceData = [];
-      let targetData = [];
+      if (onSourceRequest) {
+        const sourceResult = await onSourceRequest({ onSourceParams });
+        sourceData = onSourceItem
+          ? convertTransferItems(sourceResult.data || [], onSourceItem)
+          : sourceResult.data || [];
+      }
 
-      // Process results based on configuration
-      results.forEach((result, index) => {
-        const data = result.data || [];
-        if (requestConfigs[index] === 'source') {
-          sourceData = onSourceItem ? convertTransferItems(data, onSourceItem) : data;
-        } else if (requestConfigs[index] === 'target') {
-          targetData = onTargetItem ? convertTransferItems(data, onTargetItem) : data;
-        }
-      });
-
-      // Update target keys for display
-      const displayTargetKeys = targetData.map(item => item.key);
-      setTargetKeys(displayTargetKeys);
-
-      // Sử dụng originalTargetKeys để loại bỏ items khỏi source
-      // Nếu đang search target, dùng originalTargetKeys; nếu không thì dùng displayTargetKeys
-      const keysToExclude = isTargetSearching ? originalTargetKeys : displayTargetKeys;
+      // Filter source items not in target
       const sourceItemsNotInTarget = sourceData.filter(
-        item => !keysToExclude.includes(item.key)
+        (item) =>
+          !originalTargetData.some((targetItem) => targetItem.key === item.key)
       );
 
       // Merge data with target first
-      const allItems = [...targetData, ...sourceItemsNotInTarget];
+      const allItems = [...originalTargetData, ...sourceItemsNotInTarget];
       setDataSource(allItems);
 
-      console.log('Transfer: Data reload completed', {
+      console.log("Transfer: Full data reload completed", {
         sourceCount: sourceData.length,
-        targetCount: targetData.length,
-        originalTargetCount: originalTargetKeys.length,
-        isTargetSearching,
-        keysExcludedCount: keysToExclude.length,
-        totalCount: allItems.length
+        targetCount: originalTargetData.length,
+        totalCount: allItems.length,
       });
-
     } catch (error) {
-      if (error.name !== 'AbortError') {
-        console.error('Transfer: Data reload error', error);
+      if (error.name !== "AbortError") {
+        console.error("Transfer: Full reload error", error);
         messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
       }
     } finally {
@@ -146,14 +226,11 @@ export function Transfer({
     isLoading,
     onSourceRequest,
     onSourceParams,
-    onSourceSearchParams,
     onSourceItem,
     onTargetRequest,
     onTargetParams,
-    onTargetSearchParams,
     onTargetItem,
-    originalTargetKeys,
-    messageApi
+    messageApi,
   ]);
 
   const handleAddTarget = useCallback(
@@ -222,7 +299,7 @@ export function Transfer({
   useEffect(() => {
     // Don't process search on initial mount
     if (isInitialLoadRef.current) return;
-    
+
     const timeoutId = setTimeout(() => {
       if (onSourceSearch.length > 0 && sourceSearchValue.trim()) {
         // Only create search params if there's actual search value
@@ -244,7 +321,7 @@ export function Transfer({
   useEffect(() => {
     // Don't process search on initial mount
     if (isInitialLoadRef.current) return;
-    
+
     const timeoutId = setTimeout(() => {
       if (onTargetSearch.length > 0 && targetSearchValue.trim()) {
         // Only create search params if there's actual search value
@@ -268,11 +345,15 @@ export function Transfer({
 
   // Centralized data loading with better state management
   const reloadDataRef = useRef(reloadData);
+  const reloadSourceDataRef = useRef(reloadSourceData);
+  const reloadTargetDataRef = useRef(reloadTargetData);
   const prevReloadFlagRef = useRef(reloadFlag);
   const isInitialLoadRef = useRef(true);
-  
-  // Always update ref to latest function
+
+  // Always update refs to latest functions
   reloadDataRef.current = reloadData;
+  reloadSourceDataRef.current = reloadSourceData;
+  reloadTargetDataRef.current = reloadTargetData;
 
   // Initial data load only once
   useEffect(() => {
@@ -284,22 +365,36 @@ export function Transfer({
 
   // Only reload when reloadFlag actually changes (for manual refresh)
   useEffect(() => {
-    if (!isInitialLoadRef.current && reloadFlag !== undefined && reloadFlag !== prevReloadFlagRef.current) {
+    if (
+      !isInitialLoadRef.current &&
+      reloadFlag !== undefined &&
+      reloadFlag !== prevReloadFlagRef.current
+    ) {
       prevReloadFlagRef.current = reloadFlag;
       reloadDataRef.current();
     }
   }, [reloadFlag]);
 
-  // Only reload when search params change (after initial load)
+  // Optimized: Only reload the side that has search params changes
   useEffect(() => {
     if (!isInitialLoadRef.current) {
       const timeoutId = setTimeout(() => {
-        reloadDataRef.current();
-      }, 300); // Longer debounce for search
+        reloadSourceDataRef.current();
+      }, 300);
 
       return () => clearTimeout(timeoutId);
     }
-  }, [onSourceSearchParams, onTargetSearchParams]);
+  }, [onSourceSearchParams]);
+
+  useEffect(() => {
+    if (!isInitialLoadRef.current) {
+      const timeoutId = setTimeout(() => {
+        reloadTargetDataRef.current();
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [onTargetSearchParams]);
 
   // Cleanup on unmount
   useEffect(() => {
