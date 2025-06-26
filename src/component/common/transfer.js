@@ -57,8 +57,21 @@ export function Transfer({
     return newParamsStr !== lastParamsStr;
   }, []);
 
+  // Helper function to safely merge data without duplicates
+  const mergeDataSafely = useCallback((targetItems, sourceItems) => {
+    console.log("Target items:", targetItems);
+    console.log("Source items:", sourceItems);
+
+    const targetKeys = targetItems.map((item) => item.key);
+    const uniqueSourceItems = sourceItems.filter(
+      (item) => !targetKeys.includes(item.key)
+    );
+    return [...targetItems, ...uniqueSourceItems];
+  }, []);
+
   // Separate reload functions for each side
   const reloadSourceData = useCallback(async () => {
+    console.log("Reloading source data...");
     if (!onSourceRequest) return;
 
     const sourceParams = { ...onSourceParams, ...onSourceSearchParams };
@@ -87,17 +100,12 @@ export function Transfer({
       // Cache the result
       requestCacheRef.current.set(cacheKey, sourceData);
 
-      // Use original target keys to filter out items already in target
-      const sourceItemsNotInTarget = sourceData.filter(
-        (item) => !originalTargetKeys.includes(item.key)
-      );
-
       // Update dataSource by replacing source items while keeping target items
       setDataSource((prevData) => {
         const targetItems = prevData.filter((item) =>
           targetKeys.includes(item.key)
         );
-        return [...targetItems, ...sourceItemsNotInTarget];
+        return mergeDataSafely(targetItems, sourceData);
       });
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -115,15 +123,16 @@ export function Transfer({
     onSourceParams,
     onSourceSearchParams,
     onSourceItem,
-    originalTargetKeys,
     targetKeys,
     isSourceLoading,
     messageApi,
     generateCacheKey,
     hasParamsChanged,
+    mergeDataSafely,
   ]);
 
   const reloadTargetData = useCallback(async () => {
+    console.log("Reloading target data...");
     if (!onTargetRequest) return;
 
     const targetParams = { ...onTargetParams, ...onTargetSearchParams };
@@ -161,7 +170,7 @@ export function Transfer({
         const sourceItems = prevData.filter(
           (item) => !targetKeys.includes(item.key)
         );
-        return [...targetData, ...sourceItems];
+        return mergeDataSafely(targetData, sourceItems);
       });
     } catch (error) {
       if (error.name !== "AbortError") {
@@ -184,10 +193,12 @@ export function Transfer({
     messageApi,
     generateCacheKey,
     hasParamsChanged,
+    mergeDataSafely,
   ]);
 
   // Initial full reload (loads both sides) - optimized to prevent duplicates
   const reloadData = useCallback(async () => {
+    console.log("Reloading full data...");
     // Prevent multiple concurrent requests
     if (isLoading || isSourceLoading || isTargetLoading) {
       return;
@@ -297,6 +308,8 @@ export function Transfer({
         const result = await onTargetAdd(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Thêm thành công");
+          // Update originalTargetKeys to include newly added keys
+          setOriginalTargetKeys((prev) => [...prev, ...keys]);
           await reloadDataRef.current();
         } else {
           messageApi.error(result?.message || "Đã xảy ra lỗi");
@@ -318,6 +331,10 @@ export function Transfer({
         const result = await onTargetRemove(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Xóa thành công");
+          // Update originalTargetKeys to remove the deleted keys
+          setOriginalTargetKeys((prev) =>
+            prev.filter((key) => !keys.includes(key))
+          );
           await reloadDataRef.current();
         } else {
           messageApi.error(result?.message || "Đã xảy ra lỗi");
@@ -394,7 +411,9 @@ export function Transfer({
   }, [targetSearchValue, onTargetSearch, searchDelay]);
 
   const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+    // setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+    // setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
+    setSelectedKeys([...targetSelectedKeys, ...sourceSelectedKeys]);
   };
 
   // Centralized data loading with better state management

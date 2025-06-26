@@ -84,7 +84,9 @@ export function ClassesTransfer({ courseId, ...props }) {
           moduleIds: keys,
         })
       }
-      render={(record) => `${record.syllabus_name} - ${record.module_name}`}
+      render={(record) =>
+        `${record.syllabus_name} - ${record.module_name} - ${record.disabled}`
+      }
       titles={["Học phần", "Đã gán"]}
       operations={["Thêm", "Xóa"]}
       showSearch={true}
