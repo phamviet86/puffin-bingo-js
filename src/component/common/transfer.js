@@ -33,30 +33,63 @@ export function Transfer({
   const [targetSearchValue, setTargetSearchValue] = useState("");
   const [originalTargetKeys, setOriginalTargetKeys] = useState([]); // NEW: lưu targetKeys gốc
   const [isLoading, setIsLoading] = useState(false);
+  const [isSourceLoading, setIsSourceLoading] = useState(false);
+  const [isTargetLoading, setIsTargetLoading] = useState(false);
   const abortControllerRef = useRef(null);
+  const sourceAbortControllerRef = useRef(null);
+  const targetAbortControllerRef = useRef(null);
+
+  // Add request cache to prevent duplicate requests
+  const requestCacheRef = useRef(new Map());
+  const lastRequestParamsRef = useRef({ source: null, target: null });
+
+  // Helper function to generate cache key
+  const generateCacheKey = useCallback((type, params) => {
+    return `${type}_${JSON.stringify(params)}`;
+  }, []);
+
+  // Helper function to check if params have changed
+  const hasParamsChanged = useCallback((type, newParams) => {
+    const lastParams = lastRequestParamsRef.current[type];
+    const newParamsStr = JSON.stringify(newParams);
+    const lastParamsStr = JSON.stringify(lastParams);
+    return newParamsStr !== lastParamsStr;
+  }, []);
 
   // Separate reload functions for each side
   const reloadSourceData = useCallback(async () => {
-    if (!onSourceRequest || isLoading) return;
+    if (!onSourceRequest) return;
 
-    // Cancel previous request if exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+    const sourceParams = { onSourceParams, ...onSourceSearchParams };
+    const cacheKey = generateCacheKey("source", sourceParams);
+
+    // Check if same request is already in progress or params haven't changed
+    if (isSourceLoading || !hasParamsChanged("source", sourceParams)) {
+      console.log(
+        "Transfer: Skipping source reload - already loading or same params"
+      );
+      return;
     }
 
-    abortControllerRef.current = new AbortController();
-    setIsLoading(true);
+    // Cancel previous source request if exists
+    if (sourceAbortControllerRef.current) {
+      sourceAbortControllerRef.current.abort();
+    }
+
+    sourceAbortControllerRef.current = new AbortController();
+    setIsSourceLoading(true);
+    lastRequestParamsRef.current.source = sourceParams;
 
     try {
-      console.log("Transfer: Reloading source data", {
-        sourceParams: { onSourceParams, ...onSourceSearchParams },
-      });
+      console.log("Transfer: Reloading source data", { sourceParams });
 
-      const sourceParams = { onSourceParams, ...onSourceSearchParams };
       const sourceResult = await onSourceRequest(sourceParams);
       const sourceData = onSourceItem
         ? convertTransferItems(sourceResult.data || [], onSourceItem)
         : sourceResult.data || [];
+
+      // Cache the result
+      requestCacheRef.current.set(cacheKey, sourceData);
 
       // Use original target keys to filter out items already in target
       const sourceItemsNotInTarget = sourceData.filter(
@@ -83,8 +116,8 @@ export function Transfer({
         );
       }
     } finally {
-      setIsLoading(false);
-      abortControllerRef.current = null;
+      setIsSourceLoading(false);
+      sourceAbortControllerRef.current = null;
     }
   }, [
     onSourceRequest,
@@ -93,31 +126,45 @@ export function Transfer({
     onSourceItem,
     originalTargetKeys,
     targetKeys,
-    isLoading,
+    isSourceLoading,
     messageApi,
+    generateCacheKey,
+    hasParamsChanged,
   ]);
 
   const reloadTargetData = useCallback(async () => {
-    if (!onTargetRequest || isLoading) return;
+    if (!onTargetRequest) return;
 
-    // Cancel previous request if exists
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
+    const targetParams = { onTargetParams, ...onTargetSearchParams };
+    const cacheKey = generateCacheKey("target", targetParams);
+
+    // Check if same request is already in progress or params haven't changed
+    if (isTargetLoading || !hasParamsChanged("target", targetParams)) {
+      console.log(
+        "Transfer: Skipping target reload - already loading or same params"
+      );
+      return;
     }
 
-    abortControllerRef.current = new AbortController();
-    setIsLoading(true);
+    // Cancel previous target request if exists
+    if (targetAbortControllerRef.current) {
+      targetAbortControllerRef.current.abort();
+    }
+
+    targetAbortControllerRef.current = new AbortController();
+    setIsTargetLoading(true);
+    lastRequestParamsRef.current.target = targetParams;
 
     try {
-      console.log("Transfer: Reloading target data", {
-        targetParams: { onTargetParams, ...onTargetSearchParams },
-      });
+      console.log("Transfer: Reloading target data", { targetParams });
 
-      const targetParams = { onTargetParams, ...onTargetSearchParams };
       const targetResult = await onTargetRequest(targetParams);
       const targetData = onTargetItem
         ? convertTransferItems(targetResult.data || [], onTargetItem)
         : targetResult.data || [];
+
+      // Cache the result
+      requestCacheRef.current.set(cacheKey, targetData);
 
       // Update target keys for display
       const displayTargetKeys = targetData.map((item) => item.key);
@@ -142,8 +189,8 @@ export function Transfer({
         );
       }
     } finally {
-      setIsLoading(false);
-      abortControllerRef.current = null;
+      setIsTargetLoading(false);
+      targetAbortControllerRef.current = null;
     }
   }, [
     onTargetRequest,
@@ -151,21 +198,29 @@ export function Transfer({
     onTargetSearchParams,
     onTargetItem,
     targetKeys,
-    isLoading,
+    isTargetLoading,
     messageApi,
+    generateCacheKey,
+    hasParamsChanged,
   ]);
 
-  // Initial full reload (loads both sides)
+  // Initial full reload (loads both sides) - optimized to prevent duplicates
   const reloadData = useCallback(async () => {
     // Prevent multiple concurrent requests
-    if (isLoading) {
-      console.log("Transfer: Skipping reload - already loading");
+    if (isLoading || isSourceLoading || isTargetLoading) {
+      console.log("Transfer: Skipping full reload - already loading");
       return;
     }
 
-    // Cancel previous request if exists
+    // Cancel all previous requests if exist
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
+    }
+    if (sourceAbortControllerRef.current) {
+      sourceAbortControllerRef.current.abort();
+    }
+    if (targetAbortControllerRef.current) {
+      targetAbortControllerRef.current.abort();
     }
 
     abortControllerRef.current = new AbortController();
@@ -174,28 +229,52 @@ export function Transfer({
     try {
       console.log("Transfer: Starting full data reload");
 
-      // Load original target data first (without search filters)
-      let originalTargetData = [];
-      if (onTargetRequest) {
-        const targetResult = await onTargetRequest({ onTargetParams });
-        originalTargetData = onTargetItem
-          ? convertTransferItems(targetResult.data || [], onTargetItem)
-          : targetResult.data || [];
+      const promises = [];
+      const configs = [];
 
+      // Prepare target request
+      if (onTargetRequest) {
+        const targetParams = { onTargetParams };
+        promises.push(onTargetRequest(targetParams));
+        configs.push("target");
+        lastRequestParamsRef.current.target = targetParams;
+      }
+
+      // Prepare source request
+      if (onSourceRequest) {
+        const sourceParams = { onSourceParams };
+        promises.push(onSourceRequest(sourceParams));
+        configs.push("source");
+        lastRequestParamsRef.current.source = sourceParams;
+      }
+
+      // Execute requests in parallel
+      const results = await Promise.all(promises);
+
+      let originalTargetData = [];
+      let sourceData = [];
+
+      // Process results
+      results.forEach((result, index) => {
+        const data = result.data || [];
+        if (configs[index] === "target") {
+          originalTargetData = onTargetItem
+            ? convertTransferItems(data, onTargetItem)
+            : data;
+        } else if (configs[index] === "source") {
+          sourceData = onSourceItem
+            ? convertTransferItems(data, onSourceItem)
+            : data;
+        }
+      });
+
+      // Update original target keys
+      if (originalTargetData.length > 0) {
         const newOriginalTargetKeys = originalTargetData.map(
           (item) => item.key
         );
         setOriginalTargetKeys(newOriginalTargetKeys);
         setTargetKeys(newOriginalTargetKeys);
-      }
-
-      // Load source data
-      let sourceData = [];
-      if (onSourceRequest) {
-        const sourceResult = await onSourceRequest({ onSourceParams });
-        sourceData = onSourceItem
-          ? convertTransferItems(sourceResult.data || [], onSourceItem)
-          : sourceResult.data || [];
       }
 
       // Filter source items not in target
@@ -224,6 +303,8 @@ export function Transfer({
     }
   }, [
     isLoading,
+    isSourceLoading,
+    isTargetLoading,
     onSourceRequest,
     onSourceParams,
     onSourceItem,
@@ -349,35 +430,48 @@ export function Transfer({
   const reloadTargetDataRef = useRef(reloadTargetData);
   const prevReloadFlagRef = useRef(reloadFlag);
   const isInitialLoadRef = useRef(true);
+  const mountedRef = useRef(false);
 
   // Always update refs to latest functions
   reloadDataRef.current = reloadData;
   reloadSourceDataRef.current = reloadSourceData;
   reloadTargetDataRef.current = reloadTargetData;
 
-  // Initial data load only once
+  // Initial data load only once with proper mounting check
   useEffect(() => {
-    if (isInitialLoadRef.current) {
+    if (!mountedRef.current) {
+      mountedRef.current = true;
       isInitialLoadRef.current = false;
-      reloadDataRef.current();
+
+      // Add small delay to prevent race conditions with modal opening
+      const timeoutId = setTimeout(() => {
+        reloadDataRef.current();
+      }, 50);
+
+      return () => clearTimeout(timeoutId);
     }
   }, []);
 
   // Only reload when reloadFlag actually changes (for manual refresh)
   useEffect(() => {
     if (
-      !isInitialLoadRef.current &&
+      mountedRef.current &&
       reloadFlag !== undefined &&
       reloadFlag !== prevReloadFlagRef.current
     ) {
       prevReloadFlagRef.current = reloadFlag;
+
+      // Clear cache when manually reloading
+      requestCacheRef.current.clear();
+      lastRequestParamsRef.current = { source: null, target: null };
+
       reloadDataRef.current();
     }
   }, [reloadFlag]);
 
   // Optimized: Only reload the side that has search params changes
   useEffect(() => {
-    if (!isInitialLoadRef.current) {
+    if (mountedRef.current) {
       const timeoutId = setTimeout(() => {
         reloadSourceDataRef.current();
       }, 300);
@@ -387,7 +481,7 @@ export function Transfer({
   }, [onSourceSearchParams]);
 
   useEffect(() => {
-    if (!isInitialLoadRef.current) {
+    if (mountedRef.current) {
       const timeoutId = setTimeout(() => {
         reloadTargetDataRef.current();
       }, 300);
@@ -402,6 +496,14 @@ export function Transfer({
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
+      if (sourceAbortControllerRef.current) {
+        sourceAbortControllerRef.current.abort();
+      }
+      if (targetAbortControllerRef.current) {
+        targetAbortControllerRef.current.abort();
+      }
+      // Clear cache on unmount
+      requestCacheRef.current.clear();
     };
   }, []);
 
