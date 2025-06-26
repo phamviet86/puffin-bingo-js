@@ -89,8 +89,14 @@ export function ClassesTransfer({ courseId, ...props }) {
       }
       titles={["Học phần", "Đã gán"]}
       operations={["Thêm", "Xóa"]}
-      showSearch={true}
       modalProps={{ title: "Lộ trình" }}
+      showSearch={true}
+      locale={{
+        searchPlaceholder: "Tìm kiếm...",
+        itemsUnit: "học phần",
+        itemUnit: "học phần",
+        notFoundContent: "Không tìm thấy học phần",
+      }}
     />
   );
 }
