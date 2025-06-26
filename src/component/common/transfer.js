@@ -19,9 +19,8 @@ export function Transfer({
   listStyle = { width: "100%", height: "100%", minHeight: "200px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
-  reloadFlag = undefined, // NEW: flag to trigger reload
-  searchDelay = 500, // NEW: configurable search delay in milliseconds
-  showSearch = false, // NEW: flag to control search visibility
+  searchDelay = 500,
+  showSearch = false,
   ...props
 }) {
   const [dataSource, setDataSource] = useState([]);
@@ -32,7 +31,6 @@ export function Transfer({
   const [onTargetSearchParams, setOnTargetSearchParams] = useState({});
   const [sourceSearchValue, setSourceSearchValue] = useState("");
   const [targetSearchValue, setTargetSearchValue] = useState("");
-  const [originalTargetKeys, setOriginalTargetKeys] = useState([]); // NEW: lưu targetKeys gốc
   const [isLoading, setIsLoading] = useState(false);
   const [isSourceLoading, setIsSourceLoading] = useState(false);
   const [isTargetLoading, setIsTargetLoading] = useState(false);
@@ -40,7 +38,6 @@ export function Transfer({
   const sourceAbortControllerRef = useRef(null);
   const targetAbortControllerRef = useRef(null);
 
-  // Add request cache to prevent duplicate requests
   const requestCacheRef = useRef(new Map());
   const lastRequestParamsRef = useRef({ source: null, target: null });
 
@@ -59,9 +56,6 @@ export function Transfer({
 
   // Helper function to safely merge data without duplicates
   const mergeDataSafely = useCallback((targetItems, sourceItems) => {
-    console.log("Target items:", targetItems);
-    console.log("Source items:", sourceItems);
-
     const targetKeys = targetItems.map((item) => item.key);
     const uniqueSourceItems = sourceItems.filter(
       (item) => !targetKeys.includes(item.key)
@@ -71,7 +65,7 @@ export function Transfer({
 
   // Separate reload functions for each side
   const reloadSourceData = useCallback(async () => {
-    console.log("Reloading source data...");
+    console.log("Transfer: Reloading source data");
     if (!onSourceRequest) return;
 
     const sourceParams = { ...onSourceParams, ...onSourceSearchParams };
@@ -132,7 +126,7 @@ export function Transfer({
   ]);
 
   const reloadTargetData = useCallback(async () => {
-    console.log("Reloading target data...");
+    console.log("Transfer: Reloading target data");
     if (!onTargetRequest) return;
 
     const targetParams = { ...onTargetParams, ...onTargetSearchParams };
@@ -198,7 +192,7 @@ export function Transfer({
 
   // Initial full reload (loads both sides) - optimized to prevent duplicates
   const reloadData = useCallback(async () => {
-    console.log("Reloading full data...");
+    console.log("Transfer: Reloading data");
     // Prevent multiple concurrent requests
     if (isLoading || isSourceLoading || isTargetLoading) {
       return;
@@ -263,7 +257,6 @@ export function Transfer({
         const newOriginalTargetKeys = originalTargetData.map(
           (item) => item.key
         );
-        setOriginalTargetKeys(newOriginalTargetKeys);
         setTargetKeys(newOriginalTargetKeys);
       }
 
@@ -308,8 +301,6 @@ export function Transfer({
         const result = await onTargetAdd(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Thêm thành công");
-          // Update originalTargetKeys to include newly added keys
-          setOriginalTargetKeys((prev) => [...prev, ...keys]);
           await reloadDataRef.current();
         } else {
           messageApi.error(result?.message || "Đã xảy ra lỗi");
@@ -331,10 +322,6 @@ export function Transfer({
         const result = await onTargetRemove(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Xóa thành công");
-          // Update originalTargetKeys to remove the deleted keys
-          setOriginalTargetKeys((prev) =>
-            prev.filter((key) => !keys.includes(key))
-          );
           await reloadDataRef.current();
         } else {
           messageApi.error(result?.message || "Đã xảy ra lỗi");
@@ -368,19 +355,16 @@ export function Transfer({
 
   // Debounced effect for source search
   useEffect(() => {
-    // Don't process search on initial mount
     if (isInitialLoadRef.current) return;
 
     const timeoutId = setTimeout(() => {
       if (onSourceSearch.length > 0 && sourceSearchValue.trim()) {
-        // Only create search params if there's actual search value
         const or = {};
         onSourceSearch.forEach((key) => {
           or[key] = sourceSearchValue.trim();
         });
         setOnSourceSearchParams({ or });
       } else {
-        // Clear search params when no search value
         setOnSourceSearchParams({});
       }
     }, searchDelay);
@@ -390,19 +374,16 @@ export function Transfer({
 
   // Debounced effect for target search
   useEffect(() => {
-    // Don't process search on initial mount
     if (isInitialLoadRef.current) return;
 
     const timeoutId = setTimeout(() => {
       if (onTargetSearch.length > 0 && targetSearchValue.trim()) {
-        // Only create search params if there's actual search value
         const or = {};
         onTargetSearch.forEach((key) => {
           or[key] = targetSearchValue.trim();
         });
         setOnTargetSearchParams({ or });
       } else {
-        // Clear search params when no search value
         setOnTargetSearchParams({});
       }
     }, searchDelay);
@@ -411,8 +392,6 @@ export function Transfer({
   }, [targetSearchValue, onTargetSearch, searchDelay]);
 
   const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    // setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
-    // setSelectedKeys([...sourceSelectedKeys, ...targetSelectedKeys]);
     setSelectedKeys([...targetSelectedKeys, ...sourceSelectedKeys]);
   };
 
@@ -420,7 +399,6 @@ export function Transfer({
   const reloadDataRef = useRef(reloadData);
   const reloadSourceDataRef = useRef(reloadSourceData);
   const reloadTargetDataRef = useRef(reloadTargetData);
-  const prevReloadFlagRef = useRef(reloadFlag);
   const isInitialLoadRef = useRef(true);
   const mountedRef = useRef(false);
 
@@ -435,7 +413,6 @@ export function Transfer({
       mountedRef.current = true;
       isInitialLoadRef.current = false;
 
-      // Add small delay to prevent race conditions with modal opening
       const timeoutId = setTimeout(() => {
         reloadDataRef.current();
       }, 50);
@@ -443,23 +420,6 @@ export function Transfer({
       return () => clearTimeout(timeoutId);
     }
   }, []);
-
-  // Only reload when reloadFlag actually changes (for manual refresh)
-  useEffect(() => {
-    if (
-      mountedRef.current &&
-      reloadFlag !== undefined &&
-      reloadFlag !== prevReloadFlagRef.current
-    ) {
-      prevReloadFlagRef.current = reloadFlag;
-
-      // Clear cache when manually reloading
-      requestCacheRef.current.clear();
-      lastRequestParamsRef.current = { source: null, target: null };
-
-      reloadDataRef.current();
-    }
-  }, [reloadFlag]);
 
   // Optimized: Only reload the side that has search params changes
   useEffect(() => {
@@ -484,7 +444,6 @@ export function Transfer({
 
   // Cleanup on unmount
   useEffect(() => {
-    // Capture the current values to avoid stale closure issues
     const currentAbortController = abortControllerRef.current;
     const currentSourceAbortController = sourceAbortControllerRef.current;
     const currentTargetAbortController = targetAbortControllerRef.current;
@@ -500,7 +459,6 @@ export function Transfer({
       if (currentTargetAbortController) {
         currentTargetAbortController.abort();
       }
-      // Clear cache on unmount
       if (currentRequestCache) {
         currentRequestCache.clear();
       }
@@ -524,7 +482,7 @@ export function Transfer({
           render={render}
           listStyle={listStyle}
           showSearch={showSearch}
-          filterOption={() => true} // Bỏ qua logic filter mặc định, luôn trả về true để không lọc dữ liệu phía client
+          filterOption={() => true}
         />
       </div>
     </>
