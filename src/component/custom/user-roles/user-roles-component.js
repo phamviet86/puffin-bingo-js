@@ -20,13 +20,13 @@ export function UserRolesTransfer({ userId, ...props }) {
       {...props}
       onSourceRequest={() => fetchList(`/api/roles`, { role_status_id: 1 })}
       onTargetRequest={() => fetchList(`/api/user-roles`, { user_id: userId })}
-      onAddTarget={(keys) =>
+      onTargetAdd={(keys) =>
         fetchPost(`/api/user-roles/transfer`, {
           user_id: userId,
           roleIds: keys,
         })
       }
-      onRemoveTarget={(keys) =>
+      onTargetRemove={(keys) =>
         fetchDelete(`/api/user-roles/transfer`, {
           user_id: userId,
           roleIds: keys,

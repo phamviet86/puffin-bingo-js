@@ -70,26 +70,28 @@ export function ClassesTransfer({ courseId, ...props }) {
           ...params,
         })
       }
+      onSourceItem={{ key: "id" }}
+      onSourceSearch={["syllabus_name_like", "module_name_like"]}
       onTargetRequest={(params) =>
         fetchList(`/api/classes`, { course_id: courseId, ...params })
       }
-      onAddTarget={(keys) =>
+      onTargetItem={{
+        key: "module_id",
+        disabled: ["class_status", [], ["Chưa có lịch"]],
+      }}
+      onTargetSearch={["syllabus_name_like", "module_name_like"]}
+      onTargetAdd={(keys) =>
         fetchPost(`/api/classes/transfer`, {
           course_id: courseId,
           moduleIds: keys,
         })
       }
-      onRemoveTarget={(keys) =>
+      onTargetRemove={(keys) =>
         fetchDelete(`/api/classes/transfer`, {
           course_id: courseId,
           moduleIds: keys,
         })
       }
-      onSourceItem={{ key: "id" }}
-      onTargetItem={{
-        key: "module_id",
-        disabled: ["class_status", [], ["Chưa có lịch"]],
-      }}
       render={(record) => `${record.syllabus_name} - ${record.module_name}`}
       titles={["Học phần", "Đã gán"]}
       operations={["Thêm", "Xóa"]}
@@ -99,8 +101,6 @@ export function ClassesTransfer({ courseId, ...props }) {
         minHeight: "200px",
       }}
       showSearch={true}
-      onSourceSearch={["syllabus_name_like", "module_name_like"]}
-      onTargetSearch={["syllabus_name_like", "module_name_like"]}
       modalProps={{ title: "Lộ trình" }}
     />
   );

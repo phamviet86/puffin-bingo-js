@@ -14,13 +14,14 @@ export function Transfer({
   onTargetParams = undefined,
   onTargetItem = undefined,
   onTargetSearch = [],
-  onAddTarget = undefined,
-  onRemoveTarget = undefined,
-  listStyle = undefined,
+  onTargetAdd = undefined,
+  onTargetRemove = undefined,
+  listStyle = { width: "100%", height: "100%", minHeight: "200px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
   reloadFlag = undefined, // NEW: flag to trigger reload
   searchDelay = 500, // NEW: configurable search delay in milliseconds
+  showSearch = false, // NEW: flag to control search visibility
   ...props
 }) {
   const [dataSource, setDataSource] = useState([]);
@@ -316,12 +317,12 @@ export function Transfer({
 
   const handleAddTarget = useCallback(
     async (keys) => {
-      if (!onAddTarget) {
+      if (!onTargetAdd) {
         messageApi.error("Data add handler not provided");
         return;
       }
       try {
-        const result = await onAddTarget(keys);
+        const result = await onTargetAdd(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Thêm thành công");
           await reloadDataRef.current();
@@ -332,17 +333,17 @@ export function Transfer({
         messageApi.error(error.message || "Đã xảy ra lỗi");
       }
     },
-    [onAddTarget, messageApi]
+    [onTargetAdd, messageApi]
   );
 
   const handleRemoveTarget = useCallback(
     async (keys) => {
-      if (!onRemoveTarget) {
+      if (!onTargetRemove) {
         messageApi.error("Data remove handler not provided");
         return;
       }
       try {
-        const result = await onRemoveTarget(keys);
+        const result = await onTargetRemove(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Xóa thành công");
           await reloadDataRef.current();
@@ -353,7 +354,7 @@ export function Transfer({
         messageApi.error(error.message || "Đã xảy ra lỗi");
       }
     },
-    [onRemoveTarget, messageApi]
+    [onTargetRemove, messageApi]
   );
 
   // Khi chuyển record (sang phải/trái)
@@ -531,7 +532,7 @@ export function Transfer({
           rowKey={rowKey}
           render={render}
           listStyle={listStyle}
-          showSearch={false}
+          showSearch={showSearch}
           filterOption={() => true} // Bỏ qua logic filter mặc định, luôn trả về true để không lọc dữ liệu phía client
         />
       </div>
