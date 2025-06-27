@@ -84,12 +84,10 @@ export function ClassesTransfer({ courseId, ...props }) {
           moduleIds: keys,
         })
       }
-      render={(record) =>
-        `${record.syllabus_name} - ${record.module_name} - ${record.disabled}`
-      }
+      render={(record) => `${record.syllabus_name} - ${record.module_name}`}
       titles={["Học phần", "Đã gán"]}
       operations={["Thêm", "Xóa"]}
-      modalProps={{ title: "Lộ trình" }}
+      modalProps={{ title: "Lộ trình học" }}
       showSearch={true}
       locale={{
         searchPlaceholder: "Tìm kiếm...",
