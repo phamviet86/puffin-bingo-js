@@ -39,6 +39,8 @@ export async function PUT(request, context) {
       enrollment_payment_discount = 0,
       enrollment_start_date = null,
       enrollment_end_date = null,
+      enrollment_discount_notes = null,
+      enrollment_desc = null,
     } = await request.json();
 
     // Validate required fields (dựa vào NOT NULL trong SQL)
@@ -55,6 +57,8 @@ export async function PUT(request, context) {
       enrollment_payment_discount,
       enrollment_start_date,
       enrollment_end_date,
+      enrollment_discount_notes,
+      enrollment_desc,
     };
 
     const result = await updateEnrollment(data, id);

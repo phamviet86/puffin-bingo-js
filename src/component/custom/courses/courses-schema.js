@@ -28,14 +28,14 @@ export function CoursesFields(params) {
         label="Tên khóa học"
         placeholder="Nhập tên khóa học"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormText
         name="course_code"
         label="Mã khóa học"
         placeholder="Nhập mã khóa học"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
     </ProForm.Group>
   );

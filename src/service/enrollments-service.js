@@ -49,17 +49,19 @@ export async function createEnrollment(data) {
       enrollment_payment_type_id,
       enrollment_payment_amount,
       enrollment_payment_discount,
+      enrollment_discount_notes,
+      enrollment_desc,
       enrollment_start_date,
       enrollment_end_date,
     } = data;
 
     return await sql`
       INSERT INTO enrollments (
-        user_id, module_id, class_id, enrollment_type_id, enrollment_payment_type_id,
-        enrollment_payment_amount, enrollment_payment_discount, enrollment_start_date, enrollment_end_date
+        user_id, module_id, class_id, enrollment_type_id, enrollment_payment_type_id, enrollment_payment_amount, enrollment_payment_discount, enrollment_discount_notes, enrollment_desc, enrollment_start_date, enrollment_end_date
       ) VALUES (
         ${user_id}, ${module_id}, ${class_id}, ${enrollment_type_id}, ${enrollment_payment_type_id},
-        ${enrollment_payment_amount}, ${enrollment_payment_discount}, ${enrollment_start_date}, ${enrollment_end_date}
+        ${enrollment_payment_amount}, ${enrollment_payment_discount}, ${enrollment_discount_notes},
+        ${enrollment_desc}, ${enrollment_start_date}, ${enrollment_end_date}
       )
       RETURNING *;
     `;
@@ -78,16 +80,15 @@ export async function updateEnrollment(data, id) {
       enrollment_payment_type_id,
       enrollment_payment_amount,
       enrollment_payment_discount,
+      enrollment_discount_notes,
+      enrollment_desc,
       enrollment_start_date,
       enrollment_end_date,
     } = data;
 
     return await sql`
       UPDATE enrollments
-      SET user_id = ${user_id}, module_id = ${module_id}, class_id = ${class_id}, 
-          enrollment_type_id = ${enrollment_type_id}, enrollment_payment_type_id = ${enrollment_payment_type_id},
-          enrollment_payment_amount = ${enrollment_payment_amount}, enrollment_payment_discount = ${enrollment_payment_discount},
-          enrollment_start_date = ${enrollment_start_date}, enrollment_end_date = ${enrollment_end_date}
+      SET user_id = ${user_id}, module_id = ${module_id}, class_id = ${class_id}, enrollment_type_id = ${enrollment_type_id}, enrollment_payment_type_id = ${enrollment_payment_type_id}, enrollment_payment_amount = ${enrollment_payment_amount}, enrollment_payment_discount = ${enrollment_payment_discount}, enrollment_discount_notes = ${enrollment_discount_notes}, enrollment_desc = ${enrollment_desc}, enrollment_start_date = ${enrollment_start_date}, enrollment_end_date = ${enrollment_end_date}
       WHERE deleted_at IS NULL AND id = ${id}
       RETURNING *;
     `;

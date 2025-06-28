@@ -5,6 +5,9 @@ import {
   ProFormText,
   ProFormSelect,
   ProFormDatePicker,
+  ProFormMoney,
+  ProFormDigit,
+  ProFormTextArea,
 } from "@ant-design/pro-form";
 import { ENROLLMENT_STATUS } from "@/component/config";
 
@@ -39,7 +42,7 @@ export function EnrollmentsColumns(params) {
       valueType: "date",
       search: false,
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Ngày kết thúc",
@@ -47,7 +50,7 @@ export function EnrollmentsColumns(params) {
       valueType: "date",
       search: false,
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Loại thanh toán",
@@ -55,7 +58,7 @@ export function EnrollmentsColumns(params) {
       valueType: "select",
       valueEnum: enrollmentPaymentType?.valueEnum || {},
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      responsive: ["xl"],
     },
     {
       title: "Số tiền",
@@ -63,7 +66,7 @@ export function EnrollmentsColumns(params) {
       valueType: "text",
       search: false,
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      responsive: ["xl"],
     },
     {
       title: "Giảm giá",
@@ -71,7 +74,7 @@ export function EnrollmentsColumns(params) {
       valueType: "text",
       search: false,
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      responsive: ["xl"],
     },
   ];
 }
@@ -82,64 +85,83 @@ export function EnrollmentsFields(params) {
   return (
     <ProForm.Group>
       <ProFormText name="id" label="ID" hidden disabled />
+      <ProFormText name="user_id" label="ID người dùng" hidden disable />
+      <ProFormText name="module_id" label="ID học phần" hidden disable />
+      <ProFormText name="class_id" label="ID lớp học" hidden disable />
       <ProFormText
-        name="user_id"
+        name="course_name"
+        label="Khoá học"
+        disabled
+        colProps={{ sm: 12 }}
+      />
+      <ProFormText
+        name="module_name"
+        label="Học phần"
+        disabled
+        colProps={{ sm: 12 }}
+      />
+      <ProFormText
+        name="user_name"
         label="Người dùng"
-        placeholder="Nhập ID người dùng"
-        rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
-      />
-      <ProFormText
-        name="module_id"
-        label="Môn học"
-        placeholder="Nhập ID môn học"
-        rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
-      />
-      <ProFormText
-        name="class_id"
-        label="Lớp học"
-        placeholder="Nhập ID lớp học"
-        colProps={{ xs: 24, sm: 12 }}
+        disabled
+        colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="enrollment_type_id"
         label="Loại đăng ký"
-        placeholder="Chọn loại đăng ký"
-        rules={[{ required: true }]}
         options={enrollmentType?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
-      />
-      <ProFormSelect
-        name="enrollment_payment_type_id"
-        label="Loại thanh toán"
-        placeholder="Chọn loại thanh toán"
-        options={enrollmentPaymentType?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
-      />
-      <ProFormText
-        name="enrollment_payment_amount"
-        label="Số tiền"
-        placeholder="Nhập số tiền"
-        colProps={{ xs: 24, sm: 12 }}
-      />
-      <ProFormText
-        name="enrollment_payment_discount"
-        label="Giảm giá"
-        placeholder="Nhập số tiền giảm giá"
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
+        disabled
       />
       <ProFormDatePicker
         name="enrollment_start_date"
         label="Ngày bắt đầu"
-        placeholder="Chọn ngày bắt đầu"
-        colProps={{ xs: 24, sm: 12 }}
+        placeholder="Chọn ngày"
+        colProps={{ xs: 12 }}
+        width="100%"
       />
       <ProFormDatePicker
         name="enrollment_end_date"
         label="Ngày kết thúc"
-        placeholder="Chọn ngày kết thúc"
-        colProps={{ xs: 24, sm: 12 }}
+        placeholder="Chọn ngày"
+        colProps={{ xs: 12 }}
+        width="100%"
+      />
+      <ProFormSelect
+        name="enrollment_payment_type_id"
+        label="Thanh toán"
+        placeholder="Chọn thanh toán"
+        options={enrollmentPaymentType?.options || []}
+      />
+      <ProFormMoney
+        name="enrollment_payment_amount"
+        label="Số tiền"
+        placeholder="Nhập số tiền"
+        locale="vn-VN"
+        colProps={{ xs: 12 }}
+        width="100%"
+      />
+      <ProFormDigit
+        name="enrollment_payment_discount"
+        label="Giảm giá (%)"
+        placeholder="Nhập giảm giá"
+        fieldProps={{ formatter: (value) => (value ? `${value} %` : "") }}
+        min={0}
+        max={100}
+        colProps={{ xs: 12 }}
+        width="100%"
+      />
+      <ProFormTextArea
+        name="enrollment_discount_notes"
+        label="Ghi chú giảm giá"
+        placeholder="Nhập ghi chú giảm giá"
+        fieldProps={{ autoSize: { minRows: 1, maxRows: 3 } }}
+      />
+      <ProFormTextArea
+        name="enrollment_desc"
+        label="Ghi chú khác"
+        placeholder="Nhập ghi chú khác"
+        fieldProps={{ autoSize: { minRows: 3, maxRows: 6 } }}
       />
     </ProForm.Group>
   );

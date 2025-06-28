@@ -46,7 +46,7 @@ export function ModulesFields(params) {
         label="Tên học phần"
         placeholder="Nhập tên học phần"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="module_status_id"
@@ -54,7 +54,7 @@ export function ModulesFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={moduleStatus?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormTextArea
         name="module_desc"

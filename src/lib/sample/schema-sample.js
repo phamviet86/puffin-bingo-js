@@ -79,7 +79,7 @@ export function LecturesFields(params) {
         params={{
           syllabus_id_e: syllabusId,
         }}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="lecture_status_id"
@@ -87,7 +87,7 @@ export function LecturesFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={lectureStatus?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
     </ProForm.Group>
   );

@@ -45,7 +45,7 @@ export function RoomsFields(params) {
         label="Tên phòng"
         placeholder="Nhập tên phòng"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="room_status_id"
@@ -53,7 +53,7 @@ export function RoomsFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={roomStatus?.options || []}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormTextArea
         name="room_desc"

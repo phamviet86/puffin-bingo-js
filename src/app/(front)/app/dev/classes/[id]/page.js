@@ -80,11 +80,11 @@ function PageContent({ params }) {
 
   const enrollmentsTab = {
     key: "enrollments",
-    label: "Đăng ký",
+    label: "Danh sách lớp",
     children: (
       <ProCard
         boxShadow
-        title="Danh sách đăng ký"
+        title="Danh sách lớp"
         extra={
           <Space>
             <Button

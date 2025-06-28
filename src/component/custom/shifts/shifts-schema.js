@@ -60,14 +60,14 @@ export function ShiftsFields(params) {
         label="Tên ca học"
         placeholder="Nhập tên ca học"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="shift_status_id"
         label="Trạng thái"
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
         options={shiftStatus?.options || []}
       />
       <ProFormTimePicker
@@ -76,7 +76,7 @@ export function ShiftsFields(params) {
         placeholder="Chọn giờ bắt đầu"
         rules={[{ required: true }]}
         fieldProps={{ format: "HH:mm" }}
-        colProps={{ sm: 12 }}
+        colProps={{ xs: 12 }}
         width="100%"
       />
       <ProFormTimePicker
@@ -85,7 +85,7 @@ export function ShiftsFields(params) {
         placeholder="Chọn giờ kết thúc"
         rules={[{ required: true }]}
         fieldProps={{ format: "HH:mm" }}
-        colProps={{ sm: 12 }}
+        colProps={{ xs: 12 }}
         width="100%"
       />
       <ProFormTextArea

@@ -171,14 +171,14 @@ export function ClassesFields() {
         name="class_start_date"
         label="Ngày bắt đầu"
         placeholder="Chọn ngày bắt đầu"
-        colProps={{ sm: 12 }}
+        colProps={{ xs: 12 }}
         width="100%"
       />
       <ProFormDatePicker
         name="class_end_date"
         label="Ngày kết thúc"
         placeholder="Chọn ngày kết thúc"
-        colProps={{ sm: 12 }}
+        colProps={{ xs: 12 }}
         width="100%"
       />
       <ProFormMoney
@@ -188,7 +188,6 @@ export function ClassesFields() {
         locale="vn-VN"
         width="100%"
         colProps={{ xs: 12 }}
-        precision={0}
       />
       <ProFormMoney
         name="class_total_fee"
@@ -197,7 +196,6 @@ export function ClassesFields() {
         locale="vn-VN"
         width="100%"
         colProps={{ xs: 12 }}
-        precision={0}
       />
     </ProForm.Group>
   );

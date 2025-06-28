@@ -80,7 +80,7 @@ export function UsersFields(params) {
         label="Email"
         placeholder="Nhập email"
         rules={[{ required: true }, { type: "email" }]}
-        // colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ sm: 12 }}
       />
       <ProFormSelect
         name="user_status_id"
@@ -88,32 +88,32 @@ export function UsersFields(params) {
         placeholder="Chọn trạng thái"
         rules={[{ required: true }]}
         options={userStatus?.options || []}
-        // colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ sm: 12 }}
       />
       <ProFormText
         name="user_name"
         label="Tên người dùng"
         placeholder="Nhập tên người dùng"
         rules={[{ required: true }]}
-        // colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ sm: 12 }}
       />
       <ProFormText
         name="user_desc"
         label="Mô tả"
         placeholder="Nhập mô tả"
-        // colProps={{ xs: 24, sm: 12 }}
+        // colProps={{ sm: 12 }}
       />
       <ProFormText
         name="user_phone"
         label="Số điện thoại"
         placeholder="Nhập số điện thoại"
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormText
         name="user_parent_phone"
         label="SĐT phụ huynh"
         placeholder="Nhập số điện thoại phụ huynh"
-        colProps={{ xs: 24, sm: 12 }}
+        colProps={{ sm: 12 }}
       />
       <ProFormTextArea
         name="user_avatar"

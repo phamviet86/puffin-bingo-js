@@ -32,6 +32,8 @@ export async function POST(request) {
       enrollment_payment_discount = 0,
       enrollment_start_date = null,
       enrollment_end_date = null,
+      enrollment_discount_notes = null,
+      enrollment_desc = null,
     } = await request.json();
 
     // Validate required fields (based on NOT NULL constraints in SQL)
@@ -48,6 +50,8 @@ export async function POST(request) {
       enrollment_payment_discount,
       enrollment_start_date,
       enrollment_end_date,
+      enrollment_discount_notes,
+      enrollment_desc,
     };
 
     const result = await createEnrollment(data);

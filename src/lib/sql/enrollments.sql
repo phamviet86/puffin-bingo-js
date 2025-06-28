@@ -19,6 +19,8 @@ CREATE TABLE enrollments (
   enrollment_payment_discount INTEGER DEFAULT 0,
   enrollment_start_date TIMESTAMPTZ DEFAULT CURRENT_DATE,
   enrollment_end_date TIMESTAMPTZ DEFAULT NULL
+  enrollment_discount_notes VARCHAR(512) DEFAULT NULL, 
+  enrollment_desc TEXT DEFAULT NULL,
 );
 CREATE TRIGGER update_record BEFORE
 UPDATE ON enrollments FOR EACH ROW EXECUTE FUNCTION set_updated_at();
