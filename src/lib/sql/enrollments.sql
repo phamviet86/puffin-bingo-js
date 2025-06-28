@@ -26,10 +26,24 @@ CREATE OR REPLACE VIEW enrollments_view AS
 SELECT 
   *,
   CASE
+    -- 1. Nhập sai ngày
     WHEN enrollment_end_date IS NOT NULL AND enrollment_start_date > enrollment_end_date THEN 'Nhập sai ngày'
+    
+    -- 2. Chưa xếp lớp
     WHEN class_id IS NULL THEN 'Chưa xếp lớp'
-    WHEN enrollment_end_date IS NULL OR enrollment_end_date >= CURRENT_DATE THEN 'Đã xếp lớp'
-    ELSE 'Đã nghỉ'
+    
+    -- 3. Thiếu ngày bắt đầu (dữ liệu bị mất)
+    WHEN enrollment_start_date IS NULL THEN 'Thiếu ngày bắt đầu'
+    
+    -- 4. Đang hoạt động (đang trong thời gian tham gia)
+    WHEN enrollment_start_date <= CURRENT_DATE 
+         AND (enrollment_end_date IS NULL OR enrollment_end_date >= CURRENT_DATE) THEN 'Đang hoạt động'
+    
+    -- 5. Đã nghỉ (đã kết thúc khóa học)
+    WHEN enrollment_end_date < CURRENT_DATE THEN 'Đã nghỉ'
+    
+    -- 6. Chờ bắt đầu (đã xếp lớp nhưng chưa đến ngày bắt đầu)
+    ELSE 'Chờ bắt đầu'
   END AS enrollment_status
 FROM 
   enrollments;

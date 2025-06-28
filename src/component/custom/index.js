@@ -43,3 +43,7 @@ export * from "./courses/courses-component";
 // classes
 export * from "./classes/classes-schema";
 export * from "./classes/classes-component";
+
+// enrollments
+export * from "./enrollments/enrollments-schema";
+export * from "./enrollments/enrollments-component";
