@@ -186,9 +186,7 @@ function PageContent({ params }) {
         <ClassesTransfer
           courseId={courseId}
           transferHook={useClassesTransfer}
-          onTransferClose={() => {
-            useClassesTable.reload();
-          }}
+          onTransferClose={() => useClassesTable.reload()}
           onSourceParams={{ syllabus_status_id: 7, module_status_id: 10 }}
           onTargetParams={{ course_id: courseId }}
         />

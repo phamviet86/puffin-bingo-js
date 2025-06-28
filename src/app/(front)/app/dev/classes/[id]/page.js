@@ -22,8 +22,16 @@ import {
   EnrollmentsFormEdit,
   EnrollmentsColumns,
   EnrollmentsFields,
+  EnrollmentsTransferByClass,
 } from "@/component/custom";
-import { useDesc, useForm, useNav, useTable, useInfo } from "@/component/hook";
+import {
+  useDesc,
+  useForm,
+  useNav,
+  useTable,
+  useInfo,
+  useTransfer,
+} from "@/component/hook";
 import { PageProvider, usePageContext } from "../provider";
 
 export default function Page(props) {
@@ -77,6 +85,7 @@ function PageContent({ params }) {
   const useEnrollmentsTable = useTable();
   const useEnrollmentsInfo = useInfo();
   const useEnrollmentsForm = useForm();
+  const useEnrollmentsTransfer = useTransfer();
 
   const enrollmentsTab = {
     key: "enrollments",
@@ -93,17 +102,10 @@ function PageContent({ params }) {
               variant="filled"
               onClick={() => useEnrollmentsTable.reload()}
             />
-            <EnrollmentsFormCreate
-              fields={EnrollmentsFields({
-                enrollmentType,
-                enrollmentPaymentType,
-              })}
-              onFormSubmitSuccess={(result) => {
-                useEnrollmentsInfo.close();
-                useEnrollmentsTable.reload();
-              }}
-              title="Tạo đăng ký"
-              trigger={<Button label="Tạo mới" variant="filled" />}
+            <Button
+              label="Tạo lớp"
+              variant="filled"
+              onClick={() => useEnrollmentsTransfer.open()}
             />
           </Space>
         }
@@ -184,6 +186,14 @@ function PageContent({ params }) {
             useEnrollmentsTable.reload();
           }}
           title="Sửa đăng ký"
+        />
+        <EnrollmentsTransferByClass
+          classId={classId}
+          enrollmentTypeId={20}
+          transferHook={useEnrollmentsTransfer}
+          onTransferClose={() => useEnrollmentsTable.reload()}
+          onSourceParams={{ user_status_id_e: 14 }}
+          onTargetParams={{ class_id: classId }}
         />
       </ProCard>
     ),
