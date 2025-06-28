@@ -11,14 +11,14 @@ export function PageProvider({ children }) {
 
   const enrollmentType = convertSelection(
     optionData,
-    { value: "id", label: "option_label", color: "option_color" }, // Define how to map the option data
-    { option_table: "enrollments", option_column: "enrollment_type_id" } // Define filtering criteria
+    { value: "id", label: "option_label", color: "option_color" },
+    { option_table: "enrollments", option_column: "enrollment_type_id" }
   );
 
   const enrollmentPaymentType = convertSelection(
     optionData,
-    { value: "id", label: "option_label", color: "option_color" }, // Define how to map the option data
-    { option_table: "enrollments", option_column: "enrollment_payment_type_id" } // Define filtering criteria
+    { value: "id", label: "option_label", color: "option_color" },
+    { option_table: "enrollments", option_column: "enrollment_payment_type_id" }
   );
 
   // Memoize the context value to avoid unnecessary re-renders

@@ -14,7 +14,7 @@ export async function getEnrollments(searchParams) {
     const sqlValue = [...queryValues];
     const sqlText = `
       SELECT *, COUNT(*) OVER() AS total
-      FROM enrollments
+      FROM enrollments_view
       WHERE deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY created_at"}
@@ -31,7 +31,7 @@ export async function getEnrollment(id) {
   try {
     return await sql`
       SELECT *
-      FROM enrollments
+      FROM enrollments_view
       WHERE deleted_at IS NULL AND id = ${id};
     `;
   } catch (error) {

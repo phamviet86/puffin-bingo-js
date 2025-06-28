@@ -106,7 +106,7 @@ export const RESOURCE_METHOD = {
   PATCH: { text: "PATCH", color: "purple" },
 };
 
-export const SECTION_STATUS = {
+export const CLASS_STATUS = {
   "Chưa có lịch": {
     text: "Chưa có lịch",
     status: "default",
@@ -118,11 +118,11 @@ export const SECTION_STATUS = {
 };
 
 export const ENROLLMENT_STATUS = {
-  "Chưa xếp lớp": {
-    text: "Chưa xếp lớp",
-    status: "warning",
-  },
-  "Đã xếp lớp": { text: "Đã xếp lớp", status: "processing" },
-  "Đã nghỉ": { text: "Đã nghỉ", status: "default" },
   "Nhập sai ngày": { text: "Nhập sai ngày", status: "error" },
+  "Chưa xếp lớp": { text: "Chưa xếp lớp", status: "warning" },
+  "Thiếu ngày bắt đầu": { text: "Thiếu ngày bắt đầu", status: "error" },
+  "Đang học": { text: "Đang học", status: "processing" },
+  "Đang dạy": { text: "Đang dạy", status: "processing" },
+  "Đã nghỉ": { text: "Đã nghỉ", status: "default" },
+  "Chờ bắt đầu": { text: "Chờ bắt đầu", status: "warning" },
 };

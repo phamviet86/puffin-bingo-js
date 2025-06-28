@@ -6,7 +6,7 @@ import {
   ProFormDatePicker,
   ProFormMoney,
 } from "@ant-design/pro-form";
-import { SECTION_STATUS } from "@/component/config/enum-config";
+import { CLASS_STATUS } from "@/component/config/enum-config";
 
 export function ClassesColumns() {
   return [
@@ -33,7 +33,7 @@ export function ClassesColumns() {
       title: "Trạng thái",
       dataIndex: "class_status",
       valueType: "text",
-      valueEnum: SECTION_STATUS,
+      valueEnum: CLASS_STATUS,
       filters: true,
       sorter: { multiple: 1 },
     },
@@ -97,7 +97,7 @@ export function CourseClassesColumns() {
       title: "Trạng thái",
       dataIndex: "class_status",
       valueType: "select",
-      valueEnum: SECTION_STATUS,
+      valueEnum: CLASS_STATUS,
       filters: true,
       sorter: { multiple: 1 },
     },

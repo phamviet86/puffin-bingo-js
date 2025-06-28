@@ -6,6 +6,7 @@ import {
   ProFormSelect,
   ProFormDatePicker,
 } from "@ant-design/pro-form";
+import { ENROLLMENT_STATUS } from "@/component/config";
 
 export function EnrollmentsColumns(params) {
   const { enrollmentType, enrollmentPaymentType } = params || {};
@@ -18,19 +19,6 @@ export function EnrollmentsColumns(params) {
       sorter: { multiple: 1 },
     },
     {
-      title: "Môn học",
-      dataIndex: "module_id",
-      valueType: "text",
-      sorter: { multiple: 1 },
-    },
-    {
-      title: "Lớp học",
-      dataIndex: "class_id",
-      valueType: "text",
-      sorter: { multiple: 1 },
-      responsive: ["md"],
-    },
-    {
       title: "Loại đăng ký",
       dataIndex: "enrollment_type_id",
       valueType: "select",
@@ -38,17 +26,42 @@ export function EnrollmentsColumns(params) {
       sorter: { multiple: 1 },
     },
     {
+      title: "Trạng thái",
+      dataIndex: "enrollment_status",
+      valueType: "text",
+      valueEnum: ENROLLMENT_STATUS,
+      filters: true,
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Ngày bắt đầu",
+      dataIndex: "enrollment_start_date",
+      valueType: "date",
+      search: false,
+      sorter: { multiple: 1 },
+      responsive: ["md"],
+    },
+    {
+      title: "Ngày kết thúc",
+      dataIndex: "enrollment_end_date",
+      valueType: "date",
+      search: false,
+      sorter: { multiple: 1 },
+      responsive: ["md"],
+    },
+    {
       title: "Loại thanh toán",
       dataIndex: "enrollment_payment_type_id",
       valueType: "select",
       valueEnum: enrollmentPaymentType?.valueEnum || {},
       sorter: { multiple: 1 },
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Số tiền",
       dataIndex: "enrollment_payment_amount",
       valueType: "text",
+      search: false,
       sorter: { multiple: 1 },
       responsive: ["lg"],
     },
@@ -56,21 +69,9 @@ export function EnrollmentsColumns(params) {
       title: "Giảm giá",
       dataIndex: "enrollment_payment_discount",
       valueType: "text",
+      search: false,
       sorter: { multiple: 1 },
       responsive: ["lg"],
-    },
-    {
-      title: "Ngày bắt đầu",
-      dataIndex: "enrollment_start_date",
-      valueType: "date",
-      sorter: { multiple: 1 },
-    },
-    {
-      title: "Ngày kết thúc",
-      dataIndex: "enrollment_end_date",
-      valueType: "date",
-      sorter: { multiple: 1 },
-      responsive: ["md"],
     },
   ];
 }
