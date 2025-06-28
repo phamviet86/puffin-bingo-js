@@ -109,8 +109,8 @@ export async function deleteEnrollment(id) {
   }
 }
 
-// create multi enrollments by class ID and user IDs
-export async function createMultiEnrollments(
+// create  enrollments by class ID and user IDs
+export async function createEnrollments(
   userIds,
   classId,
   enrollment_type_id
