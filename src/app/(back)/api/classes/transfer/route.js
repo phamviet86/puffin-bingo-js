@@ -14,7 +14,7 @@ export async function POST(request) {
     if (!course_id || !Array.isArray(moduleIds) || moduleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await createClassesByCourse(moduleIds, course_id);
+    const result = await createClassesByCourse(course_id, moduleIds);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không thể thêm lớp học.");
@@ -35,7 +35,7 @@ export async function DELETE(request) {
     if (!course_id || !Array.isArray(moduleIds) || moduleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await deleteClassesByCourse(moduleIds, course_id);
+    const result = await deleteClassesByCourse(course_id, moduleIds);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không tìm thấy lớp học để xóa");

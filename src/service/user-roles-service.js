@@ -90,7 +90,7 @@ export async function deleteUserRole(id) {
 }
 
 // Create multiple user roles by user ID and role IDs
-export async function createUserRolesByUser(roleIds, userId) {
+export async function createUserRolesByUser(userId, roleIds) {
   try {
     const queryValues = [];
     const valuePlaceholders = roleIds
@@ -113,7 +113,7 @@ export async function createUserRolesByUser(roleIds, userId) {
 }
 
 // Soft-delete multiple user roles by user ID and role IDs
-export async function deleteUserRolesByUser(roleIds, userId) {
+export async function deleteUserRolesByUser(userId, roleIds) {
   try {
     const placeholders = roleIds.map((_, index) => `$${index + 2}`).join(", ");
 

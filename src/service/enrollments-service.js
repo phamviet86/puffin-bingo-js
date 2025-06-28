@@ -109,17 +109,17 @@ export async function deleteEnrollment(id) {
   }
 }
 
-// create  enrollments by class ID and user IDs
-export async function createEnrollments(
-  userIds,
+// create multiple enrollments by class ID and user IDs
+export async function createEnrollmentsByClass(
   classId,
-  enrollment_type_id
+  userIds,
+  enrollmentTypeId
 ) {
   try {
     const queryValues = [];
     const valuePlaceholders = userIds
       .map((userId, index) => {
-        queryValues.push(userId, classId, enrollment_type_id);
+        queryValues.push(userId, classId, enrollmentTypeId);
         return `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`;
       })
       .join(", ");
@@ -130,6 +130,121 @@ export async function createEnrollments(
       RETURNING *;
     `;
 
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// soft-delete multiple enrollments by class ID and user IDs
+export async function deleteEnrollmentsByClass(classId, userIds) {
+  try {
+    const placeholders = userIds.map((_, index) => `$${index + 2}`).join(", ");
+
+    const queryText = `
+      UPDATE enrollments
+      SET deleted_at = NOW()
+      WHERE deleted_at IS NULL
+        AND class_id = $1
+        AND user_id IN (${placeholders})
+      RETURNING *;
+    `;
+    const queryValues = [classId, ...userIds];
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// create multiple enrollments by user ID and class Ids
+export async function createClassEnrollmentsByUser(
+  userId,
+  classIds,
+  enrollmentTypeId
+) {
+  try {
+    const queryValues = [];
+    const valuePlaceholders = classIds
+      .map((classId, index) => {
+        queryValues.push(userId, classId, enrollmentTypeId);
+        return `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`;
+      })
+      .join(", ");
+
+    const queryText = `
+      INSERT INTO enrollments (user_id, class_id, enrollment_type_id)
+      VALUES ${valuePlaceholders}
+      RETURNING *;
+    `;
+
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+// soft-delete multiple enrollments by user ID and class Ids
+export async function deleteClassEnrollmentsByUser(userId, classIds) {
+  try {
+    const placeholders = classIds.map((_, index) => `$${index + 2}`).join(", ");
+
+    const queryText = `
+      UPDATE enrollments
+      SET deleted_at = NOW()
+      WHERE deleted_at IS NULL
+        AND user_id = $1
+        AND class_id IN (${placeholders})
+      RETURNING *;
+    `;
+    const queryValues = [userId, ...classIds];
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// create multiple enrollments by user ID and module Ids
+export async function createModuleEnrollmentsByUser(
+  userId,
+  moduleIds,
+  enrollmentTypeId
+) {
+  try {
+    const queryValues = [];
+    const valuePlaceholders = moduleIds
+      .map((moduleId, index) => {
+        queryValues.push(userId, moduleId, enrollmentTypeId);
+        return `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`;
+      })
+      .join(", ");
+
+    const queryText = `
+      INSERT INTO enrollments (user_id, module_id, enrollment_type_id)
+      VALUES ${valuePlaceholders}
+      RETURNING *;
+    `;
+
+    return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+// soft-delete multiple enrollments by user ID and module Ids
+export async function deleteModuleEnrollmentsByUser(userId, moduleIds) {
+  try {
+    const placeholders = moduleIds
+      .map((_, index) => `$${index + 2}`)
+      .join(", ");
+
+    const queryText = `
+      UPDATE enrollments
+      SET deleted_at = NOW()
+      WHERE deleted_at IS NULL
+        AND user_id = $1
+        AND module_id IN (${placeholders})
+      RETURNING *;
+    `;
+    const queryValues = [userId, ...moduleIds];
     return await sql.query(queryText, queryValues);
   } catch (error) {
     throw new Error(error.message);

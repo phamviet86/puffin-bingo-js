@@ -1,4 +1,6 @@
 -- table: đăng ký
+-- có sử dụng enrollment_type_id = 20 (học viên) và enrollment_type_id khác 20 (giáo viên, trợ giảng)
+-- có sử dụng trường enrollment_payment_type_id = 22 (hàng tháng)
 
 DROP VIEW IF EXISTS enrollments_view CASCADE;
 DROP TABLE IF EXISTS enrollments CASCADE;
@@ -9,10 +11,10 @@ CREATE TABLE enrollments (
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   deleted_at TIMESTAMPTZ DEFAULT NULL,
   user_id UUID NOT NULL,
-  module_id UUID NOT NULL,
+  module_id UUID DEFAULT NULL,
   class_id UUID DEFAULT NULL,
   enrollment_type_id INTEGER NOT NULL,
-  enrollment_payment_type_id INTEGER DEFAULT NULL,
+  enrollment_payment_type_id INTEGER DEFAULT 22,
   enrollment_payment_amount INTEGER DEFAULT 0,
   enrollment_payment_discount INTEGER DEFAULT 0,
   enrollment_start_date TIMESTAMPTZ DEFAULT CURRENT_DATE,
@@ -37,12 +39,18 @@ SELECT
     
     -- 4. Đang hoạt động (đang trong thời gian tham gia)
     WHEN enrollment_start_date <= CURRENT_DATE 
-         AND (enrollment_end_date IS NULL OR enrollment_end_date >= CURRENT_DATE) THEN 'Đang hoạt động'
+         AND (enrollment_end_date IS NULL OR enrollment_end_date >= CURRENT_DATE) 
+         AND enrollment_type_id = 20 THEN 'Đang học'
     
-    -- 5. Đã nghỉ (đã kết thúc khóa học)
+    -- 5. Đang dạy (đang trong thời gian tham gia với enrollment_type_id khác 20)
+    WHEN enrollment_start_date <= CURRENT_DATE 
+         AND (enrollment_end_date IS NULL OR enrollment_end_date >= CURRENT_DATE) 
+         AND enrollment_type_id != 20 THEN 'Đang dạy'
+    
+    -- 6. Đã nghỉ (đã kết thúc khóa học)
     WHEN enrollment_end_date < CURRENT_DATE THEN 'Đã nghỉ'
     
-    -- 6. Chờ bắt đầu (đã xếp lớp nhưng chưa đến ngày bắt đầu)
+    -- 7. Chờ bắt đầu (đã xếp lớp nhưng chưa đến ngày bắt đầu)
     ELSE 'Chờ bắt đầu'
   END AS enrollment_status
 FROM 

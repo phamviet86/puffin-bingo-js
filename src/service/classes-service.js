@@ -113,7 +113,7 @@ export async function deleteClass(id) {
 }
 
 // Create multiple classes by course ID and module IDs
-export async function createClassesByCourse(moduleIds, courseId) {
+export async function createClassesByCourse(courseId, moduleIds) {
   try {
     const queryValues = [];
     const valuePlaceholders = moduleIds
@@ -136,7 +136,7 @@ export async function createClassesByCourse(moduleIds, courseId) {
 }
 
 // Soft-delete multiple classes by course ID and module IDs
-export async function deleteClassesByCourse(moduleIds, courseId) {
+export async function deleteClassesByCourse(courseId, moduleIds) {
   try {
     const placeholders = moduleIds
       .map((_, index) => `$${index + 2}`)

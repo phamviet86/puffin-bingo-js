@@ -14,7 +14,7 @@ export async function POST(request) {
     if (!user_id || !Array.isArray(roleIds) || roleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await createUserRolesByUser(roleIds, user_id);
+    const result = await createUserRolesByUser(user_id, roleIds);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không thể thêm quyền.");
@@ -35,7 +35,7 @@ export async function DELETE(request) {
     if (!user_id || !Array.isArray(roleIds) || roleIds.length === 0)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
-    const result = await deleteUserRolesByUser(roleIds, user_id);
+    const result = await deleteUserRolesByUser(user_id, roleIds);
 
     if (!result || !result.length)
       return buildApiResponse(404, false, "Không tìm thấy phân quyền để xóa");
