@@ -31,7 +31,7 @@ export function EnrollmentsColumns(params) {
     {
       title: "Trạng thái",
       dataIndex: "enrollment_status",
-      valueType: "text",
+      valueType: "select",
       valueEnum: ENROLLMENT_STATUS,
       filters: true,
       sorter: { multiple: 1 },
