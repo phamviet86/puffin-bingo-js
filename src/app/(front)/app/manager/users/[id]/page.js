@@ -93,7 +93,7 @@ function PageContent({ params }) {
               onClick={() => useUserRolesTable.reload()}
             />
             <Button
-              label="Điều chỉnh"
+              label="Thêm quyền"
               variant="filled"
               onClick={() => useUserRolesTransfer.open()}
             />

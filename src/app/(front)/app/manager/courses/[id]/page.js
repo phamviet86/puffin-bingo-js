@@ -104,7 +104,7 @@ function PageContent({ params }) {
               onClick={() => useClassesTable.reload()}
             />
             <Button
-              label="Tạo lớp"
+              label="Thêm lớp"
               variant="filled"
               onClick={() => useClassesTransfer.open()}
             />

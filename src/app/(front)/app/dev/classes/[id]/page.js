@@ -103,7 +103,7 @@ function PageContent({ params }) {
               onClick={() => useEnrollmentsTable.reload()}
             />
             <Button
-              label="Tạo lớp"
+              label="Thêm học viên"
               variant="filled"
               onClick={() => useEnrollmentsTransfer.open()}
             />

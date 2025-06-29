@@ -278,10 +278,8 @@ export function Transfer({
       // Set new timeout with 300ms delay
       searchTimeoutRef.current = setTimeout(() => {
         if (direction === "left") {
-          console.log("Searching source with value:", value);
           handleSourceSearch(value);
         } else {
-          console.log("Searching target with value:", value);
           handleTargetSearch(value);
         }
       }, 500);
