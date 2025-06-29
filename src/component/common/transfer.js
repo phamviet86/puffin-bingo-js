@@ -36,7 +36,6 @@ export function Transfer({
   listStyle = { width: "100%", height: "100%", minHeight: "200px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
-  searchDelay = 500,
   ...props
 }) {
   const [messageApi, contextHolder] = message.useMessage();
@@ -78,7 +77,7 @@ export function Transfer({
   const handleSourceRequest = useCallback(async () => {
     if (!onSourceRequest) {
       messageApi.error("Source data request handler not provided");
-      return false;
+      return;
     }
 
     try {
@@ -88,15 +87,17 @@ export function Transfer({
         : sourceResult.data || [];
 
       setSourceRequestData(sourceData);
+      return;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
+      return;
     }
   }, [onSourceRequest, onSourceParams, onSourceItem, messageApi]);
 
   const handleTargetRequest = useCallback(async () => {
     if (!onTargetRequest) {
       messageApi.error("Target data request handler not provided");
-      return false;
+      return;
     }
 
     try {
@@ -106,9 +107,10 @@ export function Transfer({
         : targetResult.data || [];
 
       setTargetRequestData(targetData);
+      return;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
-      return false;
+      return;
     }
   }, [onTargetRequest, onTargetParams, onTargetItem, messageApi]);
 
@@ -135,7 +137,7 @@ export function Transfer({
     async (keys) => {
       if (!onTargetAdd) {
         messageApi.error("Data add handler not provided");
-        return false;
+        return;
       }
       try {
         const result = await onTargetAdd(keys);
@@ -145,7 +147,7 @@ export function Transfer({
         }
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
-        return false;
+        return;
       }
     },
     [onTargetAdd, messageApi]
@@ -165,6 +167,7 @@ export function Transfer({
         }
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
+        return;
       }
     },
     [onTargetRemove, messageApi]
@@ -184,9 +187,13 @@ export function Transfer({
 
   const handleSourceSearch = useCallback(
     async (searchValue) => {
+      if (!searchValue?.trim()) {
+        setSourceSearchKeys([]);
+        return;
+      }
       if (!onSourceRequest) {
         messageApi.error("Source data request handler not provided");
-        return false;
+        return;
       }
 
       const searchParams = buildSearchParams(searchSourceColumns, searchValue);
@@ -201,10 +208,12 @@ export function Transfer({
           : searchResult.data || [];
 
         setSourceSearchKeys(sourceData.map((item) => item.key));
+        return;
       } catch (error) {
         messageApi.error(
           error.message || "Đã xảy ra lỗi khi tải dữ liệu source"
         );
+        return;
       }
     },
     [
@@ -218,9 +227,14 @@ export function Transfer({
 
   const handleTargetSearch = useCallback(
     async (searchValue) => {
+      if (!searchValue?.trim()) {
+        setTargetSearchKeys([]);
+        return;
+      }
+
       if (!onTargetRequest) {
         messageApi.error("Target data request handler not provided");
-        return false;
+        return;
       }
 
       const searchParams = buildSearchParams(searchTargetColumns, searchValue);
@@ -235,10 +249,12 @@ export function Transfer({
           : searchResult.data || [];
 
         setTargetSearchKeys(targetData.map((item) => item.key));
+        return;
       } catch (error) {
         messageApi.error(
           error.message || "Đã xảy ra lỗi khi tải dữ liệu target"
         );
+        return;
       }
     },
     [
@@ -250,13 +266,25 @@ export function Transfer({
     ]
   );
 
+  // Search timeout ref for debouncing
+  const searchTimeoutRef = useRef();
+
   const handleSearch = useCallback(
     (direction, value) => {
-      if (direction === "left") {
-        handleSourceSearch(value);
-      } else {
-        handleTargetSearch(value);
+      // Clear previous timeout
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
       }
+      // Set new timeout with 300ms delay
+      searchTimeoutRef.current = setTimeout(() => {
+        if (direction === "left") {
+          console.log("Searching source with value:", value);
+          handleSourceSearch(value);
+        } else {
+          console.log("Searching target with value:", value);
+          handleTargetSearch(value);
+        }
+      }, 500);
     },
     [handleSourceSearch, handleTargetSearch]
   );
