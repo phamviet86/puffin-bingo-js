@@ -65,13 +65,13 @@ export function ClassesTransfer({ courseId, ...props }) {
       {...props}
       onSourceRequest={(params) => fetchList(`/api/modules`, params)}
       onSourceItem={{ key: "id" }}
-      onSourceSearch={["syllabus_name_like", "module_name_like"]}
+      searchSourceColumns={["syllabus_name_like", "module_name_like"]}
       onTargetRequest={(params) => fetchList(`/api/classes`, params)}
       onTargetItem={{
         key: "module_id",
         disabled: ["class_status", [], ["Chưa có lịch"]],
       }}
-      onTargetSearch={["syllabus_name_like", "module_name_like"]}
+      searchTargetColumns={["syllabus_name_like", "module_name_like"]}
       onTargetAdd={(keys) =>
         fetchPost(`/api/classes/transfer`, {
           course_id: courseId,

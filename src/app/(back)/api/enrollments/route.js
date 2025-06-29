@@ -37,7 +37,7 @@ export async function POST(request) {
     } = await request.json();
 
     // Validate required fields (based on NOT NULL constraints in SQL)
-    if (!user_id || !module_id || !enrollment_type_id)
+    if (!user_id || !enrollment_type_id)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
     const data = {

@@ -13,9 +13,19 @@ export async function getEnrollments(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT *, COUNT(*) OVER() AS total
-      FROM enrollments_view
-      WHERE deleted_at IS NULL
+      SELECT e.*,
+        u.user_name, u.user_email, u.user_phone, u.user_parent_phone,
+        co.course_name, co.course_code,
+        m.module_name,
+        s.syllabus_name,
+        COUNT(*) OVER() AS total
+      FROM enrollments_view e
+      JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
+      LEFT JOIN classes_view c on c.id = e.class_id AND c.deleted_at IS NULL
+      LEFT JOIN courses co on co.id = c.course_id AND co.deleted_at IS NULL
+      LEFT JOIN modules m on m.id = c.module_id AND m.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON s.id = m.syllabus_id AND s.deleted_at IS NULL 
+      WHERE e.deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY created_at"}
       ${limitClause};
@@ -30,9 +40,18 @@ export async function getEnrollments(searchParams) {
 export async function getEnrollment(id) {
   try {
     return await sql`
-      SELECT *
-      FROM enrollments_view
-      WHERE deleted_at IS NULL AND id = ${id};
+      SELECT e.*,
+        u.user_name, u.user_email, u.user_phone, u.user_parent_phone,
+        co.course_name, co.course_code,
+        m.module_name,
+        s.syllabus_name
+      FROM enrollments_view e
+      JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
+      LEFT JOIN classes_view c on c.id = e.class_id AND c.deleted_at IS NULL
+      LEFT JOIN courses co on co.id = c.course_id AND co.deleted_at IS NULL
+      LEFT JOIN modules m on m.id = c.module_id AND m.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON s.id = m.syllabus_id AND s.deleted_at IS NULL 
+      WHERE e.deleted_at IS NULL AND e.id = ${id};
     `;
   } catch (error) {
     throw new Error(error.message);

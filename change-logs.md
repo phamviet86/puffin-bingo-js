@@ -3,8 +3,8 @@
 ## Upcoming Tasks
 
 - [ ]
-- [ ] add JOIN to enrollments table (services)
-- [ ] add enrollments transfer for the class (enrollments-component)
+- [+] add JOIN to enrollments table (services)
+- [+] add enrollments transfer for the class (enrollments-component)
 - [ ] add info-sample (with remote data)
 - [ ] add desc-sample (with remote data)
 

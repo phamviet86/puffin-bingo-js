@@ -18,9 +18,9 @@ CREATE TABLE enrollments (
   enrollment_payment_amount INTEGER DEFAULT 0,
   enrollment_payment_discount INTEGER DEFAULT 0,
   enrollment_start_date TIMESTAMPTZ DEFAULT CURRENT_DATE,
-  enrollment_end_date TIMESTAMPTZ DEFAULT NULL
+  enrollment_end_date TIMESTAMPTZ DEFAULT NULL,
   enrollment_discount_notes VARCHAR(512) DEFAULT NULL, 
-  enrollment_desc TEXT DEFAULT NULL,
+  enrollment_desc TEXT DEFAULT NULL
 );
 CREATE TRIGGER update_record BEFORE
 UPDATE ON enrollments FOR EACH ROW EXECUTE FUNCTION set_updated_at();
@@ -37,7 +37,7 @@ SELECT
     WHEN class_id IS NULL THEN 'Chưa xếp lớp'
     
     -- 3. Thiếu ngày bắt đầu (dữ liệu bị mất)
-    WHEN enrollment_start_date IS NULL THEN 'Thiếu ngày bắt đầu'
+    WHEN enrollment_start_date IS NULL THEN 'Thiếu ngày'
     
     -- 4. Đang hoạt động (đang trong thời gian tham gia)
     WHEN enrollment_start_date <= CURRENT_DATE 

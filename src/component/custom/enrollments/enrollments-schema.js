@@ -17,7 +17,7 @@ export function EnrollmentsColumns(params) {
   return [
     {
       title: "Người dùng",
-      dataIndex: "user_id",
+      dataIndex: "user_name",
       valueType: "text",
       sorter: { multiple: 1 },
     },

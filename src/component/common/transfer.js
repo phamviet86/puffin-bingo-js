@@ -1,297 +1,157 @@
 // path: @/component/common/transfer.js
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, use } from "react";
 import { Transfer as AntTransfer, message } from "antd";
 import { convertTransferItems } from "@/lib/util/convert-util";
 import styles from "./transfer.module.css";
+
+const buildSearchParams = (columns, value) => {
+  if (!columns.length || !value?.trim()) {
+    return {};
+  }
+
+  if (columns.length === 1) {
+    return { [columns[0]]: value.trim() };
+  } else {
+    const or = {};
+    columns.forEach((key) => {
+      or[key] = value.trim();
+    });
+    return { or };
+  }
+};
 
 export function Transfer({
   onSourceRequest = undefined,
   onSourceParams = undefined,
   onSourceItem = undefined,
-  onSourceSearch = [],
   onTargetRequest = undefined,
   onTargetParams = undefined,
   onTargetItem = undefined,
-  onTargetSearch = [],
   onTargetAdd = undefined,
   onTargetRemove = undefined,
+  showSearch = false,
+  searchSourceColumns = [],
+  searchTargetColumns = [],
   listStyle = { width: "100%", height: "100%", minHeight: "200px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
   searchDelay = 500,
-  showSearch = false,
   ...props
 }) {
+  const [messageApi, contextHolder] = message.useMessage();
   const [dataSource, setDataSource] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [messageApi, contextHolder] = message.useMessage();
-  const [onSourceSearchParams, setOnSourceSearchParams] = useState({});
-  const [onTargetSearchParams, setOnTargetSearchParams] = useState({});
-  const [sourceSearchValue, setSourceSearchValue] = useState("");
-  const [targetSearchValue, setTargetSearchValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSourceLoading, setIsSourceLoading] = useState(false);
-  const [isTargetLoading, setIsTargetLoading] = useState(false);
-  const abortControllerRef = useRef(null);
-  const sourceAbortControllerRef = useRef(null);
-  const targetAbortControllerRef = useRef(null);
+  // Dữ liệu request từ server
+  const [sourceRequestData, setSourceRequestData] = useState([]);
+  const [targetRequestData, setTargetRequestData] = useState([]);
+  const [sourceSearchKeys, setSourceSearchKeys] = useState([]);
+  const [targetSearchKeys, setTargetSearchKeys] = useState([]);
 
-  const requestCacheRef = useRef(new Map());
-  const lastRequestParamsRef = useRef({ source: null, target: null });
+  const handleData = useCallback(() => {
+    // Lấy key theo thứ tự
+    const sourceKeys = sourceRequestData.map((item) => item.key);
+    const targetKeys = targetRequestData.map((item) => item.key);
 
-  // Helper function to generate cache key
-  const generateCacheKey = useCallback((type, params) => {
-    return `${type}_${JSON.stringify(params)}`;
-  }, []);
+    setTargetKeys(targetKeys);
 
-  // Helper function to check if params have changed
-  const hasParamsChanged = useCallback((type, newParams) => {
-    const lastParams = lastRequestParamsRef.current[type];
-    const newParamsStr = JSON.stringify(newParams);
-    const lastParamsStr = JSON.stringify(lastParams);
-    return newParamsStr !== lastParamsStr;
-  }, []);
-
-  // Helper function to safely merge data without duplicates
-  const mergeDataSafely = useCallback((targetItems, sourceItems) => {
-    const targetKeys = targetItems.map((item) => item.key);
-    const uniqueSourceItems = sourceItems.filter(
-      (item) => !targetKeys.includes(item.key)
+    // Tạo lookup map
+    const targetMap = new Map(
+      targetRequestData.map((item) => [item.key, item])
     );
-    return [...targetItems, ...uniqueSourceItems];
-  }, []);
+    const sourceMap = new Map(
+      sourceRequestData.map((item) => [item.key, item])
+    );
 
-  // Separate reload functions for each side
-  const reloadSourceData = useCallback(async () => {
-    if (!onSourceRequest) return;
+    // Duyệt theo thứ tự source, ưu tiên dữ liệu ở target
+    const mergedData = sourceKeys.map((key) =>
+      targetMap.has(key) ? targetMap.get(key) : sourceMap.get(key)
+    );
 
-    const sourceParams = { ...onSourceParams, ...onSourceSearchParams };
-    const cacheKey = generateCacheKey("source", sourceParams);
+    setDataSource(mergedData);
+  }, [sourceRequestData, targetRequestData]);
 
-    // Check if same request is already in progress or params haven't changed
-    if (isSourceLoading || !hasParamsChanged("source", sourceParams)) {
-      return;
+  useEffect(() => {
+    handleData();
+  }, [handleData]);
+
+  const handleSourceRequest = useCallback(async () => {
+    if (!onSourceRequest) {
+      messageApi.error("Source data request handler not provided");
+      return false;
     }
-
-    // Cancel previous source request if exists
-    if (sourceAbortControllerRef.current) {
-      sourceAbortControllerRef.current.abort();
-    }
-
-    sourceAbortControllerRef.current = new AbortController();
-    setIsSourceLoading(true);
-    lastRequestParamsRef.current.source = sourceParams;
 
     try {
-      const sourceResult = await onSourceRequest(sourceParams);
+      const sourceResult = await onSourceRequest(onSourceParams);
       const sourceData = onSourceItem
         ? convertTransferItems(sourceResult.data || [], onSourceItem)
         : sourceResult.data || [];
 
-      // Cache the result
-      requestCacheRef.current.set(cacheKey, sourceData);
-
-      // Update dataSource by replacing source items while keeping target items
-      setDataSource((prevData) => {
-        const targetItems = prevData.filter((item) =>
-          targetKeys.includes(item.key)
-        );
-        return mergeDataSafely(targetItems, sourceData);
-      });
+      setSourceRequestData(sourceData);
     } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Transfer: Source reload error", error);
-        messageApi.error(
-          error.message || "Đã xảy ra lỗi khi tải dữ liệu source"
-        );
-      }
-    } finally {
-      setIsSourceLoading(false);
-      sourceAbortControllerRef.current = null;
+      messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
     }
-  }, [
-    onSourceRequest,
-    onSourceParams,
-    onSourceSearchParams,
-    onSourceItem,
-    targetKeys,
-    isSourceLoading,
-    messageApi,
-    generateCacheKey,
-    hasParamsChanged,
-    mergeDataSafely,
-  ]);
+  }, [onSourceRequest, onSourceParams, onSourceItem, messageApi]);
 
-  const reloadTargetData = useCallback(async () => {
-    if (!onTargetRequest) return;
-
-    const targetParams = { ...onTargetParams, ...onTargetSearchParams };
-    const cacheKey = generateCacheKey("target", targetParams);
-
-    // Check if same request is already in progress or params haven't changed
-    if (isTargetLoading || !hasParamsChanged("target", targetParams)) {
-      return;
+  const handleTargetRequest = useCallback(async () => {
+    if (!onTargetRequest) {
+      messageApi.error("Target data request handler not provided");
+      return false;
     }
-
-    // Cancel previous target request if exists
-    if (targetAbortControllerRef.current) {
-      targetAbortControllerRef.current.abort();
-    }
-
-    targetAbortControllerRef.current = new AbortController();
-    setIsTargetLoading(true);
-    lastRequestParamsRef.current.target = targetParams;
 
     try {
-      const targetResult = await onTargetRequest(targetParams);
+      const targetResult = await onTargetRequest(onTargetParams);
       const targetData = onTargetItem
         ? convertTransferItems(targetResult.data || [], onTargetItem)
         : targetResult.data || [];
 
-      // Cache the result
-      requestCacheRef.current.set(cacheKey, targetData);
-
-      // Update target keys for display
-      const displayTargetKeys = targetData.map((item) => item.key);
-      setTargetKeys(displayTargetKeys);
-
-      // Update dataSource by replacing target items while keeping source items
-      setDataSource((prevData) => {
-        const sourceItems = prevData.filter(
-          (item) => !targetKeys.includes(item.key)
-        );
-        return mergeDataSafely(targetData, sourceItems);
-      });
+      setTargetRequestData(targetData);
     } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Transfer: Target reload error", error);
-        messageApi.error(
-          error.message || "Đã xảy ra lỗi khi tải dữ liệu target"
-        );
-      }
-    } finally {
-      setIsTargetLoading(false);
-      targetAbortControllerRef.current = null;
+      messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
+      return false;
     }
-  }, [
-    onTargetRequest,
-    onTargetParams,
-    onTargetSearchParams,
-    onTargetItem,
-    targetKeys,
-    isTargetLoading,
-    messageApi,
-    generateCacheKey,
-    hasParamsChanged,
-    mergeDataSafely,
-  ]);
+  }, [onTargetRequest, onTargetParams, onTargetItem, messageApi]);
 
-  // Initial full reload (loads both sides) - target first, then source
+  const reloadDataRef = useRef();
+
   const reloadData = useCallback(async () => {
-    // Prevent multiple concurrent requests
-    if (isLoading || isSourceLoading || isTargetLoading) {
-      return;
-    }
+    // Tải lại target trước
+    await handleTargetRequest();
+    // Sau khi target đã xong, tải lại source
+    await handleSourceRequest();
+  }, [handleTargetRequest, handleSourceRequest]);
 
-    // Cancel all previous requests if exist
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-    if (sourceAbortControllerRef.current) {
-      sourceAbortControllerRef.current.abort();
-    }
-    if (targetAbortControllerRef.current) {
-      targetAbortControllerRef.current.abort();
-    }
+  // Đảm bảo luôn cập nhật ref tới hàm reloadData mới nhất
+  reloadDataRef.current = reloadData;
 
-    abortControllerRef.current = new AbortController();
-    setIsLoading(true);
+  // Khi mount: tải lại dữ liệu
+  useEffect(() => {
+    reloadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    try {
-      let originalTargetData = [];
-      let sourceData = [];
-
-      // Step 1: Load target data first and update target keys
-      if (onTargetRequest) {
-        const targetParams = { ...onTargetParams };
-        lastRequestParamsRef.current.target = targetParams;
-
-        const targetResult = await onTargetRequest(targetParams);
-        originalTargetData = onTargetItem
-          ? convertTransferItems(targetResult.data || [], onTargetItem)
-          : targetResult.data || [];
-
-        // Update target keys immediately after loading target data
-        const newTargetKeys = originalTargetData.map((item) => item.key);
-        setTargetKeys(newTargetKeys);
-      }
-
-      // Step 2: Load source data after target is complete
-      if (onSourceRequest) {
-        const sourceParams = { ...onSourceParams };
-        lastRequestParamsRef.current.source = sourceParams;
-
-        const sourceResult = await onSourceRequest(sourceParams);
-        sourceData = onSourceItem
-          ? convertTransferItems(sourceResult.data || [], onSourceItem)
-          : sourceResult.data || [];
-      }
-
-      // Step 3: Merge data properly with target keys already set
-      const targetKeysForFiltering = originalTargetData.map((item) => item.key);
-      const sourceItemsNotInTarget = sourceData.filter(
-        (item) => !targetKeysForFiltering.includes(item.key)
-      );
-
-      // Merge data with target first
-      const allItems = [...originalTargetData, ...sourceItemsNotInTarget];
-      setDataSource(allItems);
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Transfer: Full reload error", error);
-        messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu");
-      }
-    } finally {
-      setIsLoading(false);
-      abortControllerRef.current = null;
-    }
-  }, [
-    isLoading,
-    isSourceLoading,
-    isTargetLoading,
-    onSourceRequest,
-    onSourceParams,
-    onSourceItem,
-    onTargetRequest,
-    onTargetParams,
-    onTargetItem,
-    messageApi,
-  ]);
-
-  const handleAddTarget = useCallback(
+  // Khi add/remove item: reload lại data (gọi reloadDataRef)
+  const handleTargetAdd = useCallback(
     async (keys) => {
       if (!onTargetAdd) {
         messageApi.error("Data add handler not provided");
-        return;
+        return false;
       }
       try {
         const result = await onTargetAdd(keys);
         if (result?.success) {
           messageApi.success(result?.message || "Thêm thành công");
           await reloadDataRef.current();
-        } else {
-          messageApi.error(result?.message || "Đã xảy ra lỗi");
         }
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
+        return false;
       }
     },
     [onTargetAdd, messageApi]
   );
 
-  const handleRemoveTarget = useCallback(
+  const handleTargetRemove = useCallback(
     async (keys) => {
       if (!onTargetRemove) {
         messageApi.error("Data remove handler not provided");
@@ -302,8 +162,6 @@ export function Transfer({
         if (result?.success) {
           messageApi.success(result?.message || "Xóa thành công");
           await reloadDataRef.current();
-        } else {
-          messageApi.error(result?.message || "Đã xảy ra lỗi");
         }
       } catch (error) {
         messageApi.error(error.message || "Đã xảy ra lỗi");
@@ -316,134 +174,105 @@ export function Transfer({
   const handleChange = useCallback(
     async (_, direction, moveKeys) => {
       if (direction === "right") {
-        await handleAddTarget(moveKeys);
+        await handleTargetAdd(moveKeys);
       } else {
-        await handleRemoveTarget(moveKeys);
+        await handleTargetRemove(moveKeys);
       }
     },
-    [handleAddTarget, handleRemoveTarget]
+    [handleTargetAdd, handleTargetRemove]
   );
 
-  const handleSearch = useCallback((direction, value) => {
-    if (direction === "left") {
-      setSourceSearchValue(value);
-    } else {
-      setTargetSearchValue(value);
-    }
-  }, []);
+  const handleSourceSearch = useCallback(
+    async (searchValue) => {
+      if (!onSourceRequest) {
+        messageApi.error("Source data request handler not provided");
+        return false;
+      }
 
-  // Debounced effect for source search
-  useEffect(() => {
-    if (isInitialLoadRef.current) return;
+      const searchParams = buildSearchParams(searchSourceColumns, searchValue);
 
-    const timeoutId = setTimeout(() => {
-      if (onSourceSearch.length > 0 && sourceSearchValue.trim()) {
-        const or = {};
-        onSourceSearch.forEach((key) => {
-          or[key] = sourceSearchValue.trim();
+      try {
+        const searchResult = await onSourceRequest({
+          ...onSourceParams,
+          ...searchParams,
         });
-        setOnSourceSearchParams({ or });
-      } else {
-        setOnSourceSearchParams({});
+        const sourceData = onSourceItem
+          ? convertTransferItems(searchResult.data || [], onSourceItem)
+          : searchResult.data || [];
+
+        setSourceSearchKeys(sourceData.map((item) => item.key));
+      } catch (error) {
+        messageApi.error(
+          error.message || "Đã xảy ra lỗi khi tải dữ liệu source"
+        );
       }
-    }, searchDelay);
+    },
+    [
+      onSourceRequest,
+      onSourceParams,
+      onSourceItem,
+      messageApi,
+      searchSourceColumns,
+    ]
+  );
 
-    return () => clearTimeout(timeoutId);
-  }, [sourceSearchValue, onSourceSearch, searchDelay]);
+  const handleTargetSearch = useCallback(
+    async (searchValue) => {
+      if (!onTargetRequest) {
+        messageApi.error("Target data request handler not provided");
+        return false;
+      }
 
-  // Debounced effect for target search
-  useEffect(() => {
-    if (isInitialLoadRef.current) return;
+      const searchParams = buildSearchParams(searchTargetColumns, searchValue);
 
-    const timeoutId = setTimeout(() => {
-      if (onTargetSearch.length > 0 && targetSearchValue.trim()) {
-        const or = {};
-        onTargetSearch.forEach((key) => {
-          or[key] = targetSearchValue.trim();
+      try {
+        const searchResult = await onTargetRequest({
+          ...onTargetParams,
+          ...searchParams,
         });
-        setOnTargetSearchParams({ or });
+        const targetData = onTargetItem
+          ? convertTransferItems(searchResult.data || [], onTargetItem)
+          : searchResult.data || [];
+
+        setTargetSearchKeys(targetData.map((item) => item.key));
+      } catch (error) {
+        messageApi.error(
+          error.message || "Đã xảy ra lỗi khi tải dữ liệu target"
+        );
+      }
+    },
+    [
+      onTargetRequest,
+      onTargetParams,
+      onTargetItem,
+      messageApi,
+      searchTargetColumns,
+    ]
+  );
+
+  const handleSearch = useCallback(
+    (direction, value) => {
+      if (direction === "left") {
+        handleSourceSearch(value);
       } else {
-        setOnTargetSearchParams({});
+        handleTargetSearch(value);
       }
-    }, searchDelay);
+    },
+    [handleSourceSearch, handleTargetSearch]
+  );
 
-    return () => clearTimeout(timeoutId);
-  }, [targetSearchValue, onTargetSearch, searchDelay]);
-
-  const handleSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
-    setSelectedKeys([...targetSelectedKeys, ...sourceSelectedKeys]);
-  };
-
-  // Centralized data loading with better state management
-  const reloadDataRef = useRef(reloadData);
-  const reloadSourceDataRef = useRef(reloadSourceData);
-  const reloadTargetDataRef = useRef(reloadTargetData);
-  const isInitialLoadRef = useRef(true);
-  const mountedRef = useRef(false);
-
-  // Always update refs to latest functions
-  reloadDataRef.current = reloadData;
-  reloadSourceDataRef.current = reloadSourceData;
-  reloadTargetDataRef.current = reloadTargetData;
-
-  // Initial data load only once with proper mounting check
-  useEffect(() => {
-    if (!mountedRef.current) {
-      mountedRef.current = true;
-      isInitialLoadRef.current = false;
-
-      const timeoutId = setTimeout(() => {
-        reloadDataRef.current();
-      }, 50);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, []);
-
-  // Optimized: Only reload the side that has search params changes
-  useEffect(() => {
-    if (mountedRef.current) {
-      const timeoutId = setTimeout(() => {
-        reloadSourceDataRef.current();
-      }, 300);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [onSourceSearchParams]);
-
-  useEffect(() => {
-    if (mountedRef.current) {
-      const timeoutId = setTimeout(() => {
-        reloadTargetDataRef.current();
-      }, 300);
-
-      return () => clearTimeout(timeoutId);
-    }
-  }, [onTargetSearchParams]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    const currentAbortController = abortControllerRef.current;
-    const currentSourceAbortController = sourceAbortControllerRef.current;
-    const currentTargetAbortController = targetAbortControllerRef.current;
-    const currentRequestCache = requestCacheRef.current;
-
-    return () => {
-      if (currentAbortController) {
-        currentAbortController.abort();
+  const handleFilter = useCallback(
+    (_, option, direction) => {
+      if (direction === "left") {
+        return sourceSearchKeys.includes(option.key);
       }
-      if (currentSourceAbortController) {
-        currentSourceAbortController.abort();
+      if (direction === "right") {
+        return targetSearchKeys.includes(option.key);
       }
-      if (currentTargetAbortController) {
-        currentTargetAbortController.abort();
-      }
-      if (currentRequestCache) {
-        currentRequestCache.clear();
-      }
-    };
-  }, []);
-
+      return false;
+    },
+    [sourceSearchKeys, targetSearchKeys]
+  );
   return (
     <>
       {contextHolder}
@@ -453,15 +282,13 @@ export function Transfer({
           direction="vertical"
           dataSource={dataSource}
           targetKeys={targetKeys}
-          selectedKeys={selectedKeys}
           onChange={handleChange}
-          onSelectChange={handleSelectChange}
           onSearch={handleSearch}
           rowKey={rowKey}
           render={render}
           listStyle={listStyle}
           showSearch={showSearch}
-          filterOption={() => true}
+          filterOption={handleFilter}
         />
       </div>
     </>

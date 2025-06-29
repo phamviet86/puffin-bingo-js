@@ -71,22 +71,23 @@ export function EnrollmentsTransferByClass({
       {...props}
       onSourceRequest={(params) => fetchList(`/api/users`, params)}
       onSourceItem={{ key: "id" }}
-      onSourceSearch={[
+      searchSourceColumns={[
         "user_name_like",
         "user_email_like",
-        // "user_phone",
-        // "user_parent_phone",
+        "user_phone_like",
+        "user_parent_phone_like",
       ]}
       onTargetRequest={(params) => fetchList(`/api/enrollments`, params)}
       onTargetItem={{
         key: "user_id",
-        disabled: [
-          "enrollment_status",
-          [],
-          ["Thiếu ngày bắt đầu", "Chờ bắt đầu"],
-        ],
+        disabled: ["enrollment_status", [], ["Thiếu ngày", "Chờ bắt đầu"]],
       }}
-      onTargetSearch={["syllabus_name_like", "module_name_like"]}
+      searchTargetColumns={[
+        "user_name_like",
+        "user_email_like",
+        "user_phone_like",
+        "user_parent_phone_like",
+      ]}
       onTargetAdd={(keys) =>
         fetchPost(`/api/enrollments/class-transfer`, {
           class_id: classId,
