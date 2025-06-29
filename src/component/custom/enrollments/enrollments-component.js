@@ -102,15 +102,14 @@ export function EnrollmentsTransferByClass({
         })
       }
       render={(record) => `${record.user_name} - ${record.user_email}`}
-      titles={["Học phần", "Đã gán"]}
+      titles={["Người dùng", "Đã xếp lớp"]}
       operations={["Thêm", "Xóa"]}
-      modalProps={{ title: "Lộ trình học" }}
       showSearch={true}
       locale={{
         searchPlaceholder: "Tìm kiếm...",
-        itemsUnit: "học phần",
-        itemUnit: "học phần",
-        notFoundContent: "Không tìm thấy học phần",
+        itemsUnit: "người dùng",
+        itemUnit: "người dùng",
+        notFoundContent: "Không tìm thấy người dùng",
       }}
     />
   );

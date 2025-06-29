@@ -33,7 +33,7 @@ export function Transfer({
   showSearch = false,
   searchSourceColumns = [],
   searchTargetColumns = [],
-  listStyle = { width: "100%", height: "100%", minHeight: "200px" },
+  listStyle = { width: "100%", height: "100%", minHeight: "300px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
   ...props

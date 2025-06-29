@@ -3,10 +3,11 @@
 ## Upcoming Tasks
 
 - [ ]
+
+## 2025-06-29
+
 - [+] add JOIN to enrollments table (services)
 - [+] add enrollments transfer for the class (enrollments-component)
-- [ ] add info-sample (with remote data)
-- [ ] add desc-sample (with remote data)
 
 ## 2025-06-22
 

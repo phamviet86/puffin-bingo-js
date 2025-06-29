@@ -2,8 +2,8 @@
 
 "use client";
 
-import { use } from "react";
-import { Space } from "antd";
+import { use, useState } from "react";
+import { Space, Dropdown } from "antd";
 import {
   CodeOutlined,
   InfoCircleOutlined,
@@ -18,7 +18,6 @@ import {
   ClassesFields,
   EnrollmentsTable,
   EnrollmentsInfo,
-  EnrollmentsFormCreate,
   EnrollmentsFormEdit,
   EnrollmentsColumns,
   EnrollmentsFields,
@@ -86,6 +85,8 @@ function PageContent({ params }) {
   const useEnrollmentsInfo = useInfo();
   const useEnrollmentsForm = useForm();
   const useEnrollmentsTransfer = useTransfer();
+  const [enrollmentTypeId, setEnrollmentTypeId] = useState(20);
+  const [roleParams, setRoleParams] = useState({});
 
   const enrollmentsTab = {
     key: "enrollments",
@@ -102,11 +103,41 @@ function PageContent({ params }) {
               variant="filled"
               onClick={() => useEnrollmentsTable.reload()}
             />
-            <Button
-              label="Thêm học viên"
-              variant="filled"
-              onClick={() => useEnrollmentsTransfer.open()}
-            />
+            <Dropdown.Button
+              onClick={() => {
+                setEnrollmentTypeId(18);
+                setRoleParams({ role_names_like: "Giáo viên" });
+                useEnrollmentsTransfer.setTitle("Thêm giáo viên");
+                useEnrollmentsTransfer.open();
+              }}
+              type="primary"
+              menu={{
+                items: [
+                  {
+                    key: "add-teaching-assistant",
+                    label: "Thêm trợ giảng",
+                    onClick: () => {
+                      setEnrollmentTypeId(19);
+                      setRoleParams({ role_names_like: "Trợ giảng" });
+                      useEnrollmentsTransfer.setTitle("Thêm trợ giảng");
+                      useEnrollmentsTransfer.open();
+                    },
+                  },
+                  {
+                    key: "add-student",
+                    label: "Thêm học viên",
+                    onClick: () => {
+                      setEnrollmentTypeId(20);
+                      setRoleParams({});
+                      useEnrollmentsTransfer.setTitle("Thêm học viên");
+                      useEnrollmentsTransfer.open();
+                    },
+                  },
+                ],
+              }}
+            >
+              Thêm giáo viên
+            </Dropdown.Button>
           </Space>
         }
       >
@@ -189,11 +220,15 @@ function PageContent({ params }) {
         />
         <EnrollmentsTransferByClass
           classId={classId}
-          enrollmentTypeId={20}
+          enrollmentTypeId={enrollmentTypeId}
           transferHook={useEnrollmentsTransfer}
           onTransferClose={() => useEnrollmentsTable.reload()}
-          onSourceParams={{ user_status_id_e: 14 }}
-          onTargetParams={{ class_id: classId }}
+          onSourceParams={{ user_status_id_e: 14, ...roleParams }}
+          onTargetParams={{
+            class_id: classId,
+            enrollment_type_id: enrollmentTypeId,
+          }}
+          modalProps={{ title: useEnrollmentsTransfer.title || "Thêm" }}
         />
       </ProCard>
     ),

@@ -37,6 +37,7 @@ export function ModalTransfer({
       onOk={handleClose}
       onCancel={handleClose}
       footer={false}
+      width="auto"
     >
       <div className={styles.remoteTransfer}>
         <Transfer {...props} reloadFlag={reloadFlag} />
