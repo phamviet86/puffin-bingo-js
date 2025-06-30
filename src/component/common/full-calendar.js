@@ -199,12 +199,6 @@ export function FullCalendar({
     }, 0);
   }, [screens, responsive, handleView]);
 
-  // Khi mount: tải lại dữ liệu
-  useEffect(() => {
-    reloadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Handle data request khi dates thay đổi
   useEffect(() => {
     // Only trigger data request if not loading and both startDate/endDate are valid (not null/undefined/empty)

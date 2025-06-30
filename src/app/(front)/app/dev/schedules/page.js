@@ -17,6 +17,8 @@ import {
   SchedulesColumns,
   SchedulesFields,
   SchedulesCalendar,
+  ScheduleClassesTable,
+  ScheduleClassesColumns,
 } from "@/component/custom";
 import { useTable, useInfo, useNav, useCalendar } from "@/component/hook";
 import { PageProvider, usePageContext } from "./provider";
@@ -38,55 +40,74 @@ function PageContent() {
     lectureSelection,
     roomSelection,
   } = usePageContext();
-  const useSchedulesTable = useTable();
   const useSchedulesInfo = useInfo();
-  const useScheduleCalendar = useCalendar();
+  const useSchedulesCalendar = useCalendar();
+  const useScheduleClassesTable = useTable();
 
   const pageButton = [
     <Button
-      key="reload-calendar"
+      key="reload-button"
       label="Tải lại"
       color="default"
       variant="filled"
-      onClick={() => useScheduleCalendar.reload()}
-    />,
-    <Button
-      key="refresh-button"
-      label="Tải lại"
-      color="default"
-      variant="filled"
-      onClick={() => useSchedulesTable.reload()}
-    />,
-    <SchedulesFormCreate
-      key="create-form"
-      fields={SchedulesFields({
-        scheduleStatus,
-        classSelection,
-        shiftSelection,
-        lectureSelection,
-        roomSelection,
-      })}
-      onFormSubmitSuccess={(result) => {
-        useSchedulesInfo.close();
-        navDetail(result?.data[0]?.id);
+      onClick={() => {
+        useSchedulesCalendar.reload();
+        useScheduleClassesTable.reload();
       }}
-      title="Tạo lịch học"
-      trigger={<Button label="Tạo mới" />}
     />,
   ];
 
   const pageContent = (
     <ProCard boxShadow>
       <SchedulesCalendar
-        calendarHook={useScheduleCalendar}
+        calendarHook={useSchedulesCalendar}
         onCalendarRequestParams={{
           schedule_date: [
-            useScheduleCalendar.startDate,
-            useScheduleCalendar.endDate,
+            useSchedulesCalendar.startDate,
+            useSchedulesCalendar.endDate,
           ],
         }}
       />
-      <SchedulesTable
+      <SchedulesInfo
+        infoHook={useSchedulesInfo}
+        columns={SchedulesColumns()}
+        dataSource={useSchedulesInfo.dataSource}
+        drawerProps={{
+          title: "Thông tin lịch học",
+          extra: [
+            <DetailButton
+              key="detail-button"
+              label="Chi tiết"
+              variant="filled"
+              id={useSchedulesInfo?.dataSource?.id}
+            />,
+          ],
+        }}
+      />
+      <SchedulesFormCreate
+        key="create-form"
+        fields={SchedulesFields({
+          scheduleStatus,
+          classSelection,
+          shiftSelection,
+          lectureSelection,
+          roomSelection,
+        })}
+        onFormSubmitSuccess={(result) => {
+          useSchedulesInfo.close();
+          navDetail(result?.data[0]?.id);
+        }}
+        title="Tạo lịch học"
+      />
+      <ScheduleClassesTable
+        tableHook={useScheduleClassesTable}
+        dateRange={{
+          startDate: useSchedulesCalendar.startDate,
+          endDate: useSchedulesCalendar.endDate,
+        }}
+        columns={ScheduleClassesColumns()}
+      />
+      {/* <SchedulesTable
         tableHook={useSchedulesTable}
         columns={SchedulesColumns({
           scheduleStatus,
@@ -128,22 +149,7 @@ function PageContent() {
           },
         ]}
       />
-      <SchedulesInfo
-        infoHook={useSchedulesInfo}
-        columns={SchedulesColumns()}
-        dataSource={useSchedulesInfo.dataSource}
-        drawerProps={{
-          title: "Thông tin lịch học",
-          extra: [
-            <DetailButton
-              key="detail-button"
-              label="Chi tiết"
-              variant="filled"
-              id={useSchedulesInfo?.dataSource?.id}
-            />,
-          ],
-        }}
-      />
+      */}
     </ProCard>
   );
 

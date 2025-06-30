@@ -25,9 +25,9 @@ DROP VIEW IF EXISTS schedules_view CASCADE;
 CREATE OR REPLACE VIEW schedules_view AS
 SELECT 
   s.*,
-  CASE WHEN schedule_status_id = 13 THEN 1 END AS schedule_pending,
-  CASE WHEN schedule_status_id = 14 THEN 1 END AS schedule_completed,
-  CASE WHEN schedule_status_id = 15 THEN 1 END AS schedule_absent
+  CASE WHEN schedule_status_id = 23 THEN 1 END AS schedule_pending,
+  CASE WHEN schedule_status_id = 24 THEN 1 END AS schedule_completed,
+  CASE WHEN schedule_status_id = 25 THEN 1 END AS schedule_absent
 FROM schedules s;
 
 
@@ -35,9 +35,9 @@ DROP VIEW IF EXISTS schedules_summary CASCADE;
 CREATE OR REPLACE VIEW schedules_summary AS
 SELECT 
     class_id,
-    COUNT(CASE WHEN schedule_status_id = 13 THEN 1 END) AS pending_count,
-    COUNT(CASE WHEN schedule_status_id = 14 THEN 1 END) AS completed_count,
-    COUNT(CASE WHEN schedule_status_id = 15 THEN 1 END) AS absent_count,
+    COUNT(CASE WHEN schedule_status_id = 23 THEN 1 END) AS pending_count,
+    COUNT(CASE WHEN schedule_status_id = 24 THEN 1 END) AS completed_count,
+    COUNT(CASE WHEN schedule_status_id = 25 THEN 1 END) AS absent_count,
     COUNT(*) AS total_count
 FROM schedules 
 GROUP BY class_id;

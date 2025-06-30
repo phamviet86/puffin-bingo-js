@@ -22,6 +22,7 @@ export async function getClasses(searchParams) {
       JOIN courses co ON c.course_id = co.id AND co.deleted_at IS NULL
       JOIN modules m ON c.module_id = m.id AND m.deleted_at IS NULL
       JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      LEFT JOIN schedules_summary ss ON c.id = ss.class_id
       WHERE c.deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY c.class_start_date, c.class_end_date"}
@@ -46,6 +47,7 @@ export async function getClass(id) {
       JOIN courses co ON c.course_id = co.id
       JOIN modules m ON c.module_id = m.id
       JOIN syllabuses s ON m.syllabus_id = s.id
+      LEFT JOIN schedules_summary ss ON c.id = ss.class_id
       WHERE c.deleted_at IS NULL AND c.id = ${id};
     `;
   } catch (error) {
@@ -153,6 +155,41 @@ export async function deleteClassesByCourse(courseId, moduleIds) {
 
     const queryValues = [courseId, ...moduleIds];
     return await sql.query(queryText, queryValues);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function getClassesSummary(searchParams, startDate, endDate) {
+  try {
+    const ignoredSearchColumns = ["startDate", "endDate"];
+    const { whereClause, orderByClause, limitClause, queryValues } =
+      parseSearchParams(searchParams, ignoredSearchColumns);
+
+    const sqlValue = [startDate, endDate, ...queryValues];
+    const sqlText = `
+      SELECT 
+        c.id, c.class_start_date, c.class_end_date, c.class_status,
+        co.course_name, co.course_code, 
+        m.module_name,
+        s.syllabus_name,
+        COUNT(sv.schedule_pending) AS pending_count,
+        COUNT(sv.schedule_completed) AS completed_count,
+        COUNT(sv.schedule_absent) AS absent_count,
+        COUNT(*) OVER() AS total
+      FROM classes_view c
+      JOIN courses co ON c.course_id = co.id AND co.deleted_at IS NULL
+      JOIN modules m ON c.module_id = m.id AND m.deleted_at IS NULL
+      JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      LEFT JOIN schedules_view sv ON c.id = sv.class_id AND sv.deleted_at IS NULL AND sv.schedule_date >= $1 AND sv.schedule_date < $2
+      WHERE c.deleted_at IS NULL 
+      ${whereClause}
+      GROUP BY c.id, c.class_start_date, c.class_end_date, c.class_status, co.course_name, co.course_code, m.module_name, s.syllabus_name
+      ${orderByClause || "ORDER BY course_name, module_name"}
+      ${limitClause};
+    `;
+
+    return await sql.query(sqlText, sqlValue);
   } catch (error) {
     throw new Error(error.message);
   }

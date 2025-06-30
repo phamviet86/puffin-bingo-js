@@ -6,6 +6,7 @@ import {
   ProFormDatePicker,
   ProFormMoney,
 } from "@ant-design/pro-form";
+import { Space, Typography } from "antd";
 import { CLASS_STATUS } from "@/component/config/enum-config";
 
 export function ClassesColumns() {
@@ -75,6 +76,43 @@ export function ClassesColumns() {
       sorter: { multiple: 1 },
       responsive: ["xl"],
     },
+    {
+      title: "Chờ",
+      dataIndex: "pending_count",
+      valueType: "digit",
+      sorter: { multiple: 1 },
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="secondary" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Đã học",
+      dataIndex: "completed_count",
+      valueType: "digit",
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="success" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Nghỉ",
+      dataIndex: "absent_count",
+      valueType: "digit",
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="danger" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
   ];
 }
 
@@ -138,6 +176,136 @@ export function CourseClassesColumns() {
       search: false,
       sorter: { multiple: 1 },
       responsive: ["xl"],
+    },
+    {
+      title: "Chờ",
+      dataIndex: "pending_count",
+      valueType: "digit",
+      sorter: { multiple: 1 },
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="secondary" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Đã học",
+      dataIndex: "completed_count",
+      valueType: "digit",
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="success" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Nghỉ",
+      dataIndex: "absent_count",
+      valueType: "digit",
+      search: false,
+      responsive: ["xxl"],
+      render: (text) => (
+        <Typography.Text type="danger" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+  ];
+}
+
+export function ScheduleClassesColumns() {
+  return [
+    {
+      title: "Lớp học",
+      render: (_, record) => (
+        <Space direction="vertical" size={0}>
+          <Space wrap>
+            <Typography.Text strong>{record.course_name}</Typography.Text>
+            <Typography.Text>{record.module_name}</Typography.Text>
+          </Space>
+          <Typography.Text type="secondary">
+            {record.syllabus_name}
+          </Typography.Text>
+        </Space>
+      ),
+      search: false,
+      hideInDescriptions: true,
+    },
+    {
+      title: "Khóa học",
+      dataIndex: "course_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      hidden: true,
+    },
+    {
+      title: "Học phần",
+      dataIndex: "module_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      hidden: true,
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "class_status",
+      valueType: "select",
+      valueEnum: CLASS_STATUS,
+      filters: true,
+      sorter: { multiple: 1 },
+      responsive: ["lg"],
+    },
+    {
+      title: "Bắt đầu",
+      dataIndex: "class_start_date",
+      valueType: "date",
+      sorter: { multiple: 1 },
+      search: false,
+      responsive: ["md"],
+    },
+    {
+      title: "Kết thúc",
+      dataIndex: "class_end_date",
+      valueType: "date",
+      sorter: { multiple: 1 },
+      search: false,
+      responsive: ["md"],
+    },
+    {
+      title: "Chờ",
+      dataIndex: "pending_count",
+      valueType: "digit",
+      search: false,
+      render: (text) => (
+        <Typography.Text type="secondary" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Đã học",
+      dataIndex: "completed_count",
+      valueType: "digit",
+      search: false,
+      render: (text) => (
+        <Typography.Text type="success" strong>
+          {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Nghỉ",
+      dataIndex: "absent_count",
+      valueType: "digit",
+      search: false,
+      render: (text) => (
+        <Typography.Text type="danger" strong>
+          {text}
+        </Typography.Text>
+      ),
     },
   ];
 }

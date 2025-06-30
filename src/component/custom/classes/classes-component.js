@@ -98,3 +98,31 @@ export function ClassesTransfer({ courseId, ...props }) {
     />
   );
 }
+
+export function ScheduleClassesTable({ dateRange, ...props }) {
+  const { startDate, endDate } = dateRange || {};
+
+  return (
+    <ProTable
+      {...props}
+      onTableRequest={
+        startDate && endDate
+          ? (params, sort, filter) =>
+              fetchList(
+                `/api/classes/${startDate}/${endDate}`,
+                params,
+                sort,
+                filter
+              )
+          : undefined
+      }
+      onTableRequestParams={{
+        class_start_date_lt: endDate,
+        or: {
+          class_end_date_gte: startDate,
+          class_end_date_null: true,
+        },
+      }}
+    />
+  );
+}
