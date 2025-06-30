@@ -283,7 +283,7 @@ export function Transfer({
         } else {
           handleTargetSearch(value);
         }
-      }, 500);
+      }, 300);
     },
     [handleSourceSearch, handleTargetSearch]
   );
