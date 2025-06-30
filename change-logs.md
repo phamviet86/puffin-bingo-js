@@ -23,6 +23,7 @@
   - sử dụng luôn created_at
 - [+] sửa lại enrollments-schema để hiển thị đủ dữ liệu trên info
   - course_name, module_name, desc, discount_notes
+- [+] fix icon for classes page
 
 ## 2025-06-29
 

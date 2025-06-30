@@ -12,8 +12,6 @@ export function ProTable({
   onTableRequestParams = undefined,
   onRowsSelect = undefined,
   onRowsSelectError = undefined,
-  onRowClick = undefined,
-  onRowClickError = undefined,
   columns = [],
   leftColumns = [],
   rightColumns = [],
@@ -65,22 +63,6 @@ export function ProTable({
     [onRowsSelect, onRowsSelectError, messageApi]
   );
 
-  const handleRowClick = useCallback(
-    (rowRecord) => {
-      if (!onRowClick) return true;
-
-      try {
-        onRowClick(rowRecord);
-        return true;
-      } catch (error) {
-        messageApi.error(error?.message || "Đã xảy ra lỗi");
-        onRowClickError?.(error);
-        return false;
-      }
-    },
-    [onRowClick, onRowClickError, messageApi]
-  );
-
   // Render component
   return (
     <>
@@ -94,11 +76,6 @@ export function ProTable({
         rowSelection={
           onRowsSelect
             ? { type: selectType, onChange: handleRowsSelect }
-            : undefined
-        }
-        onRow={
-          onRowClick
-            ? (record) => ({ onClick: () => handleRowClick(record) })
             : undefined
         }
         search={showSearch ? TABLE_CONFIG.search : false}

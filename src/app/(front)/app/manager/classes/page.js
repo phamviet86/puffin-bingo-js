@@ -4,7 +4,7 @@
 
 import { Space } from "antd";
 import {
-  CodeOutlined,
+  BankOutlined,
   InfoCircleOutlined,
   EyeOutlined,
 } from "@ant-design/icons";
@@ -102,11 +102,10 @@ function PageContent() {
         {
           title: (
             <Space>
-              <CodeOutlined style={{ color: "#fa541c" }} />
-              <span>Development</span>
+              <BankOutlined />
+              <span>Quản lý</span>
             </Space>
           ),
-          path: "/app/dev",
         },
         { title: "Lớp học" },
       ]}

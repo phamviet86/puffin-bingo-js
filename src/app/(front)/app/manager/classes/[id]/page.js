@@ -5,7 +5,7 @@
 import { use, useState } from "react";
 import { Space, Dropdown } from "antd";
 import {
-  CodeOutlined,
+  BankOutlined,
   InfoCircleOutlined,
   EditOutlined,
 } from "@ant-design/icons";
@@ -147,6 +147,9 @@ function PageContent({ params }) {
             enrollmentType,
             enrollmentPaymentType,
           })}
+          onTableRequestParams={{
+            class_id: classId,
+          }}
           leftColumns={[
             {
               width: 56,
@@ -235,8 +238,12 @@ function PageContent({ params }) {
     ),
   };
 
-  const pageTitle = useClassesDesc?.dataSource?.class_name || "Chi tiết";
-  document.title = `Lớp học - ${pageTitle}`;
+  const pageTitle =
+    useClassesDesc?.dataSource?.course_name &&
+    useClassesDesc?.dataSource?.module_name
+      ? `${useClassesDesc.dataSource.course_name} - ${useClassesDesc.dataSource.module_name}`
+      : "Chi tiết";
+  document.title = `Lớp ${pageTitle}`;
 
   return (
     <PageContainer
@@ -244,13 +251,12 @@ function PageContent({ params }) {
         {
           title: (
             <Space>
-              <CodeOutlined style={{ color: "#fa541c" }} />
-              <span>Development</span>
+              <BankOutlined />
+              <span>Quản lý</span>
             </Space>
           ),
-          path: "/app/dev",
         },
-        { title: "Lớp học", path: "/app/dev/classes" },
+        { title: "Lớp học", path: "/app/manager/classes" },
         { title: pageTitle },
       ]}
       title={pageTitle}
