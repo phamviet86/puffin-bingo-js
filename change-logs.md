@@ -12,8 +12,10 @@
 ## 2025-06-30
 
 - [] tạo manager/schedules
-  - summary
-  - tạo in month data với month view
+  - calendar với month data
+  - create schedule button (form)
+  - tạo classes table: summary số buổi học trong tháng + select để filter lớp trên bảng và calendar
+  - transfer theo tuần để copy lịch
 - [] tạo admin/users
   - add enrollment to class
   - add enrollment to waiting list (module_id)
