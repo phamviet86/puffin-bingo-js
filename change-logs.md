@@ -11,14 +11,16 @@
 
 ## 2025-06-30
 
-- [] thêm enrollment_wait_date cho enrollments để biết học viên phải đợi bao lâu rồi
-- [] sửa lại enrollments-schedule để hiển thị đủ dữ liệu trên info
 - [] tạo manager/schedules
   - summary
   - tạo in month data với month view
 - [] tạo admin/users
   - add enrollment to class
   - add enrollment to waiting list (module_id)
+- [-] thêm enrollment_wait_date cho enrollments để biết học viên phải đợi bao lâu rồi
+  - sử dụng luôn created_at
+- [+] sửa lại enrollments-schema để hiển thị đủ dữ liệu trên info
+  - course_name, module_name, desc, discount_notes
 
 ## 2025-06-29
 
