@@ -36,6 +36,7 @@ export function Transfer({
   listStyle = { width: "100%", height: "100%", minHeight: "300px" },
   rowKey = (record) => record.key,
   render = (record) => record.key,
+  responsiveBreakpoint = "md",
   ...props
 }) {
   const [messageApi, contextHolder] = message.useMessage();
@@ -302,7 +303,11 @@ export function Transfer({
   return (
     <>
       {contextHolder}
-      <div className={styles.remoteTransfer}>
+      <div
+        className={`${styles.remoteTransfer} ${
+          styles[`responsive-${responsiveBreakpoint}`]
+        }`}
+      >
         <AntTransfer
           {...props}
           direction="vertical"

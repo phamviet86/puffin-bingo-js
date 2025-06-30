@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Modal } from "antd";
 import { Transfer } from "./transfer";
-import styles from "./transfer.module.css";
 import { MODAL_CONFIG } from "@/component/config";
 
 export function ModalTransfer({
@@ -38,10 +37,11 @@ export function ModalTransfer({
       onCancel={handleClose}
       footer={false}
       width="auto"
+      style={{
+        maxWidth: "90vw",
+      }}
     >
-      <div className={styles.remoteTransfer}>
-        <Transfer {...props} reloadFlag={reloadFlag} />
-      </div>
+      <Transfer {...props} reloadFlag={reloadFlag} />
     </Modal>
   );
 }

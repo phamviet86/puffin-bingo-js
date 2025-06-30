@@ -1,3 +1,136 @@
+/* Responsive breakpoints theo Ant Design */
+/* xs: <576px, sm: ≥576px, md: ≥768px, lg: ≥992px, xl: ≥1200px, xxl: ≥1600px */
+
+/* Default horizontal layout */
+.remoteTransfer :global(.ant-transfer) {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.remoteTransfer :global(.ant-transfer-list) {
+  flex: 1;
+  min-height: 300px;
+}
+
+.remoteTransfer :global(.ant-transfer-operation) {
+  flex-direction: column;
+  margin: 0 16px;
+  align-self: center;
+}
+
+/* Responsive vertical layout for xs breakpoint */
+.responsive-xs :global(.ant-transfer) {
+  flex-direction: column;
+}
+
+@media (max-width: 575px) {
+  .responsive-xs :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-xs :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-xs :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 0 8px;
+  }
+}
+
+/* Responsive vertical layout for sm breakpoint */
+@media (max-width: 767px) {
+  .responsive-sm :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-sm :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-sm :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 0 8px;
+  }
+}
+
+/* Responsive vertical layout for md breakpoint */
+@media (max-width: 991px) {
+  .responsive-md :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-md :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-md :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 0 8px;
+  }
+}
+
+/* Responsive vertical layout for lg breakpoint */
+@media (max-width: 1199px) {
+  .responsive-lg :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-lg :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-lg :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 8 0px;
+  }
+}
+
+/* Responsive vertical layout for xl breakpoint */
+@media (max-width: 1599px) {
+  .responsive-xl :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-xl :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-xl :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 0 8px;
+  }
+}
+
+/* Responsive vertical layout for xxl breakpoint */
+@media (max-width: 99999px) {
+  .responsive-xxl :global(.ant-transfer) {
+    flex-direction: column;
+  }
+
+  .responsive-xxl :global(.ant-transfer-operation) {
+    flex-direction: row;
+    margin: 16px 0;
+    align-self: center;
+  }
+
+  .responsive-xxl :global(.ant-transfer-list) {
+    width: 100%;
+    margin: 0 8px;
+  }
+}
+
 /* xs: <576px, sm: 576px-768px */
 @media (max-width: 767px) {
   .remoteTransfer :global(.ant-transfer) {
