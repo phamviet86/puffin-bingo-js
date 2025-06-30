@@ -64,6 +64,7 @@ export function EnrollmentsFormEdit(props) {
 export function EnrollmentsTransferByClass({
   classId,
   enrollmentTypeId,
+  enrollmentPaymentAmount,
   ...props
 }) {
   return (
@@ -80,7 +81,7 @@ export function EnrollmentsTransferByClass({
       onTargetRequest={(params) => fetchList(`/api/enrollments`, params)}
       onTargetItem={{
         key: "user_id",
-        disabled: ["enrollment_status", [], ["Thiếu ngày", "Chờ bắt đầu"]],
+        disabled: ["enrollment_status", [], ["Thiếu ngày", "Đã xếp lớp"]],
       }}
       searchTargetColumns={[
         "user_name_like",
@@ -91,13 +92,16 @@ export function EnrollmentsTransferByClass({
       onTargetAdd={(keys) =>
         fetchPost(`/api/enrollments/class-transfer`, {
           class_id: classId,
-          userIds: keys,
           enrollment_type_id: enrollmentTypeId,
+          enrollment_payment_amount:
+            enrollmentTypeId === 20 ? enrollmentPaymentAmount : 0,
+          userIds: keys,
         })
       }
       onTargetRemove={(keys) =>
         fetchDelete(`/api/enrollments/class-transfer`, {
           class_id: classId,
+          enrollment_type_id: enrollmentTypeId,
           userIds: keys,
         })
       }

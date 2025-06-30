@@ -27,7 +27,10 @@ export async function getEnrollments(searchParams) {
       LEFT JOIN syllabuses s ON s.id = m.syllabus_id AND s.deleted_at IS NULL 
       WHERE e.deleted_at IS NULL
       ${whereClause}
-      ${orderByClause || "ORDER BY created_at"}
+      ${
+        orderByClause ||
+        "ORDER BY course_name, syllabus_name, module_name, enrollment_type_id, user_first_name, user_full_name"
+      }
       ${limitClause};
     `;
 
@@ -133,19 +136,27 @@ export async function deleteEnrollment(id) {
 export async function createEnrollmentsByClass(
   classId,
   userIds,
-  enrollmentTypeId
+  enrollmentTypeId,
+  enrollmentPaymentAmount
 ) {
   try {
     const queryValues = [];
     const valuePlaceholders = userIds
       .map((userId, index) => {
-        queryValues.push(userId, classId, enrollmentTypeId);
-        return `($${index * 3 + 1}, $${index * 3 + 2}, $${index * 3 + 3})`;
+        queryValues.push(
+          userId,
+          classId,
+          enrollmentTypeId,
+          enrollmentPaymentAmount
+        );
+        return `($${index * 4 + 1}, $${index * 4 + 2}, $${index * 4 + 3}, $${
+          index * 4 + 4
+        })`;
       })
       .join(", ");
 
     const queryText = `
-      INSERT INTO enrollments (user_id, class_id, enrollment_type_id)
+      INSERT INTO enrollments (user_id, class_id, enrollment_type_id, enrollment_payment_amount)
       VALUES ${valuePlaceholders}
       RETURNING *;
     `;
@@ -157,19 +168,24 @@ export async function createEnrollmentsByClass(
 }
 
 // soft-delete multiple enrollments by class ID and user IDs
-export async function deleteEnrollmentsByClass(classId, userIds) {
+export async function deleteEnrollmentsByClass(
+  classId,
+  userIds,
+  enrollmentTypeId
+) {
   try {
-    const placeholders = userIds.map((_, index) => `$${index + 2}`).join(", ");
+    const placeholders = userIds.map((_, index) => `$${index + 3}`).join(", ");
 
     const queryText = `
       UPDATE enrollments
       SET deleted_at = NOW()
       WHERE deleted_at IS NULL
         AND class_id = $1
+        AND enrollment_type_id = $2
         AND user_id IN (${placeholders})
       RETURNING *;
     `;
-    const queryValues = [classId, ...userIds];
+    const queryValues = [classId, enrollmentTypeId, ...userIds];
     return await sql.query(queryText, queryValues);
   } catch (error) {
     throw new Error(error.message);

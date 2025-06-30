@@ -221,6 +221,7 @@ function PageContent({ params }) {
         <EnrollmentsTransferByClass
           classId={classId}
           enrollmentTypeId={enrollmentTypeId}
+          enrollmentPaymentAmount={useClassesDesc?.dataSource?.class_fee || 0}
           transferHook={useEnrollmentsTransfer}
           onTransferClose={() => useEnrollmentsTable.reload()}
           onSourceParams={{ user_status_id_e: 14, ...roleParams }}

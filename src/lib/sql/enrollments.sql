@@ -17,7 +17,7 @@ CREATE TABLE enrollments (
   enrollment_payment_type_id INTEGER DEFAULT 22,
   enrollment_payment_amount INTEGER DEFAULT 0,
   enrollment_payment_discount INTEGER DEFAULT 0,
-  enrollment_start_date TIMESTAMPTZ DEFAULT CURRENT_DATE,
+  enrollment_start_date TIMESTAMPTZ DEFAULT NULL,
   enrollment_end_date TIMESTAMPTZ DEFAULT NULL,
   enrollment_discount_notes VARCHAR(512) DEFAULT NULL, 
   enrollment_desc TEXT DEFAULT NULL
