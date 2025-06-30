@@ -2,7 +2,21 @@
 
 ## Upcoming Tasks
 
-- [ ]
+- []
+- [] tạo transfer để thêm danh sách chờ vào lớp (chỉ áp dụng với học viên) - ở page admin/classes hoặc manager/classes
+  - source: có module_id + type học viên nhưng chưa có class_id (status: chưa xếp lớp)
+  - target: có class_id + type học viên nhưng chưa có start_date (thiếu ngày)
+  - add: add class_id - PUT
+  - remove: remove class_id - PATCH
+
+## 2025-06-30
+
+- [] tạo manager/schedules
+  - summary
+  - tạo in month data với month view
+- [] tạo admin/users
+  - add enrollment to class
+  - add enrollment to waiting list (module_id)
 
 ## 2025-06-29
 
@@ -37,8 +51,8 @@
 - [+] courses: khoá học
 - [+] classes: lớp học
 - [+] enrollments: đăng ký
-- [ ] schedules: lịch học
-- [ ] attendances: điểm danh
-- [ ] assessments: đánh giá
-- [ ] tuitions: học phí
-- [ ] invoices: hoá đơn
+- [] schedules: lịch học
+- [] attendances: điểm danh
+- [] assessments: đánh giá
+- [] tuitions: học phí
+- [] invoices: hoá đơn

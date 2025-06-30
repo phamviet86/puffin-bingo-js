@@ -119,10 +119,10 @@ export const CLASS_STATUS = {
 
 export const ENROLLMENT_STATUS = {
   "Nhập sai ngày": { text: "Nhập sai ngày", status: "error" },
-  "Chưa xếp lớp": { text: "Chưa xếp lớp", status: "warning" },
+  "Chờ xếp lớp": { text: "Chờ xếp lớp", status: "warning" },
   "Thiếu ngày": { text: "Thiếu ngày", status: "error" },
+  "Đã xếp lớp": { text: "Đã xếp lớp", status: "success" },
   "Đang học": { text: "Đang học", status: "processing" },
   "Đang dạy": { text: "Đang dạy", status: "processing" },
-  "Đã nghỉ": { text: "Đã nghỉ", status: "default" },
-  "Chờ bắt đầu": { text: "Chờ bắt đầu", status: "warning" },
+  "Đã kết thúc": { text: "Đã kết thúc", status: "default" },
 };
