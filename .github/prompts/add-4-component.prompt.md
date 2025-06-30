@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo schema và component files hoàn chỉnh cho hệ thống CRUD Ant Design Pro từ định nghĩa SQL table"
 ---
 

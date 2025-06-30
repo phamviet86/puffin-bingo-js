@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo 1 file tab hoàn chỉnh cho quản lý entity: tab page với hiển thị bảng, form tạo/sửa và chức năng thông tin trong cùng 1 tab"
 ---
 

@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo file route API hoàn chỉnh cho service với các thao tác CRUD dựa trên định nghĩa bảng SQL."
 ---
 

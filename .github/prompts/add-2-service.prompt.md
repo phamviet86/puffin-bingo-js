@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo file service JavaScript hoàn chỉnh với các thao tác CRUD dựa trên định nghĩa bảng SQL, bao gồm phân trang, lọc và xoá mềm."
 ---
 

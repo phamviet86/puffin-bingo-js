@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo 3 file hoàn chỉnh cho quản lý entity: provider, list page và detail page với hiển thị bảng, form tạo/sửa và chức năng Chi tiết"
 ---
 

@@ -1,5 +1,5 @@
 ---
-mode: "edit"
+mode: "agent"
 description: "Tạo file SQL để định nghĩa bảng dữ liệu mới với các cột và ràng buộc yêu cầu."
 ---
 
