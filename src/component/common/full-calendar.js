@@ -21,7 +21,8 @@ export function FullCalendar({
   onCalendarRequest = undefined,
   onCalendarRequestError = undefined,
   onCalendarRequestSuccess = undefined,
-  calendarItem = undefined,
+  onCalendarRequestParams = undefined,
+  onCalendarItem = undefined,
   plugins = [],
   height = "auto",
   responsive = RESPONSIVE_CONFIG,
@@ -30,7 +31,6 @@ export function FullCalendar({
     left: "prev,next today",
     right: "dayGrid,dayGridWeek,dayGridMonth",
   },
-  params = {},
   calendarHook = {},
   ...props
 }) {
@@ -50,56 +50,81 @@ export function FullCalendar({
   const allPlugins = [dayGridPlugin, ...plugins];
 
   // Handlers
-  const handleDataRequest = useCallback(
-    async (requestParams = {}) => {
-      if (!onCalendarRequest) {
-        messageApi.error("Data request handler not provided");
-        return;
+  const handleDataRequest = useCallback(async () => {
+    if (!onCalendarRequest) {
+      messageApi.error("Data request handler not provided");
+      return;
+    }
+
+    if (!startDate || !endDate) {
+      messageApi.error("Start date and end date must be set");
+      return;
+    }
+
+    try {
+      const result = await onCalendarRequest(onCalendarRequestParams);
+      let finalEvents = [];
+
+      if (onCalendarItem) {
+        finalEvents = convertEventItems(result.data || [], onCalendarItem);
+      } else {
+        finalEvents = result.data || result || [];
       }
 
-      if (!startDate || !endDate) {
-        messageApi.error("Start date and end date must be set");
-        return;
-      }
-
-      try {
-        const result = await onCalendarRequest(requestParams);
-        let finalEvents = [];
-
-        if (calendarItem) {
-          finalEvents = convertEventItems(result.data || [], calendarItem);
-        } else {
-          finalEvents = result.data || result || [];
-        }
-
-        setCalendarEvents(finalEvents);
-        onCalendarRequestSuccess?.(result);
-      } catch (error) {
-        messageApi.error(error?.message || "Đã xảy ra lỗi");
-        onCalendarRequestError?.(error);
-        setCalendarEvents([]);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [
-      onCalendarRequest,
-      onCalendarRequestSuccess,
-      onCalendarRequestError,
-      calendarItem,
-      messageApi,
-      setLoading,
-      setCalendarEvents,
-      startDate,
-      endDate,
-    ]
-  );
+      setCalendarEvents(finalEvents);
+      onCalendarRequestSuccess?.(result);
+    } catch (error) {
+      messageApi.error(error?.message || "Đã xảy ra lỗi");
+      onCalendarRequestError?.(error);
+      setCalendarEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    onCalendarRequest,
+    onCalendarRequestSuccess,
+    onCalendarRequestError,
+    onCalendarRequestParams,
+    onCalendarItem,
+    messageApi,
+    setLoading,
+    setCalendarEvents,
+    startDate,
+    endDate,
+  ]);
 
   const handleDatesSet = useCallback(
     (dateInfo) => {
       if (setStartDate && setEndDate) {
-        setStartDate(dateInfo.startStr);
-        setEndDate(dateInfo.endStr);
+        const isMonthView = dateInfo.view?.type?.includes("Month");
+
+        if (isMonthView) {
+          // For month view, get the middle date of the view range to determine the current month
+          const viewStartTime = new Date(dateInfo.start).getTime();
+          const viewEndTime = new Date(dateInfo.end).getTime();
+          const middleDate = new Date(
+            viewStartTime + (viewEndTime - viewStartTime) / 2
+          );
+
+          // Get year and month from middle date
+          const year = middleDate.getFullYear();
+          const month = middleDate.getMonth();
+
+          // Format dates to local timezone
+          const formatLocalDate = (year, month, day = 1) => {
+            const monthStr = String(month + 1).padStart(2, "0");
+            const dayStr = String(day).padStart(2, "0");
+            return `${year}-${monthStr}-${dayStr}T00:00:00`;
+          };
+
+          setStartDate(formatLocalDate(year, month));
+          setEndDate(formatLocalDate(year, month + 1));
+        } else {
+          // For non-month views, use the original date range
+          setStartDate(dateInfo.startStr);
+          setEndDate(dateInfo.endStr);
+        }
+
         setLoading(true);
       }
     },
@@ -134,18 +159,15 @@ export function FullCalendar({
   // Handle data request on component mount and when dates or loading state change
   useEffect(() => {
     if (onCalendarRequest && startDate && endDate && loading) {
-      // Process params here, removing current and pageSize
-      const { current, pageSize, ...processedParams } = params;
-
-      handleDataRequest(processedParams);
+      handleDataRequest(onCalendarRequestParams);
     }
   }, [
     handleDataRequest,
     onCalendarRequest,
+    onCalendarRequestParams,
     startDate,
     endDate,
     loading,
-    params,
   ]);
 
   // Return the component

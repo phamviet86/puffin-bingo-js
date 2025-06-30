@@ -13,11 +13,28 @@ export async function getSchedules(searchParams) {
 
     const sqlValue = [...queryValues];
     const sqlText = `
-      SELECT *, COUNT(*) OVER() AS total
-      FROM schedules
-      WHERE deleted_at IS NULL
+      SELECT 
+        s.*,
+        o.option_color AS schedule_status_color,
+        co.course_name, co.course_code, 
+        r.room_name,
+        m.module_name, 
+        l.lecture_name,
+        COUNT(*) OVER() AS total
+      FROM schedules s
+      JOIN options o ON s.schedule_status_id = o.id AND o.deleted_at IS NULL 
+      JOIN shifts sh ON s.shift_id = sh.id AND sh.deleted_at IS NULL
+      JOIN classes c ON s.class_id = c.id AND c.deleted_at IS NULL
+      JOIN courses co ON c.id = co.id AND co.deleted_at IS NULL
+      JOIN modules m ON c.id = m.id AND m.deleted_at IS NULL
+      LEFT JOIN lectures l ON s.lecture_id = l.id AND l.deleted_at IS NULL
+      LEFT JOIN rooms r ON s.room_id = r.id AND r.deleted_at IS NULL
+      WHERE s.deleted_at IS NULL
       ${whereClause}
-      ${orderByClause || "ORDER BY created_at"}
+      ${
+        orderByClause ||
+        "ORDER BY schedule_date, shift_start_time, shift_end_time"
+      }
       ${limitClause};
     `;
 
@@ -30,9 +47,23 @@ export async function getSchedules(searchParams) {
 export async function getSchedule(id) {
   try {
     return await sql`
-      SELECT *
-      FROM schedules
-      WHERE deleted_at IS NULL AND id = ${id};
+      SELECT 
+        s.*,
+        o.option_color AS schedule_status_color,
+        co.course_name, co.course_code, 
+        r.room_name,
+        m.module_name, 
+        l.lecture_name,
+        COUNT(*) OVER() AS total
+      FROM schedules s
+      JOIN options o ON s.schedule_status_id = o.id AND o.deleted_at IS NULL 
+      JOIN shifts sh ON s.shift_id = sh.id AND sh.deleted_at IS NULL
+      JOIN classes c ON s.class_id = c.id AND c.deleted_at IS NULL
+      JOIN courses co ON c.id = co.id AND co.deleted_at IS NULL
+      JOIN modules m ON c.id = m.id AND m.deleted_at IS NULL
+      LEFT JOIN lectures l ON s.lecture_id = l.id AND l.deleted_at IS NULL
+      LEFT JOIN rooms r ON s.room_id = r.id AND r.deleted_at IS NULL
+      WHERE s.deleted_at IS NULL AND s.id = ${id};
     `;
   } catch (error) {
     throw new Error(error.message);

@@ -16,8 +16,9 @@ import {
   SchedulesFormCreate,
   SchedulesColumns,
   SchedulesFields,
+  SchedulesCalendar,
 } from "@/component/custom";
-import { useTable, useInfo, useNav } from "@/component/hook";
+import { useTable, useInfo, useNav, useCalendar } from "@/component/hook";
 import { PageProvider, usePageContext } from "./provider";
 
 export default function Page(props) {
@@ -39,6 +40,7 @@ function PageContent() {
   } = usePageContext();
   const useSchedulesTable = useTable();
   const useSchedulesInfo = useInfo();
+  const useScheduleCalendar = useCalendar();
 
   const pageButton = [
     <Button
@@ -68,6 +70,7 @@ function PageContent() {
 
   const pageContent = (
     <ProCard boxShadow>
+      <SchedulesCalendar calendarHook={useScheduleCalendar} />
       <SchedulesTable
         tableHook={useSchedulesTable}
         columns={SchedulesColumns({
