@@ -8,6 +8,8 @@ export function DrawerDescriptions({
   infoHook = {},
   drawerProps = {},
   column = 1,
+  bordered = true,
+  size = "small",
   ...descProps
 }) {
   const { infoRef, visible, close } = infoHook;
@@ -20,7 +22,13 @@ export function DrawerDescriptions({
         open={visible}
         onClose={close}
       >
-        <ProDescriptions {...descProps} actionRef={infoRef} column={column} />
+        <ProDescriptions
+          {...descProps}
+          actionRef={infoRef}
+          column={column}
+          bordered={bordered}
+          size={size}
+        />
       </Drawer>
     </>
   );

@@ -10,11 +10,26 @@ import {
   ProFormTextArea,
 } from "@ant-design/pro-form";
 import { ENROLLMENT_STATUS } from "@/component/config";
+import { renderTagFromEnum } from "@/lib/util/render-util";
 
 export function EnrollmentsColumns(params) {
   const { enrollmentType, enrollmentPaymentType } = params || {};
 
   return [
+    {
+      title: "Khoá học",
+      dataIndex: "course_name",
+      valueType: "text",
+      search: false,
+      hidden: true,
+    },
+    {
+      title: "Học phần",
+      dataIndex: "module_name",
+      valueType: "text",
+      search: false,
+      hidden: true,
+    },
     {
       title: "Người dùng",
       dataIndex: "user_name",
@@ -27,6 +42,8 @@ export function EnrollmentsColumns(params) {
       valueType: "select",
       valueEnum: enrollmentType?.valueEnum || {},
       sorter: { multiple: 1 },
+      render: (_, record) =>
+        renderTagFromEnum(record.enrollment_type_id, enrollmentType?.valueEnum),
     },
     {
       title: "Trạng thái",
@@ -63,7 +80,10 @@ export function EnrollmentsColumns(params) {
     {
       title: "Số tiền",
       dataIndex: "enrollment_payment_amount",
-      valueType: "text",
+      valueType: "money",
+      fieldProps: {
+        precision: 0,
+      },
       search: false,
       sorter: { multiple: 1 },
       responsive: ["xl"],
@@ -71,10 +91,27 @@ export function EnrollmentsColumns(params) {
     {
       title: "Giảm giá",
       dataIndex: "enrollment_payment_discount",
-      valueType: "text",
+      valueType: "digit",
+      fieldProps: {
+        formatter: (value) => (value ? `${value} %` : ""),
+      },
       search: false,
       sorter: { multiple: 1 },
       responsive: ["xl"],
+    },
+    {
+      title: "Ghi chú giảm giá",
+      dataIndex: "enrollment_discount_notes",
+      valueType: "text",
+      search: false,
+      hidden: true,
+    },
+    {
+      title: "Ghi chú khác",
+      dataIndex: "enrollment_desc",
+      valueType: "text",
+      search: false,
+      hidden: true,
     },
   ];
 }
