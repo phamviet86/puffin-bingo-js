@@ -44,6 +44,13 @@ function PageContent() {
 
   const pageButton = [
     <Button
+      key="reload-calendar"
+      label="Tải lại"
+      color="default"
+      variant="filled"
+      onClick={() => useScheduleCalendar.reload()}
+    />,
+    <Button
       key="refresh-button"
       label="Tải lại"
       color="default"
@@ -70,7 +77,15 @@ function PageContent() {
 
   const pageContent = (
     <ProCard boxShadow>
-      <SchedulesCalendar calendarHook={useScheduleCalendar} />
+      <SchedulesCalendar
+        calendarHook={useScheduleCalendar}
+        onCalendarRequestParams={{
+          schedule_date: [
+            useScheduleCalendar.startDate,
+            useScheduleCalendar.endDate,
+          ],
+        }}
+      />
       <SchedulesTable
         tableHook={useSchedulesTable}
         columns={SchedulesColumns({

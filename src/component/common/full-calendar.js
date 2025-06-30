@@ -71,10 +71,11 @@ export function FullCalendar({
 }) {
   const {
     calendarRef,
-    setStartDate,
-    setEndDate,
     startDate,
+    setStartDate,
     endDate,
+    setEndDate,
+    loading,
     setLoading,
   } = calendarHook;
 
@@ -115,7 +116,6 @@ export function FullCalendar({
     }
 
     if (!startDate || !endDate) {
-      messageApi.error("Start date and end date must be set");
       return;
     }
 
@@ -163,11 +163,10 @@ export function FullCalendar({
 
         // Set new timeout with 300ms delay để debounce
         datesSetTimeoutRef.current = setTimeout(() => {
-          const { startDate: newStartDate, endDate: newEndDate } =
-            buildCalendarDateRange(dateInfo);
+          const { startDate, endDate } = buildCalendarDateRange(dateInfo);
 
-          setStartDate(newStartDate);
-          setEndDate(newEndDate);
+          setStartDate(startDate);
+          setEndDate(endDate);
           setLoading?.(true);
         }, 300);
       }
@@ -208,10 +207,11 @@ export function FullCalendar({
 
   // Handle data request khi dates thay đổi
   useEffect(() => {
-    if (onCalendarRequest && startDate && endDate) {
+    // Only trigger data request if not loading and both startDate/endDate are valid (not null/undefined/empty)
+    if (onCalendarRequest && onCalendarRequestParams && loading) {
       handleDataRequest();
     }
-  }, [handleDataRequest, onCalendarRequest, startDate, endDate]);
+  }, [handleDataRequest, onCalendarRequest, onCalendarRequestParams, loading]);
 
   // Return the component
   return (
