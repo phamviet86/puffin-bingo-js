@@ -90,7 +90,7 @@ export function ClassesColumns() {
       ),
     },
     {
-      title: "Đã học",
+      title: "Học",
       dataIndex: "completed_count",
       valueType: "digit",
       search: false,
@@ -191,7 +191,7 @@ export function CourseClassesColumns() {
       ),
     },
     {
-      title: "Đã học",
+      title: "Học",
       dataIndex: "completed_count",
       valueType: "digit",
       search: false,
@@ -286,7 +286,7 @@ export function ScheduleClassesColumns() {
       ),
     },
     {
-      title: "Đã học",
+      title: "Học",
       dataIndex: "completed_count",
       valueType: "digit",
       search: false,
@@ -304,6 +304,18 @@ export function ScheduleClassesColumns() {
       render: (text) => (
         <Typography.Text type="danger" strong>
           {text}
+        </Typography.Text>
+      ),
+    },
+    {
+      title: "Tổng",
+      valueType: "digit",
+      search: false,
+      render: (_, record) => (
+        <Typography.Text strong>
+          {Number(record.pending_count || 0) +
+            Number(record.completed_count || 0) +
+            Number(record.absent_count || 0)}
         </Typography.Text>
       ),
     },
