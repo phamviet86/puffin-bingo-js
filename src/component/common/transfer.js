@@ -1,7 +1,7 @@
 // path: @/component/common/transfer.js
 
 import { useState, useEffect, useCallback, useRef, use } from "react";
-import { Transfer as AntTransfer, message } from "antd";
+import { Transfer as AntTransfer, message, Spin } from "antd";
 import { convertTransferItems } from "@/lib/util/convert-util";
 import styles from "./transfer.module.css";
 
@@ -47,6 +47,8 @@ export function Transfer({
   const [targetRequestData, setTargetRequestData] = useState([]);
   const [sourceSearchKeys, setSourceSearchKeys] = useState([]);
   const [targetSearchKeys, setTargetSearchKeys] = useState([]);
+  // Loading state
+  const [loading, setLoading] = useState(true);
 
   const handleData = useCallback(() => {
     // Lấy key theo thứ tự
@@ -76,8 +78,10 @@ export function Transfer({
   }, [handleData]);
 
   const handleSourceRequest = useCallback(async () => {
+    setLoading(true);
     if (!onSourceRequest) {
       messageApi.error("Source data request handler not provided");
+      setLoading(false);
       return;
     }
 
@@ -88,16 +92,20 @@ export function Transfer({
         : sourceResult.data || [];
 
       setSourceRequestData(sourceData);
+      setLoading(false);
       return;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
+      setLoading(false);
       return;
     }
   }, [onSourceRequest, onSourceParams, onSourceItem, messageApi]);
 
   const handleTargetRequest = useCallback(async () => {
+    setLoading(true);
     if (!onTargetRequest) {
       messageApi.error("Target data request handler not provided");
+      setLoading(false);
       return;
     }
 
@@ -108,9 +116,11 @@ export function Transfer({
         : targetResult.data || [];
 
       setTargetRequestData(targetData);
+      setLoading(false);
       return;
     } catch (error) {
       messageApi.error(error.message || "Đã xảy ra lỗi khi tải dữ liệu source");
+      setLoading(false);
       return;
     }
   }, [onTargetRequest, onTargetParams, onTargetItem, messageApi]);
@@ -129,6 +139,7 @@ export function Transfer({
 
   // Khi mount: tải lại dữ liệu
   useEffect(() => {
+    setLoading(true);
     reloadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -197,6 +208,7 @@ export function Transfer({
         return;
       }
 
+      setLoading(true);
       const searchParams = buildSearchParams(searchSourceColumns, searchValue);
 
       try {
@@ -209,11 +221,13 @@ export function Transfer({
           : searchResult.data || [];
 
         setSourceSearchKeys(sourceData.map((item) => item.key));
+        setLoading(false);
         return;
       } catch (error) {
         messageApi.error(
           error.message || "Đã xảy ra lỗi khi tải dữ liệu source"
         );
+        setLoading(false);
         return;
       }
     },
@@ -238,6 +252,7 @@ export function Transfer({
         return;
       }
 
+      setLoading(true);
       const searchParams = buildSearchParams(searchTargetColumns, searchValue);
 
       try {
@@ -250,11 +265,13 @@ export function Transfer({
           : searchResult.data || [];
 
         setTargetSearchKeys(targetData.map((item) => item.key));
+        setLoading(false);
         return;
       } catch (error) {
         messageApi.error(
           error.message || "Đã xảy ra lỗi khi tải dữ liệu target"
         );
+        setLoading(false);
         return;
       }
     },
@@ -303,25 +320,27 @@ export function Transfer({
   return (
     <>
       {contextHolder}
-      <div
-        className={`${styles.remoteTransfer} ${
-          styles[`responsive-${responsiveBreakpoint}`]
-        }`}
-      >
-        <AntTransfer
-          {...props}
-          direction="vertical"
-          dataSource={dataSource}
-          targetKeys={targetKeys}
-          onChange={handleChange}
-          onSearch={handleSearch}
-          rowKey={rowKey}
-          render={render}
-          listStyle={listStyle}
-          showSearch={showSearch}
-          filterOption={handleFilter}
-        />
-      </div>
+      <Spin spinning={loading} tip="Đang tải dữ liệu..." delay={500}>
+        <div
+          className={`${styles.remoteTransfer} ${
+            styles[`responsive-${responsiveBreakpoint}`]
+          }`}
+        >
+          <AntTransfer
+            {...props}
+            direction="vertical"
+            dataSource={dataSource}
+            targetKeys={targetKeys}
+            onChange={handleChange}
+            onSearch={handleSearch}
+            rowKey={rowKey}
+            render={render}
+            listStyle={listStyle}
+            showSearch={showSearch}
+            filterOption={handleFilter}
+          />
+        </div>
+      </Spin>
     </>
   );
 }

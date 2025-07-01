@@ -1,7 +1,7 @@
 // path: @/component/common/full-calendar.js
 
 import { useEffect, useCallback, useState, useRef } from "react";
-import { message, Grid } from "antd";
+import { message, Grid, Spin } from "antd";
 import Calendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import {
@@ -69,15 +69,8 @@ export function FullCalendar({
   calendarHook = {},
   ...props
 }) {
-  const {
-    calendarRef,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-    loading,
-    setLoading,
-  } = calendarHook;
+  const { calendarRef, startDate, setStartDate, endDate, setEndDate } =
+    calendarHook;
 
   const [messageApi, contextHolder] = message.useMessage();
   const screens = useBreakpoint();
@@ -86,6 +79,9 @@ export function FullCalendar({
   // State management: tách biệt raw data và processed events
   const [rawCalendarData, setRawCalendarData] = useState([]);
   const [processedEvents, setProcessedEvents] = useState([]);
+
+  // Loading state
+  const [loading, setLoading] = useState(true);
 
   // Refs for reload pattern và debouncing
   const reloadDataRef = useRef();
@@ -130,7 +126,7 @@ export function FullCalendar({
       onCalendarRequestError?.(error);
       setRawCalendarData([]);
     } finally {
-      setLoading?.(false);
+      setLoading(false);
     }
   }, [
     onCalendarRequest,
@@ -211,18 +207,20 @@ export function FullCalendar({
   return (
     <>
       {contextHolder}
-      <Calendar
-        {...props}
-        {...CALENDAR_CONFIG}
-        ref={calendarRef}
-        plugins={allPlugins}
-        headerToolbar={headerToolbar}
-        height={height}
-        datesSet={handleDatesSet}
-        events={processedEvents}
-        weekNumbers={true}
-        navLinks={true}
-      />
+      <Spin spinning={loading} tip="Đang tải dữ liệu..." delay={500}>
+        <Calendar
+          {...props}
+          {...CALENDAR_CONFIG}
+          ref={calendarRef}
+          plugins={allPlugins}
+          headerToolbar={headerToolbar}
+          height={height}
+          datesSet={handleDatesSet}
+          events={processedEvents}
+          weekNumbers={true}
+          navLinks={true}
+        />
+      </Spin>
     </>
   );
 }
