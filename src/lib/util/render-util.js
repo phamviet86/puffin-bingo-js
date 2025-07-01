@@ -186,7 +186,7 @@ export function renderScheduleShort(info) {
   );
 }
 
-export function renderEventCard(info) {
+export function renderScheduleCard(info) {
   const {
     shift_start_time,
     room_name,
@@ -222,14 +222,16 @@ export function renderEventCard(info) {
         <Flex justify="space-between" wrap style={{ width: "100%" }}>
           <Text style={styles.title}>{formatTimeHHMM(shift_start_time)}</Text>
           <Text strong style={styles.text}>
-            {room_name}
+            {room_name ? `Phòng: ${room_name}` : "Chưa có phòng"}
           </Text>
         </Flex>
         <Space wrap size={[4, 0]}>
           <Text strong style={styles.text}>
             {course_name}
           </Text>
-          <Text style={styles.text}>{module_name}</Text>
+          <Text style={styles.text} type="secondary">
+            {module_name}
+          </Text>
         </Space>
         <Text italic style={styles.text}>
           {lecture_name}
@@ -239,30 +241,31 @@ export function renderEventCard(info) {
   );
 }
 
-// manager > schedules
-export function renderMSCard(info) {
-  const { class_name, module_name, schedule_status_color } =
-    info.event.extendedProps;
-  const { color } = COLOR_ENUM[schedule_status_color];
+export function renderScheduleTransfer(record) {
+  const {
+    schedule_date,
+    shift_start_time,
+    course_name,
+    module_name,
+    schedule_status_color,
+  } = record;
 
-  const styles = {
-    title: {
-      fontSize: "1em",
-      fontWeight: 800,
-      color: color,
-    },
-    text: {
-      fontSize: "1em",
-    },
-    container: { padding: "0 4px" },
-  };
+  // Get short day name from schedule_date
+  const dayName = new Date(schedule_date).toLocaleDateString("vi-VN", {
+    weekday: "short",
+  });
+
+  const startTime = formatTimeHHMM(shift_start_time);
+  const { status, color } = COLOR_ENUM[schedule_status_color] || {};
+
   return (
-    <Space size={[4, 0]} style={styles.container}>
-      <Badge color={schedule_status_color} status={schedule_status_color} />
-      <Space wrap size={[3, 0]}>
-        <Text style={styles.title}>{class_name}</Text>
-        <Text style={styles.text}>{module_name}</Text>
-      </Space>
+    <Space size={4} wrap>
+      <Badge status={status ? status : color} />
+      <Text>
+        {dayName} - {startTime}:
+      </Text>
+      <Text strong>{course_name}</Text>
+      <Text>{module_name}</Text>
     </Space>
   );
 }

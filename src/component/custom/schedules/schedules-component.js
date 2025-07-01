@@ -6,15 +6,21 @@ import {
   DrawerDescriptions,
   ProDescriptions,
   FullCalendar,
+  ModalTransfer,
 } from "@/component/common";
 import {
   fetchList,
   fetchGet,
   fetchPost,
   fetchPut,
+  fetchDelete,
 } from "@/lib/util/fetch-util";
 import { VIEWS_CONFIG } from "@/component/config/calendar-config";
-import { renderScheduleShort, renderEventCard } from "@/lib/util/render-util";
+import {
+  renderScheduleShort,
+  renderScheduleCard,
+  renderScheduleTransfer,
+} from "@/lib/util/render-util";
 
 export function SchedulesTable(props) {
   return (
@@ -60,8 +66,6 @@ export function SchedulesFormEdit(props) {
       {...props}
       onFormRequest={(params) => fetchGet(`/api/schedules/${params.id}`)}
       onFormSubmit={(values) => fetchPut(`/api/schedules/${values.id}`, values)}
-      // enable if needed
-      // onFormDelete={(params) => fetchDelete(`/api/schedules/${params.id}`)}
     />
   );
 }
@@ -84,12 +88,13 @@ export function SchedulesCalendar(props) {
           course_name: "course_name",
           course_code: "course_code",
           module_name: "module_name",
+          room_name: "room_name",
           schedule_status_color: "schedule_status_color",
         },
       }}
       views={{
         dayGrid: {
-          eventContent: renderEventCard,
+          eventContent: renderScheduleCard,
           ...VIEWS_CONFIG.dayGrid,
         },
         dayGridWeek: {
@@ -100,6 +105,45 @@ export function SchedulesCalendar(props) {
           eventContent: renderScheduleShort,
           ...VIEWS_CONFIG.dayGridMonth,
         },
+      }}
+    />
+  );
+}
+
+export function SchedulesTransfer(props) {
+  return (
+    <ModalTransfer
+      {...props}
+      onSourceRequest={(params) => fetchList(`/api/schedules`, params)}
+      onSourceItem={{ key: "id" }}
+      onTargetRequest={(params) => fetchList(`/api/schedules`, params)}
+      onTargetItem={{
+        key: "source_id",
+        disabled: ["schedule_status_id", [], [23]],
+      }}
+      onTargetAdd={(keys) =>
+        fetchPost(`/api/schedules/transfer`, { ids: keys })
+      }
+      onTargetRemove={(keys) =>
+        fetchDelete(`/api/schedules/transfer`, { sourceIds: keys })
+      }
+      render={renderScheduleTransfer}
+      titles={["Lịch học", "Đã sao chép"]}
+      operations={["Sao chép", "Xóa"]}
+      listStyle={{
+        width: "100%",
+        height: "100%",
+        minHeight: "200px",
+      }}
+      modalProps={{ title: "Sao chép lịch" }}
+      showSearch={false}
+      searchSourceColumns={["syllabus_name_like", "module_name_like"]}
+      searchTargetColumns={["syllabus_name_like", "module_name_like"]}
+      locale={{
+        searchPlaceholder: "Tìm kiếm...",
+        itemsUnit: "buổi học",
+        itemUnit: "buổi học",
+        notFoundContent: "Không tìm thấy buổi học",
       }}
     />
   );

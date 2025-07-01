@@ -2,34 +2,23 @@
 
 "use client";
 
+import { useState } from "react";
 import { Space } from "antd";
-import {
-  CodeOutlined,
-  PlusOutlined,
-  InfoCircleOutlined,
-  EyeOutlined,
-} from "@ant-design/icons";
+import { CodeOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { ProCard } from "@ant-design/pro-components";
-import { PageContainer, Button, DetailButton } from "@/component/common";
+import { PageContainer, Button } from "@/component/common";
 import {
-  SchedulesTable,
-  SchedulesInfo,
   SchedulesFormCreate,
   SchedulesFormEdit,
-  SchedulesColumns,
   SchedulesFields,
   SchedulesCalendar,
+  SchedulesTransfer,
   ScheduleClassesTable,
   ScheduleClassesColumns,
 } from "@/component/custom";
-import {
-  useTable,
-  useInfo,
-  useNav,
-  useCalendar,
-  useForm,
-} from "@/component/hook";
+import { useTable, useCalendar, useForm, useTransfer } from "@/component/hook";
 import { PageProvider, usePageContext } from "./provider";
+import { convertIsoDate } from "@/lib/util/convert-util";
 
 export default function Page(props) {
   return (
@@ -45,6 +34,9 @@ function PageContent() {
   const useScheduleFormCreate = useForm();
   const useScheduleFormEdit = useForm();
   const useScheduleClassesTable = useTable();
+  const useSchedulesTransfer = useTransfer();
+
+  const [transferDateRange, setTransferDateRange] = useState({});
 
   const reloadData = () => {
     useSchedulesCalendar.reload();
@@ -73,6 +65,14 @@ function PageContent() {
           useScheduleFormEdit.setParams({ id: clickInfo.event.id });
           useScheduleFormEdit.open();
         }}
+        navLinkWeekClick={(startDate) => {
+          setTransferDateRange({
+            date1: convertIsoDate(startDate),
+            date2: convertIsoDate(startDate, 7),
+            date3: convertIsoDate(startDate, 14),
+          });
+          useSchedulesTransfer.open();
+        }}
       />
       <SchedulesFormCreate
         formHook={useScheduleFormCreate}
@@ -96,6 +96,18 @@ function PageContent() {
         onFormSubmitSuccess={reloadData}
         title="Sửa lịch học"
       />
+      <SchedulesTransfer
+        transferHook={useSchedulesTransfer}
+        onSourceParams={{
+          schedule_date_gte: transferDateRange.date1,
+          schedule_date_lt: transferDateRange.date2,
+        }}
+        onTargetParams={{
+          schedule_date_gte: transferDateRange.date2,
+          schedule_date_lt: transferDateRange.date3,
+        }}
+        onTransferClose={reloadData}
+      />
     </ProCard>
   );
 
@@ -111,14 +123,14 @@ function PageContent() {
             endDate: useSchedulesCalendar.endDate,
           }}
           columns={ScheduleClassesColumns()}
-          rightColumns={[
+          leftColumns={[
             {
               width: 56,
               align: "center",
               search: false,
               render: (_, record) => (
                 <Button
-                  icon={<PlusOutlined />}
+                  icon={<PlusSquareOutlined />}
                   variant="link"
                   onClick={() => {
                     useScheduleFormCreate.setTitle("Thêm lịch học");
