@@ -41,7 +41,6 @@ export default function Page(props) {
 
 function PageContent() {
   const { scheduleStatus, shiftSelection, roomSelection } = usePageContext();
-  const useSchedulesInfo = useInfo();
   const useSchedulesCalendar = useCalendar();
   const useScheduleFormCreate = useForm();
   const useScheduleFormEdit = useForm();
@@ -71,29 +70,8 @@ function PageContent() {
           schedule_date_lt: useSchedulesCalendar.endDate,
         }}
         eventClick={(clickInfo) => {
-          useSchedulesInfo.setParams({ id: clickInfo.event.id });
-          useSchedulesInfo.open();
-        }}
-      />
-      <SchedulesInfo
-        infoHook={useSchedulesInfo}
-        columns={SchedulesColumns({
-          scheduleStatus,
-          shiftSelection,
-          roomSelection,
-        })}
-        onDescRequestParams={useSchedulesInfo.params}
-        dataSource={useSchedulesInfo.dataSource}
-        drawerProps={{
-          title: "Thông tin lịch học",
-          extra: [
-            <DetailButton
-              key="detail-button"
-              label="Chi tiết"
-              variant="filled"
-              id={useSchedulesInfo?.params?.id}
-            />,
-          ],
+          useScheduleFormEdit.setParams({ id: clickInfo.event.id });
+          useScheduleFormEdit.open();
         }}
       />
       <SchedulesFormCreate
@@ -114,7 +92,7 @@ function PageContent() {
           shiftSelection,
           roomSelection,
         })}
-        onFormRequestParams={{ id: "" }}
+        onFormRequestParams={useScheduleFormEdit.params}
         onFormSubmitSuccess={reloadData}
         title="Sửa lịch học"
       />
@@ -151,13 +129,6 @@ function PageContent() {
                       schedule_status_id: 23,
                     });
                     useScheduleFormCreate.open();
-
-                    console.log(
-                      "Creating schedule for class:",
-                      record.id,
-                      record.course_name,
-                      record.module_name
-                    );
                   }}
                 />
               ),

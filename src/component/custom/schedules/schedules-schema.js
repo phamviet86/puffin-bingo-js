@@ -7,19 +7,20 @@ import {
   ProFormDatePicker,
   ProFormTextArea,
 } from "@ant-design/pro-form";
+import { renderTagFromEnum } from "@/lib/util/render-util";
 
 export function SchedulesColumns(params) {
   const { scheduleStatus, shiftSelection, roomSelection } = params;
   return [
     {
-      title: "Lớp học",
-      dataIndex: "class_id",
+      title: "Khoá học",
+      dataIndex: "course_name",
       valueType: "text",
       sorter: { multiple: 1 },
     },
     {
-      title: "Ca học",
-      dataIndex: "shift_id",
+      title: "Học phần",
+      dataIndex: "module_name",
       valueType: "text",
       sorter: { multiple: 1 },
     },
@@ -30,34 +31,31 @@ export function SchedulesColumns(params) {
       sorter: { multiple: 1 },
     },
     {
-      title: "Trạng thái lịch học",
+      title: "Ca học",
+      dataIndex: "shift_id",
+      valueType: "text",
+      valueEnum: shiftSelection?.valueEnum,
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Trạng thái",
       dataIndex: "schedule_status_id",
-      valueType: "text",
+      valueType: "select",
+      valueEnum: scheduleStatus?.valueEnum,
       sorter: { multiple: 1 },
-    },
-    {
-      title: "Nguồn lịch",
-      dataIndex: "source_id",
-      valueType: "text",
-      sorter: { multiple: 1 },
-      responsive: ["md"],
-    },
-    {
-      title: "Giảng viên",
-      dataIndex: "lecture_id",
-      valueType: "text",
-      sorter: { multiple: 1 },
-      responsive: ["md"],
+      render: (_, record) =>
+        renderTagFromEnum(record.schedule_status_id, scheduleStatus?.valueEnum),
     },
     {
       title: "Phòng học",
       dataIndex: "room_id",
       valueType: "text",
+      valueEnum: roomSelection?.valueEnum,
       sorter: { multiple: 1 },
       responsive: ["md"],
     },
     {
-      title: "Ghi chú lịch học",
+      title: "Ghi chú",
       dataIndex: "schedule_desc",
       valueType: "textarea",
       sorter: { multiple: 1 },

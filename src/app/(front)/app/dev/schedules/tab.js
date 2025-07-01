@@ -107,7 +107,7 @@ function PageContent() {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useSchedulesForm.setId(record?.id);
+                    useSchedulesForm.setParams({ id: record?.id });
                     useSchedulesForm.open();
                   }}
                 />

@@ -14,6 +14,8 @@ export function DrawerDescriptions({
 }) {
   const { infoRef, visible, close } = infoHook;
 
+  if (!visible) return null;
+
   return (
     <>
       <Drawer

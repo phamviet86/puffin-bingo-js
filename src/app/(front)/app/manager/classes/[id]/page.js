@@ -177,7 +177,7 @@ function PageContent({ params }) {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useEnrollmentsForm.setId(record?.id);
+                    useEnrollmentsForm.setParams({ id: record?.id });
                     useEnrollmentsForm.open();
                   }}
                 />
@@ -202,7 +202,9 @@ function PageContent({ params }) {
                 variant="filled"
                 onClick={() => {
                   useEnrollmentsInfo.close();
-                  useEnrollmentsForm.setId(useEnrollmentsInfo?.dataSource?.id);
+                  useEnrollmentsForm.setParams({
+                    id: useEnrollmentsInfo?.dataSource?.id,
+                  });
                   useEnrollmentsForm.open();
                 }}
               />,
@@ -212,7 +214,7 @@ function PageContent({ params }) {
         <EnrollmentsFormEdit
           formHook={useEnrollmentsForm}
           fields={EnrollmentsFields({ enrollmentType, enrollmentPaymentType })}
-          onFormRequestParams={{ id: useEnrollmentsForm.id }}
+          onFormRequestParams={useEnrollmentsForm.params}
           onFormSubmitSuccess={() => useEnrollmentsTable.reload()}
           title="Sửa đăng ký"
         />

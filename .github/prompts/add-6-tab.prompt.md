@@ -264,7 +264,7 @@ function PageContent() {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useRolesForm.setId(record?.id);
+                    useRolesForm.setParams({ id: record?.id });
                     useRolesForm.open();
                   }}
                 />
@@ -286,7 +286,7 @@ function PageContent() {
                 variant="filled"
                 onClick={() => {
                   useRolesInfo.close();
-                  useRolesForm.setId(useRolesInfo?.dataSource?.id);
+                  useRolesForm.setParams({ id: useRolesInfo?.dataSource?.id });
                   useRolesForm.open();
                 }}
               />,
@@ -296,10 +296,10 @@ function PageContent() {
         <RolesFormEdit
           formHook={useRolesForm}
           fields={RolesFields({ roleStatus })}
-          onFormRequestParams={{ id: useRolesForm.id }}
+          onFormRequestParams={useRolesForm.params}
           onFormSubmitSuccess={() => useRolesTable.reload()}
           // enable if needed
-          /* onFormDeleteParams={{ id: useRolesForm.id }}
+          /* onFormDeleteParams={{ id: useRolesForm.params.id }}
           onFormDeleteSuccess={() => {
             useRolesForm.close();
             useRolesTable.reload();

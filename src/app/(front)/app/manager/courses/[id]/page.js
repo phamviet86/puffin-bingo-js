@@ -141,7 +141,7 @@ function PageContent({ params }) {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useClassesForm.setId(record?.id);
+                    useClassesForm.setParams({ id: record?.id });
                     useClassesForm.open();
                   }}
                 />
@@ -163,7 +163,9 @@ function PageContent({ params }) {
                 variant="filled"
                 onClick={() => {
                   useClassesInfo.close();
-                  useClassesForm.setId(useClassesInfo?.dataSource?.id);
+                  useClassesForm.setParams({
+                    id: useClassesInfo?.dataSource?.id,
+                  });
                   useClassesForm.open();
                 }}
               />,
@@ -173,7 +175,7 @@ function PageContent({ params }) {
         <ClassesFormEdit
           formHook={useClassesForm}
           fields={ClassesFields()}
-          onFormRequestParams={{ id: useClassesForm.id }}
+          onFormRequestParams={useClassesForm.params}
           onFormSubmitSuccess={() => useClassesTable.reload()}
           // enable if needed
           /* onFormDeleteParams={{ id: useClassesForm.id }}

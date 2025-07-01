@@ -144,7 +144,7 @@ function PageContent({ params }) {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useModulesForm.setId(record?.id);
+                    useModulesForm.setParams({ id: record?.id });
                     useModulesForm.open();
                   }}
                 />
@@ -166,7 +166,9 @@ function PageContent({ params }) {
                 variant="filled"
                 onClick={() => {
                   useModulesInfo.close();
-                  useModulesForm.setId(useModulesInfo?.dataSource?.id);
+                  useModulesForm.setParams({
+                    id: useModulesInfo?.dataSource?.id,
+                  });
                   useModulesForm.open();
                 }}
               />,
@@ -176,7 +178,7 @@ function PageContent({ params }) {
         <ModulesFormEdit
           formHook={useModulesForm}
           fields={ModulesFields({ moduleStatus })}
-          onFormRequestParams={{ id: useModulesForm.id }}
+          onFormRequestParams={useModulesForm.params}
           onFormSubmitSuccess={() => useModulesTable.reload()}
           /* onFormDeleteParams={{ id: useModulesForm.id }}
           onFormDeleteSuccess={() => {
@@ -252,7 +254,7 @@ function PageContent({ params }) {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useLecturesForm.setId(record?.id);
+                    useLecturesForm.setParams({ id: record?.id });
                     useLecturesForm.open();
                   }}
                 />
@@ -274,7 +276,9 @@ function PageContent({ params }) {
                 variant="filled"
                 onClick={() => {
                   useLecturesInfo.close();
-                  useLecturesForm.setId(useLecturesInfo?.dataSource?.id);
+                  useLecturesForm.setParams({
+                    id: useLecturesInfo?.dataSource?.id,
+                  });
                   useLecturesForm.open();
                 }}
               />,
@@ -284,7 +288,7 @@ function PageContent({ params }) {
         <LecturesFormEdit
           formHook={useLecturesForm}
           fields={LecturesFields({ syllabusId, lectureStatus })}
-          onFormRequestParams={{ id: useLecturesForm.id }}
+          onFormRequestParams={useLecturesForm.params}
           onFormSubmitSuccess={() => useLecturesTable.reload()}
           /* onFormDeleteParams={{ id: useLecturesForm.id }}
           onFormDeleteSuccess={() => {

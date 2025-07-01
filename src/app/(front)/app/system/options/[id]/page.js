@@ -28,8 +28,8 @@ export default function Page({ params }) {
       fields={OptionsFields()}
       onFormRequestParams={{ id: optionId }}
       onFormDeleteParams={{ id: optionId }}
-      /* onFormSubmitSuccess={() => useOptionDesc.reload()}
-      onFormDeleteSuccess={() => {
+      onFormSubmitSuccess={() => useOptionDesc.reload()}
+      /* onFormDeleteSuccess={() => {
         useOptionForm.close();
         navBack();
       }} */
