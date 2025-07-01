@@ -37,6 +37,7 @@ function PageContent() {
   const useSchedulesTransfer = useTransfer();
 
   const [transferDateRange, setTransferDateRange] = useState({});
+  const [selectedClassIds, setSelectedClassIds] = useState([]);
 
   const reloadData = () => {
     useSchedulesCalendar.reload();
@@ -60,6 +61,7 @@ function PageContent() {
         onCalendarRequestParams={{
           schedule_date_gte: useSchedulesCalendar.startDate,
           schedule_date_lt: useSchedulesCalendar.endDate,
+          ...(selectedClassIds.length > 0 && { class_id_in: selectedClassIds }),
         }}
         eventClick={(clickInfo) => {
           useScheduleFormEdit.setParams({ id: clickInfo.event.id });
@@ -123,7 +125,7 @@ function PageContent() {
             endDate: useSchedulesCalendar.endDate,
           }}
           columns={ScheduleClassesColumns()}
-          leftColumns={[
+          rightColumns={[
             {
               width: 56,
               align: "center",
@@ -146,6 +148,11 @@ function PageContent() {
               ),
             },
           ]}
+          onRowsSelect={(keys) => {
+            const selectedIds = keys.map((key) => key.id);
+            setSelectedClassIds(selectedIds);
+            useSchedulesCalendar.reload();
+          }}
         />
       </ProCard>
     ),

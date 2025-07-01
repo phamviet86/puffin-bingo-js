@@ -17,7 +17,7 @@ import {
 } from "@/lib/util/fetch-util";
 import { VIEWS_CONFIG } from "@/component/config/calendar-config";
 import {
-  renderScheduleShort,
+  renderScheduleTag,
   renderScheduleCard,
   renderScheduleTransfer,
 } from "@/lib/util/render-util";
@@ -98,11 +98,11 @@ export function SchedulesCalendar(props) {
           ...VIEWS_CONFIG.dayGrid,
         },
         dayGridWeek: {
-          eventContent: renderScheduleShort,
+          eventContent: renderScheduleTag,
           ...VIEWS_CONFIG.dayGridWeek,
         },
         dayGridMonth: {
-          eventContent: renderScheduleShort,
+          eventContent: renderScheduleTag,
           ...VIEWS_CONFIG.dayGridMonth,
         },
       }}

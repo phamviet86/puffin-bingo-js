@@ -156,7 +156,45 @@ export function renderUserContact(record) {
 }
 
 // time, class_name, module_name, status_color
-export function renderScheduleShort(info) {
+export function renderScheduleTag(info) {
+  const { shift_start_time, course_code, module_name, schedule_status_color } =
+    info.event.extendedProps;
+  const { status, color } = COLOR_ENUM[schedule_status_color];
+
+  const styles = {
+    time: {
+      fontSize: "1em",
+      fontWeight: 700,
+      color: color,
+    },
+    course: {
+      fontSize: "1em",
+      fontWeight: 500,
+      color: color,
+    },
+    module: {
+      fontSize: "1em",
+      color: color,
+      opacity: 0.85,
+    },
+  };
+
+  // return as tag with color and text
+  return (
+    <Tag color={status ? status : color} style={{ width: "100%" }}>
+      <Space size={4} wrap>
+        <Text style={styles.time} strong>
+          {formatTimeHHMM(shift_start_time)}
+        </Text>
+        <Text style={styles.course}>{course_code}</Text>
+        <Text style={styles.module}>{module_name}</Text>
+      </Space>
+    </Tag>
+  );
+}
+
+// time, class_name, module_name, status_color
+export function renderScheduleBadge(info) {
   const { shift_start_time, course_code, module_name, schedule_status_color } =
     info.event.extendedProps;
   const { status, color } = COLOR_ENUM[schedule_status_color];
