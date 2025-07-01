@@ -3,6 +3,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { useAppContext } from "../../provider";
 import { convertSelection } from "@/lib/util/convert-util";
+import { useFetch } from "@/component/hook";
 
 const PageContext = createContext(null);
 
@@ -16,43 +17,28 @@ export function PageProvider({ children }) {
     { option_table: "schedules", option_column: "schedule_status_id" }
   );
 
-  // Foreign key selections (class_id, shift_id, lecture_id, room_id)
-  const classSelection = convertSelection(
-    optionData,
-    { value: "id", label: "option_label" },
-    { option_table: "classes", option_column: "id" }
-  );
-  const shiftSelection = convertSelection(
-    optionData,
-    { value: "id", label: "option_label" },
-    { option_table: "shifts", option_column: "id" }
-  );
-  const lectureSelection = convertSelection(
-    optionData,
-    { value: "id", label: "option_label" },
-    { option_table: "lectures", option_column: "id" }
-  );
-  const roomSelection = convertSelection(
-    optionData,
-    { value: "id", label: "option_label" },
-    { option_table: "rooms", option_column: "id" }
-  );
+  // Fetch shifts data from the API
+  const { useFetchList } = useFetch();
+  const { data: shiftData = [] } = useFetchList("/api/shifts");
+  const shiftSelection = convertSelection(shiftData, {
+    value: "id",
+    label: "shift_name",
+  });
+
+  // Fetch rooms data from the API
+  const { data: roomData = [] } = useFetchList("/api/rooms");
+  const roomSelection = convertSelection(roomData, {
+    value: "id",
+    label: "room_name",
+  });
 
   const contextValue = useMemo(
     () => ({
       scheduleStatus,
-      classSelection,
       shiftSelection,
-      lectureSelection,
       roomSelection,
     }),
-    [
-      scheduleStatus,
-      classSelection,
-      shiftSelection,
-      lectureSelection,
-      roomSelection,
-    ]
+    [scheduleStatus, shiftSelection, roomSelection]
   );
 
   return (

@@ -15,20 +15,21 @@ export async function getSchedules(searchParams) {
     const sqlText = `
       SELECT 
         s.*,
-        o.option_color AS schedule_status_color,
-        co.course_name, co.course_code, 
-        r.room_name,
+        co.course_name, co.course_code,
         m.module_name, 
         l.lecture_name,
+        sh.shift_start_time, sh.shift_end_time, sh.shift_name,
+        r.room_name,
+        o.option_color AS schedule_status_color,
         COUNT(*) OVER() AS total
       FROM schedules s
-      JOIN options o ON s.schedule_status_id = o.id AND o.deleted_at IS NULL 
-      JOIN shifts sh ON s.shift_id = sh.id AND sh.deleted_at IS NULL
-      JOIN classes c ON s.class_id = c.id AND c.deleted_at IS NULL
-      JOIN courses co ON c.id = co.id AND co.deleted_at IS NULL
-      JOIN modules m ON c.id = m.id AND m.deleted_at IS NULL
-      LEFT JOIN lectures l ON s.lecture_id = l.id AND l.deleted_at IS NULL
-      LEFT JOIN rooms r ON s.room_id = r.id AND r.deleted_at IS NULL
+      LEFT JOIN classes c ON c.id = s.class_id AND c.deleted_at IS NULL
+      LEFT JOIN courses co ON co.id = c.course_id AND co.deleted_at IS NULL
+      LEFT JOIN modules m ON m.id = c.module_id AND m.deleted_at IS NULL
+      LEFT JOIN lectures l ON l.id = s.lecture_id AND l.deleted_at IS NULL
+      LEFT JOIN shifts sh ON sh.id = s.shift_id AND sh.deleted_at IS NULL
+      LEFT JOIN rooms r ON r.id = s.room_id AND r.deleted_at IS NULL
+      LEFT JOIN options o ON o.id = s.schedule_status_id AND o.deleted_at IS NULL
       WHERE s.deleted_at IS NULL
       ${whereClause}
       ${
@@ -56,11 +57,11 @@ export async function getSchedule(id) {
         l.lecture_name,
         COUNT(*) OVER() AS total
       FROM schedules s
-      JOIN options o ON s.schedule_status_id = o.id AND o.deleted_at IS NULL 
-      JOIN shifts sh ON s.shift_id = sh.id AND sh.deleted_at IS NULL
-      JOIN classes c ON s.class_id = c.id AND c.deleted_at IS NULL
-      JOIN courses co ON c.id = co.id AND co.deleted_at IS NULL
-      JOIN modules m ON c.id = m.id AND m.deleted_at IS NULL
+      LEFT JOIN options o ON s.schedule_status_id = o.id AND o.deleted_at IS NULL 
+      LEFT JOIN shifts sh ON s.shift_id = sh.id AND sh.deleted_at IS NULL
+      LEFT JOIN classes c ON s.class_id = c.id AND c.deleted_at IS NULL
+      LEFT JOIN courses co ON c.id = co.id AND co.deleted_at IS NULL
+      LEFT JOIN modules m ON c.id = m.id AND m.deleted_at IS NULL
       LEFT JOIN lectures l ON s.lecture_id = l.id AND l.deleted_at IS NULL
       LEFT JOIN rooms r ON s.room_id = r.id AND r.deleted_at IS NULL
       WHERE s.deleted_at IS NULL AND s.id = ${id};

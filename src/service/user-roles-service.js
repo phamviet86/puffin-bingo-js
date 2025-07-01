@@ -17,7 +17,7 @@ export async function getUserRoles(searchParams) {
         r.role_name,
         COUNT(*) OVER() AS total
       FROM user_roles ur
-      JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
+      LEFT JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
       WHERE ur.deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY created_at"}
@@ -36,7 +36,7 @@ export async function getUserRole(id) {
       SELECT ur.*,
         r.role_name
       FROM user_roles ur
-      JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
+      LEFT JOIN roles r ON ur.role_id = r.id AND r.deleted_at IS NULL
       WHERE deleted_at IS NULL AND id = ${id};
     `;
   } catch (error) {

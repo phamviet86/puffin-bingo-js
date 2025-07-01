@@ -27,7 +27,7 @@
 
 ## 2025-06-29
 
-- [+] add JOIN to enrollments table (services)
+- [+] add LEFT JOIN to enrollments table (services)
 - [+] add enrollments transfer for the class (enrollments-component)
 
 ## 2025-06-22

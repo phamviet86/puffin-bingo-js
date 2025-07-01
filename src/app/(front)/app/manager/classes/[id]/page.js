@@ -214,11 +214,6 @@ function PageContent({ params }) {
           fields={EnrollmentsFields({ enrollmentType, enrollmentPaymentType })}
           onFormRequestParams={{ id: useEnrollmentsForm.id }}
           onFormSubmitSuccess={() => useEnrollmentsTable.reload()}
-          onFormDeleteParams={{ id: useEnrollmentsForm.id }}
-          onFormDeleteSuccess={() => {
-            useEnrollmentsForm.close();
-            useEnrollmentsTable.reload();
-          }}
           title="Sửa đăng ký"
         />
         <EnrollmentsTransferByClass

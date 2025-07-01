@@ -56,7 +56,6 @@ export function EnrollmentsFormEdit(props) {
       onFormSubmit={(values) =>
         fetchPut(`/api/enrollments/${values.id}`, values)
       }
-      onFormDelete={(params) => fetchDelete(`/api/enrollments/${params.id}`)}
     />
   );
 }

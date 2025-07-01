@@ -157,7 +157,7 @@ export function renderUserContact(record) {
 
 // time, class_name, module_name, status_color
 export function renderScheduleShort(info) {
-  const { shift_start_time, class_code, module_name, schedule_status_color } =
+  const { shift_start_time, course_code, module_name, schedule_status_color } =
     info.event.extendedProps;
   const { status, color } = COLOR_ENUM[schedule_status_color];
 
@@ -178,7 +178,7 @@ export function renderScheduleShort(info) {
       <Text style={styles.time} strong>
         {formatTimeHHMM(shift_start_time)}
       </Text>
-      <Text style={styles.text}>{class_code}</Text>
+      <Text style={styles.text}>{course_code}</Text>
       <Text style={styles.text} type="secondary">
         {module_name}
       </Text>
@@ -190,9 +190,9 @@ export function renderEventCard(info) {
   const {
     shift_start_time,
     room_name,
-    class_name,
+    course_name,
     module_name,
-    lesson_name,
+    lecture_name,
     schedule_status_color,
   } = info.event.extendedProps;
 
@@ -227,12 +227,12 @@ export function renderEventCard(info) {
         </Flex>
         <Space wrap size={[4, 0]}>
           <Text strong style={styles.text}>
-            {class_name}
+            {course_name}
           </Text>
           <Text style={styles.text}>{module_name}</Text>
         </Space>
         <Text italic style={styles.text}>
-          {lesson_name}
+          {lecture_name}
         </Text>
       </Space>
     </Card>

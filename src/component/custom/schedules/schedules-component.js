@@ -12,10 +12,9 @@ import {
   fetchGet,
   fetchPost,
   fetchPut,
-  fetchDelete,
 } from "@/lib/util/fetch-util";
 import { VIEWS_CONFIG } from "@/component/config/calendar-config";
-import { renderScheduleShort } from "@/lib/util/render-util";
+import { renderScheduleShort, renderEventCard } from "@/lib/util/render-util";
 
 export function SchedulesTable(props) {
   return (
@@ -29,7 +28,12 @@ export function SchedulesTable(props) {
 }
 
 export function SchedulesInfo(props) {
-  return <DrawerDescriptions {...props} />;
+  return (
+    <DrawerDescriptions
+      {...props}
+      onDescRequest={(params) => fetchGet(`/api/schedules/${params?.id}`)}
+    />
+  );
 }
 
 export function SchedulesDesc(props) {
@@ -77,15 +81,15 @@ export function SchedulesCalendar(props) {
         extendedProps: {
           id: "id",
           shift_start_time: "shift_start_time",
-          class_name: "class_name",
-          class_code: "class_code",
+          course_name: "course_name",
+          course_code: "course_code",
           module_name: "module_name",
           schedule_status_color: "schedule_status_color",
         },
       }}
       views={{
         dayGrid: {
-          eventContent: renderScheduleShort,
+          eventContent: renderEventCard,
           ...VIEWS_CONFIG.dayGrid,
         },
         dayGridWeek: {

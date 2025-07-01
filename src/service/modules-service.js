@@ -17,7 +17,7 @@ export async function getModules(searchParams) {
         s.syllabus_name,
         COUNT(*) OVER() AS total
       FROM modules m
-      JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
       WHERE m.deleted_at IS NULL
       ${whereClause}
       ${orderByClause || "ORDER BY s.syllabus_name,  m.module_name"}
@@ -37,7 +37,7 @@ export async function getModule(id) {
         s.syllabus_name,
         COUNT(*) OVER() AS total
       FROM modules m
-      JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
+      LEFT JOIN syllabuses s ON m.syllabus_id = s.id AND s.deleted_at IS NULL
       WHERE m.deleted_at IS NULL AND m.id = ${id};
     `;
   } catch (error) {

@@ -23,7 +23,6 @@ export default function Page(props) {
 }
 
 function PageContent() {
-  const { navDetail } = useNav();
   const {} = usePageContext();
 
   const useClassesTable = useTable();

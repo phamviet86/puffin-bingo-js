@@ -69,8 +69,15 @@ export function FullCalendar({
   calendarHook = {},
   ...props
 }) {
-  const { calendarRef, startDate, setStartDate, endDate, setEndDate } =
-    calendarHook;
+  const {
+    calendarRef,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    loading,
+    setLoading,
+  } = calendarHook;
 
   const [messageApi, contextHolder] = message.useMessage();
   const screens = useBreakpoint();
@@ -79,9 +86,6 @@ export function FullCalendar({
   // State management: tách biệt raw data và processed events
   const [rawCalendarData, setRawCalendarData] = useState([]);
   const [processedEvents, setProcessedEvents] = useState([]);
-
-  // Loading state
-  const [loading, setLoading] = useState(true);
 
   // Refs for reload pattern và debouncing
   const reloadDataRef = useRef();

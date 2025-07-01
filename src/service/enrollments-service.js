@@ -20,7 +20,7 @@ export async function getEnrollments(searchParams) {
         s.syllabus_name,
         COUNT(*) OVER() AS total
       FROM enrollments_view e
-      JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
+      LEFT JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
       LEFT JOIN classes_view c on c.id = e.class_id AND c.deleted_at IS NULL
       LEFT JOIN courses co on co.id = c.course_id AND co.deleted_at IS NULL
       LEFT JOIN modules m on m.id = c.module_id AND m.deleted_at IS NULL
@@ -49,7 +49,7 @@ export async function getEnrollment(id) {
         m.module_name,
         s.syllabus_name
       FROM enrollments_view e
-      JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
+      LEFT JOIN users_view u on u.id = e.user_id AND u.deleted_at IS NULL
       LEFT JOIN classes_view c on c.id = e.class_id AND c.deleted_at IS NULL
       LEFT JOIN courses co on co.id = c.course_id AND co.deleted_at IS NULL
       LEFT JOIN modules m on m.id = c.module_id AND m.deleted_at IS NULL
