@@ -8,17 +8,17 @@
   - target: có class_id + type học viên nhưng chưa có start_date (thiếu ngày)
   - add: add class_id - PUT
   - remove: remove class_id - PATCH
+- [] tạo admin/users
+  - add enrollment to class
+  - add enrollment to waiting list (module_id)
 
 ## 2025-06-30
 
-- [] tạo manager/schedules
+- [+] tạo manager/schedules
   - calendar với month data
   - create schedule button (form)
   - tạo classes table: summary số buổi học trong tháng + select để filter lớp trên bảng và calendar
   - transfer theo tuần để copy lịch
-- [] tạo admin/users
-  - add enrollment to class
-  - add enrollment to waiting list (module_id)
 - [-] thêm enrollment_wait_date cho enrollments để biết học viên phải đợi bao lâu rồi
   - sử dụng luôn created_at
 - [+] sửa lại enrollments-schema để hiển thị đủ dữ liệu trên info

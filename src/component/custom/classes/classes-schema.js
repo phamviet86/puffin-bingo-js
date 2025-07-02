@@ -222,14 +222,9 @@ export function ScheduleClassesColumns() {
     {
       title: "Lớp học",
       render: (_, record) => (
-        <Space direction="vertical" size={0}>
-          <Space wrap>
-            <Typography.Text strong>{record.course_name}</Typography.Text>
-            <Typography.Text>{record.module_name}</Typography.Text>
-          </Space>
-          <Typography.Text type="secondary">
-            {record.syllabus_name}
-          </Typography.Text>
+        <Space wrap>
+          <Typography.Text strong>{record.course_name}</Typography.Text>
+          <Typography.Text>{record.module_name}</Typography.Text>
         </Space>
       ),
       search: false,

@@ -164,12 +164,12 @@ export function renderScheduleTag(info) {
   const styles = {
     time: {
       fontSize: "1em",
-      fontWeight: 700,
+      fontWeight: 500,
       color: color,
     },
     course: {
       fontSize: "1em",
-      fontWeight: 500,
+      fontWeight: 700,
       color: color,
     },
     module: {
@@ -183,9 +183,7 @@ export function renderScheduleTag(info) {
   return (
     <Tag color={status ? status : color} style={{ width: "100%" }}>
       <Space size={4} wrap>
-        <Text style={styles.time} strong>
-          {formatTimeHHMM(shift_start_time)}
-        </Text>
+        <Text style={styles.time}>{formatTimeHHMM(shift_start_time)}</Text>
         <Text style={styles.course}>{course_code}</Text>
         <Text style={styles.module}>{module_name}</Text>
       </Space>
