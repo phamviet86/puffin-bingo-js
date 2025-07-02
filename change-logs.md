@@ -12,6 +12,10 @@
   - add enrollment to class
   - add enrollment to waiting list (module_id)
 
+## 2025-07-02
+
+- [] fix responsive on ScheduleClassesColumns
+
 ## 2025-06-30
 
 - [+] tạo manager/schedules
@@ -58,7 +62,7 @@
 - [+] courses: khoá học
 - [+] classes: lớp học
 - [+] enrollments: đăng ký
-- [] schedules: lịch học
+- [+] schedules: lịch học
 - [] attendances: điểm danh
 - [] assessments: đánh giá
 - [] tuitions: học phí

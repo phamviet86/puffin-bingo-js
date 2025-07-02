@@ -258,7 +258,7 @@ export function renderScheduleCard(info) {
         <Flex justify="space-between" wrap style={{ width: "100%" }}>
           <Text style={styles.title}>{formatTimeHHMM(shift_start_time)}</Text>
           <Text strong style={styles.text}>
-            {room_name ? `Phòng: ${room_name}` : "Chưa có phòng"}
+            {room_name ? `Phòng: ${room_name}` : "Chưa xếp phòng"}
           </Text>
         </Flex>
         <Space wrap size={[4, 0]}>

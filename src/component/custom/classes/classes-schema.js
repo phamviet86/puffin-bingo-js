@@ -251,7 +251,7 @@ export function ScheduleClassesColumns() {
       valueEnum: CLASS_STATUS,
       filters: true,
       sorter: { multiple: 1 },
-      responsive: ["lg"],
+      responsive: ["sm"],
     },
     {
       title: "Bắt đầu",
@@ -259,7 +259,7 @@ export function ScheduleClassesColumns() {
       valueType: "date",
       sorter: { multiple: 1 },
       search: false,
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Kết thúc",
@@ -267,7 +267,7 @@ export function ScheduleClassesColumns() {
       valueType: "date",
       sorter: { multiple: 1 },
       search: false,
-      responsive: ["md"],
+      responsive: ["lg"],
     },
     {
       title: "Chờ",
@@ -279,6 +279,7 @@ export function ScheduleClassesColumns() {
           {text}
         </Typography.Text>
       ),
+      responsive: ["md"],
     },
     {
       title: "Học",
@@ -290,6 +291,7 @@ export function ScheduleClassesColumns() {
           {text}
         </Typography.Text>
       ),
+      responsive: ["md"],
     },
     {
       title: "Nghỉ",
@@ -301,6 +303,7 @@ export function ScheduleClassesColumns() {
           {text}
         </Typography.Text>
       ),
+      responsive: ["md"],
     },
     {
       title: "Tổng",
@@ -313,6 +316,7 @@ export function ScheduleClassesColumns() {
             Number(record.absent_count || 0)}
         </Typography.Text>
       ),
+      responsive: ["md"],
     },
   ];
 }

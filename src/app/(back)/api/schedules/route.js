@@ -36,6 +36,19 @@ export async function POST(request) {
     if (!class_id || !shift_id || !schedule_date || !schedule_status_id)
       return buildApiResponse(400, false, "Thiếu thông tin bắt buộc");
 
+    // Prevent schedule_date < current date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // ignore time part
+    const scheduleDateObj = new Date(schedule_date);
+    scheduleDateObj.setHours(0, 0, 0, 0);
+    if (scheduleDateObj < today) {
+      return buildApiResponse(
+        400,
+        false,
+        "Ngày học không được nhỏ hơn ngày hiện tại."
+      );
+    }
+
     // get Class to check if it exists
     const classExists = await getClass(class_id);
     if (!classExists || !classExists.length)
