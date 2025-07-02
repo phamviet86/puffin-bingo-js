@@ -130,3 +130,60 @@ export function UsersFields(params) {
     </ProForm.Group>
   );
 }
+
+// ADMIN USERS
+export function AdminUsersColumns(params) {
+  const { userStatus } = params || {};
+
+  return [
+    {
+      title: "Tên người dùng",
+      dataIndex: "user_name",
+      valueType: "text",
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "user_desc",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      hidden: true,
+    },
+    {
+      title: "Email",
+      dataIndex: "user_email",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      responsive: ["md"],
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "user_status_id",
+      valueType: "select",
+      valueEnum: userStatus?.valueEnum || {},
+      sorter: { multiple: 1 },
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "user_phone",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      responsive: ["lg"],
+    },
+    {
+      title: "SĐT phụ huynh",
+      dataIndex: "user_parent_phone",
+      valueType: "text",
+      sorter: { multiple: 1 },
+      responsive: ["lg"],
+    },
+    {
+      title: "Ghi chú",
+      dataIndex: "user_notes",
+      valueType: "textarea",
+      sorter: { multiple: 1 },
+      hidden: true,
+      search: false,
+    },
+  ];
+}
