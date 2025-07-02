@@ -67,3 +67,47 @@
 - [] assessments: đánh giá
 - [] tuitions: học phí
 - [] invoices: hoá đơn
+
+# Site Map
+
+- [system]
+  - [options]: tạo tuỳ chọn
+  - [roles]: tạo các quyền
+- [setting]
+  - [rooms]: tạo phòng
+  - shifts: tạo giờ học
+  - day-offs: lịch nghỉ (chưa làm)
+- [manager]
+  - [users]: tạo người dùng
+    - [user-roles]: thêm quyền cho người dùng
+  - [syllabuses]: tạo giáo trình
+    - [modules]: tạo các học phần
+    - [lectures]: tạo bài giảng
+  - [courses]: tạo các khoá học
+    - [classes]: tạo các lớp trong khoá học -> học phí, thời gian học
+  - [classes]: xem thông tin và sắp xếp nhân sự
+    - [enrollments]: quản lý danh sách lớp (thêm, điều chỉnh, bớt...); thêm đăng ký từ danh sách chờ
+  - [schedules]: tạo lịch học, copy lịch học
+- [admin]
+  - [users]: quản lý danh sách học viên (users không có vai trò)
+    - [enrollments]: thêm vào danh sách chờ hoặc xếp lớp luôn
+    - [tuitions]: chưa làm
+    - [invoices]: chưa làm
+  - [classes]: xem danh sách lớp - danh sách học viên
+    - [enrollments]: thêm học viên vào lớp hoặc từ danh sách chờ
+  - [enrollments]: xếp lớp - xem danh sách chờ -> chuyển đến user cần xếp lớp
+    - [attendances]: thống kê số buổi - lịch sử học
+    - [assessments]: thông tin đánh giá
+  - [schedules]: xếp phòng - điểm danh
+  - [attendances]: xếp học bù
+  - [tuitions]: tạo thông báo học phí
+  - [invoices]: thu tiền
+- [teacher]
+  - [syllabuses]: xem giáo trình
+  - [classes]: xem danh sách lớp
+    - [enrollments]: xem danh sách lớp
+    - [schedules]: lịch sử lớp học
+  - [schedules]: lịch làm việc - lesson plan
+    - [attendances]: danh sách lớp
+    - [assessments]: đánh giá học viên
+- [teaching-assistant]
