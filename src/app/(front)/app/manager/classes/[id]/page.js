@@ -40,30 +40,70 @@ export default function Page(props) {
     </PageProvider>
   );
 }
-
 function PageContent({ params }) {
-  // const { navBack } = useNav(); // enable if you want to navigate back after delete
-  const { enrollmentType, enrollmentPaymentType } = usePageContext();
   const { id: classId } = use(params);
+  const { enrollmentType, enrollmentPaymentType } = usePageContext();
 
+  // Hooks: Classes
   const useClassesDesc = useDesc();
   const useClassesForm = useForm();
+
+  // Hooks: Enrollments
+  const useEnrollments = {
+    table: useTable(),
+    info: useInfo(),
+    form: useForm(),
+    transfer: useTransfer(),
+  };
+
+  const [enrollmentTypeId, setEnrollmentTypeId] = useState(20);
+  const [roleParams, setRoleParams] = useState({});
+
+  const enrollmentColumns = EnrollmentsColumns({
+    enrollmentType,
+    enrollmentPaymentType,
+  });
+
+  const pageTitle =
+    useClassesDesc?.dataSource?.course_name &&
+    useClassesDesc?.dataSource?.module_name
+      ? `${useClassesDesc.dataSource.course_name} - ${useClassesDesc.dataSource.module_name}`
+      : "Chi tiết";
+  document.title = `Lớp ${pageTitle}`;
+
+  const enrollmentDropdownItems = [
+    {
+      key: "add-teaching-assistant",
+      label: "Thêm trợ giảng",
+      onClick: () => {
+        setEnrollmentTypeId(19);
+        setRoleParams({ role_names_like: "Trợ giảng" });
+        useEnrollments.transfer.setTitle("Thêm trợ giảng");
+        useEnrollments.transfer.open();
+      },
+    },
+    {
+      key: "add-student",
+      label: "Thêm học viên",
+      onClick: () => {
+        setEnrollmentTypeId(20);
+        setRoleParams({});
+        useEnrollments.transfer.setTitle("Thêm học viên");
+        useEnrollments.transfer.open();
+      },
+    },
+  ];
 
   const pageButton = [
     <BackButton key="back-button" />,
     <ClassesFormEdit
+      key="edit-form"
+      title="Sửa lớp học"
+      trigger={<Button label="Sửa" />}
       formHook={useClassesForm}
       fields={ClassesFields()}
       onFormRequestParams={{ id: classId }}
       onFormSubmitSuccess={() => useClassesDesc.reload()}
-      /* onFormDeleteParams={{ id: classId }}
-      onFormDeleteSuccess={() => {
-        useClassesForm.close();
-        navBack();
-      }} */
-      key="edit-form"
-      title="Sửa lớp học"
-      trigger={<Button label="Sửa" />}
     />,
   ];
 
@@ -80,14 +120,6 @@ function PageContent({ params }) {
     </ProCard>
   );
 
-  // tab content: enrollments
-  const useEnrollmentsTable = useTable();
-  const useEnrollmentsInfo = useInfo();
-  const useEnrollmentsForm = useForm();
-  const useEnrollmentsTransfer = useTransfer();
-  const [enrollmentTypeId, setEnrollmentTypeId] = useState(20);
-  const [roleParams, setRoleParams] = useState({});
-
   const enrollmentsTab = {
     key: "enrollments",
     label: "Danh sách lớp",
@@ -101,39 +133,16 @@ function PageContent({ params }) {
               label="Tải lại"
               color="default"
               variant="filled"
-              onClick={() => useEnrollmentsTable.reload()}
+              onClick={() => useEnrollments.table.reload()}
             />
             <Dropdown.Button
+              type="primary"
+              menu={{ items: enrollmentDropdownItems }}
               onClick={() => {
                 setEnrollmentTypeId(18);
                 setRoleParams({ role_names_like: "Giáo viên" });
-                useEnrollmentsTransfer.setTitle("Thêm giáo viên");
-                useEnrollmentsTransfer.open();
-              }}
-              type="primary"
-              menu={{
-                items: [
-                  {
-                    key: "add-teaching-assistant",
-                    label: "Thêm trợ giảng",
-                    onClick: () => {
-                      setEnrollmentTypeId(19);
-                      setRoleParams({ role_names_like: "Trợ giảng" });
-                      useEnrollmentsTransfer.setTitle("Thêm trợ giảng");
-                      useEnrollmentsTransfer.open();
-                    },
-                  },
-                  {
-                    key: "add-student",
-                    label: "Thêm học viên",
-                    onClick: () => {
-                      setEnrollmentTypeId(20);
-                      setRoleParams({});
-                      useEnrollmentsTransfer.setTitle("Thêm học viên");
-                      useEnrollmentsTransfer.open();
-                    },
-                  },
-                ],
+                useEnrollments.transfer.setTitle("Thêm giáo viên");
+                useEnrollments.transfer.open();
               }}
             >
               Thêm giáo viên
@@ -142,14 +151,9 @@ function PageContent({ params }) {
         }
       >
         <EnrollmentsTable
-          tableHook={useEnrollmentsTable}
-          columns={EnrollmentsColumns({
-            enrollmentType,
-            enrollmentPaymentType,
-          })}
-          onTableRequestParams={{
-            class_id: classId,
-          }}
+          tableHook={useEnrollments.table}
+          columns={enrollmentColumns}
+          onTableRequestParams={{ class_id: classId }}
           leftColumns={[
             {
               width: 56,
@@ -160,8 +164,8 @@ function PageContent({ params }) {
                   icon={<InfoCircleOutlined />}
                   variant="link"
                   onClick={() => {
-                    useEnrollmentsInfo.setDataSource(record);
-                    useEnrollmentsInfo.open();
+                    useEnrollments.info.setDataSource(record);
+                    useEnrollments.info.open();
                   }}
                 />
               ),
@@ -177,8 +181,8 @@ function PageContent({ params }) {
                   icon={<EditOutlined />}
                   variant="link"
                   onClick={() => {
-                    useEnrollmentsForm.setParams({ id: record?.id });
-                    useEnrollmentsForm.open();
+                    useEnrollments.form.setParams({ id: record?.id });
+                    useEnrollments.form.open();
                   }}
                 />
               ),
@@ -187,12 +191,9 @@ function PageContent({ params }) {
           ]}
         />
         <EnrollmentsInfo
-          infoHook={useEnrollmentsInfo}
-          columns={EnrollmentsColumns({
-            enrollmentType,
-            enrollmentPaymentType,
-          })}
-          dataSource={useEnrollmentsInfo.dataSource}
+          infoHook={useEnrollments.info}
+          columns={enrollmentColumns}
+          dataSource={useEnrollments.info.dataSource}
           drawerProps={{
             title: "Thông tin đăng ký",
             extra: [
@@ -201,46 +202,39 @@ function PageContent({ params }) {
                 label="Sửa"
                 variant="filled"
                 onClick={() => {
-                  useEnrollmentsInfo.close();
-                  useEnrollmentsForm.setParams({
-                    id: useEnrollmentsInfo?.dataSource?.id,
+                  useEnrollments.info.close();
+                  useEnrollments.form.setParams({
+                    id: useEnrollments.info?.dataSource?.id,
                   });
-                  useEnrollmentsForm.open();
+                  useEnrollments.form.open();
                 }}
               />,
             ],
           }}
         />
         <EnrollmentsFormEdit
-          formHook={useEnrollmentsForm}
+          formHook={useEnrollments.form}
           fields={EnrollmentsFields({ enrollmentType, enrollmentPaymentType })}
-          onFormRequestParams={useEnrollmentsForm.params}
-          onFormSubmitSuccess={() => useEnrollmentsTable.reload()}
+          onFormRequestParams={useEnrollments.form.params}
+          onFormSubmitSuccess={() => useEnrollments.table.reload()}
           title="Sửa đăng ký"
         />
         <EnrollmentsTransferByClass
           classId={classId}
           enrollmentTypeId={enrollmentTypeId}
           enrollmentPaymentAmount={useClassesDesc?.dataSource?.class_fee || 0}
-          transferHook={useEnrollmentsTransfer}
-          onTransferClose={() => useEnrollmentsTable.reload()}
+          transferHook={useEnrollments.transfer}
+          onTransferClose={() => useEnrollments.table.reload()}
           onSourceParams={{ user_status_id_e: 14, ...roleParams }}
           onTargetParams={{
             class_id: classId,
             enrollment_type_id: enrollmentTypeId,
           }}
-          modalProps={{ title: useEnrollmentsTransfer.title || "Thêm" }}
+          modalProps={{ title: useEnrollments.transfer.title || "Thêm" }}
         />
       </ProCard>
     ),
   };
-
-  const pageTitle =
-    useClassesDesc?.dataSource?.course_name &&
-    useClassesDesc?.dataSource?.module_name
-      ? `${useClassesDesc.dataSource.course_name} - ${useClassesDesc.dataSource.module_name}`
-      : "Chi tiết";
-  document.title = `Lớp ${pageTitle}`;
 
   return (
     <PageContainer
